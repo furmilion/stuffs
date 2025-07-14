@@ -145,15 +145,13 @@ Version: 0.277b
     - Graphics: yes
     - PSS-6 [pss6]: identical to master
 
-## ROLAND
-
--# [1] It actually sounds way more elaborate than I expected it to, considering I tested it with a midi that targets MU50, it still doesn't support some controllers tho
--# ~~I honestly find it weird that it supports Variation effct while not going for ADR controls~~ Seems like a MIDI issue on my side, but I dont remember that happening in 0.265. MU10 specific: Sound now actually works conpared to 0.265
--# [2] It fucking breaks with high cutoff, the noise is all over the place
--# [3] Generally sounds different from 0.265, the Variation and Chorus sound a LOT weaker, Reverb is way stronger. I cannot test now though as 0.265 seems to be breaking itself and not detecting MU50 roms when ther are present, which is partially a reason I updated
--# [4] Contrast not emulated
--# [5] Seems to completely lack the effect unit emulation
--# [6] I have no idea if contrast is emulated since the system gets stuck
--# [7] I have no idea if I can get them myself since I remember the MAME merged rom archive getting locked out for download from unregistered users
--# [8] I assume there is something wrong with patch loading as most of them have a deep lfo that they probably should not have
--# [9] States that the battery needs changing
+[1] It actually sounds way more elaborate than I expected it to, considering I tested it with a midi that targets MU50, it still doesn't support some controllers tho
+~~I honestly find it weird that it supports Variation effct while not going for ADR controls~~ Seems like a MIDI issue on my side, but I dont remember that happening in 0.265. MU10 specific: Sound now actually works conpared to 0.265
+[2] It absolutely breaks with high cutoff, the noise is all over the place
+[3] Generally sounds different from 0.265, the Variation and Chorus sound a LOT weaker, Reverb is way stronger. I cannot test now though as 0.265 seems to be breaking itself and not detecting MU50 roms when ther are present, which is partially a reason I updated
+[4] Contrast not emulated
+[5] Seems to completely lack the effect unit emulation
+[6] I have no idea if contrast is emulated since the system gets stuck
+[7] I have no idea if I can get them myself since I remember the MAME merged rom archive getting locked out for download from unregistered users
+[8] I assume there is something wrong with patch loading as most of them have a deep lfo that they probably should not have
+[9] States that the battery needs changing
