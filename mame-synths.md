@@ -53,6 +53,8 @@ Table of Contents:
 	- [Emulator](#emu_lator)
 - [Ensoniq](#ensq)
 - [Kawai](#kwi)
+- [Kurzweil](#kzw)
+- [Notes](#notes)
 
 <a name="yamaha"></a>
 ## YAMAHA
@@ -479,7 +481,6 @@ Table of Contents:
 	- No `dw8000-v0713.ic38` `hn613256p-t70_32004086.ic46` `hn613256p-t71_32004087.ic45` `hn613256p-cb4_32004088.ic44` `hn613256p-cb5_32004089.ic43` roms [[7]](#note7)
 - DW-8000-EX Programmable Digital Waveform Synthesizer [dw8000ex]
 	- No `korg-dw8000-ex.bin` `exp-1.bin` `exp-2.bin` `exp-3.bin` `exp-4.bin` roms [[7]](#note7)
-
 <a name="korg_m1"></a>
 - M1 Music Workstation (Rev. 19) [korgm1]
 	- No `rev19-ic23-880219.bin` `rev19-ic32-880319.bin` `mb83512-15p-259.ic30` `upd23c512-039.ic26` `upd23c512-039.ic20` roms [[7]](#note7)
@@ -558,6 +559,12 @@ Empty for now.
 
 Empty for now.
 
+<a name="kzw"></a>
+## KURZWEIL
+
+Empty for now.
+
+### Notes
 
 <a name="note1"></a>
 [1] It actually sounds way more elaborate than I expected it to, considering I tested it with a midi that targets MU50, it still doesn't support some controllers tho
