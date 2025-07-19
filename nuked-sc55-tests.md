@@ -9,7 +9,7 @@
 
 - Nuked SC-55mkII (Firmware v1.01)
 	- Runs: yes
-	- Runs in realtime: no (Nuked-OPM still performs times worse, I have no idea if that's [Furnace](https://github.com/tildearrow/furnace/)
+	- Runs in realtime: no (Nuked-OPM still performs times worse, I have no idea if that's [Furnace](https://github.com/tildearrow/furnace/)'s problem)
 
 - Nuked SC-155mkI:
 	- Runs: yes
