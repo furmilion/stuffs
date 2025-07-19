@@ -538,16 +538,16 @@ Table of Contents:
 <a name="emu"></a>
 ## E-MU
 <a name="emu_emax"></a>
-	- Emax Digital Sampling Keyboard [emax]
-		- No `emax.bin` `im368-1_ba__r1129-11.ic7` `ip345c.bin` roms [[7]](#note7)
-		- Emax Plus Digital Sampling Keyboard [emaxp]: no `ip424a3089.bin` `ip379a.bin` roms [[7]](#note7)
-	- Emax II 16-bit Digital Sound System [emax2]
-		- No `ip43aemu_3891.ic20` `ip43bemu_4291.ic19` `93c06n.ic24` roms [[7]](#note7)
+- Emax Digital Sampling Keyboard [emax]
+	- No `emax.bin` `im368-1_ba__r1129-11.ic7` `ip345c.bin` roms [[7]](#note7)
+	- Emax Plus Digital Sampling Keyboard [emaxp]: no `ip424a3089.bin` `ip379a.bin` roms [[7]](#note7)
+- Emax II 16-bit Digital Sound System [emax2]
+	- No `ip43aemu_3891.ic20` `ip43bemu_4291.ic19` `93c06n.ic24` roms [[7]](#note7)
 <a name="emu_lator"></a>
-	- Emulator II [emu2]
-		- No `e2newermain_hdmb2_3_main.ic42` `eiiscanv2-1.ic28` `eiiscanv3-1.ic28` `74s472.ic137` `74s472.ic135` roms [[7]](#note7)
-	- Emulator Three Digital Sound Production System [emu3]
-		- No `e3-lsboot_ip381a_emu_systems_4088.ic3` `e3-msboot_ip380a_emu_systems_4088.ic4` `im368.ic31` roms [[7]](#note7)
+- Emulator II [emu2]
+	- No `e2newermain_hdmb2_3_main.ic42` `eiiscanv2-1.ic28` `eiiscanv3-1.ic28` `74s472.ic137` `74s472.ic135` roms [[7]](#note7)
+- Emulator Three Digital Sound Production System [emu3]
+	- No `e3-lsboot_ip381a_emu_systems_4088.ic3` `e3-msboot_ip380a_emu_systems_4088.ic4` `im368.ic31` roms [[7]](#note7)
 
 <a name="ensq"></a>
 ## ENSONIQ
@@ -568,13 +568,13 @@ Empty for now.
 
 <a name="note1"></a>
 [1] It actually sounds way more elaborate than I expected it to, considering I tested it with a midi that targets MU50, it still doesn't support some controllers tho
-~~I honestly find it weird that it supports Variation effct while not going for ADR controls~~ Seems like a MIDI issue on my side, but I dont remember that happening in 0.265. MU10 specific: Sound now actually works conpared to 0.265
+~~I honestly find it weird that it supports Variation effct while not going for ADR controls~~ Seems like a MIDI issue on my side, but I dont remember that happening in 0.265. MU10 specific: Sound now actually works compared to 0.265
 
 <a name="note2"></a>
 [2] It absolutely breaks with high cutoff, the noise is all over the place
 
 <a name="note3"></a>
-[3] Generally sounds different from 0.265, the Variation and Chorus sound a LOT weaker, Reverb is way stronger. I cannot test now though as 0.265 seems to be breaking itself and not detecting MU50 roms when ther are present, which is partially a reason I updated
+[3] Generally sounds different from 0.265, the Variation and Chorus sound a LOT weaker, Reverb is way stronger. I cannot test now though as 0.265 seems to be breaking itself and not detecting MU50 roms when they are present, which is partially a reason I updated
 
 <a name="note4"></a>
 [4] Contrast not emulated
