@@ -79,8 +79,8 @@ print("Symbols considered as emptiness: ' ', '_', '-', '0'")
 # there's like 99% chance you can do something better
 try:
     import pygame.image, pygame.surface
-    # import pygame.midi
-    # pygame.midi.init()
+    import pygame.midi
+    pygame.midi.init()
 
     # pygame.scrap can basically be ignored for now I have to find
     # another clipboard library, since scrap requires a window
@@ -105,7 +105,7 @@ try:
     #     print(f"{_devices_}. {device_name}")  # it slows my code the hell down  # from devices' names ;-;
     # print("NOTE: only output devices are displayed! Not every single one!")
     #
-    # _in_ = -2                                # so the while loop loops™
+    # OUTPUT_DEVICE = -2                                # so the while loop loops™
     # inputs = list(range(inputs_amount + 1))  # the list we earlier talked about to be made later™
     # _crs_ = 0                                # so we write to correct array indexes™
     # inputs[len(inputs) - 1] = -1             # so we can select not to output™
@@ -117,20 +117,20 @@ try:
     #     if device[3]:
     #         inputs[_crs_] = _devices_
     #         _crs_ += 1
-    #
+    # 
     # # help
-    # while _in_ not in inputs:
-    #     _in_ = int(input("Select MIDI port to output test SysEx data to. Use '-1' to not use any. "))
-    #     if _in_ != -1 and _in_ in inputs:
+    # while OUTPUT_DEVICE not in inputs:
+    #     OUTPUT_DEVICE = int(input("Select MIDI port to output test SysEx data to. Use '-1' to not use any. "))
+    #     if OUTPUT_DEVICE != -1 and OUTPUT_DEVICE in inputs:
     #         #  | | | | | |   this long string is just to display "SC" on the SC-xx's
     #         # \/\/\/\/\/\/   (I'll add SC-88's double display support later) display
-    #         pygame.midi.Output(_in_).write_sys_ex(0, b'\xf0\x41\x10\x45\x12\x10\x01\x00\x00\x00\x00\x03\x06\x04\x04\x07\x01\x00\x04\x06\x07\x00\x00\x00\x00\x00\x00\x18\x19\t\x01\x01\x19\t\t\x19\x10\x00\x00\x00\x00\x00\x00\x1c\x16\x02\x00\x00\x00\x00\x02\x16\x1c\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x4d\xf7')
-    #         print(f"Opening device #{_in_}...")
-    #     if _in_ != 1 and not _in_ in inputs:
+    #         pygame.midi.Output(OUTPUT_DEVICE).write_sys_ex(0, b'\xf0\x41\x10\x45\x12\x10\x01\x00\x00\x00\x00\x03\x06\x04\x04\x07\x01\x00\x04\x06\x07\x00\x00\x00\x00\x00\x00\x18\x19\t\x01\x01\x19\t\t\x19\x10\x00\x00\x00\x00\x00\x00\x1c\x16\x02\x00\x00\x00\x00\x02\x16\x1c\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x4d\xf7')
+    #         print(f"Opening device #{OUTPUT_DEVICE}...")
+    #     if OUTPUT_DEVICE != 1 and not OUTPUT_DEVICE in inputs:
     #         print("Not a MIDI out device!")
     # # we don't want to test out system exclusive messages straight out the box,
     # # we want to use Domino MIDI Editor©®™ or Sekaiju©®™ to test them in action later
-    # if _in_ == -1:
+    # if OUTPUT_DEVICE == -1:
     #     print("Skipping MIDI")
     #     pygame.midi.quit()     # just in case
 
@@ -260,8 +260,8 @@ if mode == 1:
     #             print("Not a valid answer.")
     #     if to_test in yes:
     #         print()
-    #         pygame.midi.Output(_in_).abort()
-    #         pygame.midi.Output(_in_).write_sys_ex(0, construct_exclusive(LED_Diodes)[1])
+    #         pygame.midi.Output(OUTPUT_DEVICE).abort()
+    #         pygame.midi.Output(OUTPUT_DEVICE).write_sys_ex(0, construct_exclusive(LED_Diodes)[1])
     #         print("Sent to opened device.")
 
 if mode == 2 and pygame_available:
@@ -340,9 +340,9 @@ if mode == 2 and pygame_available:
     #         if to_test not in yes and to_test not in no:
     #             print("Not a valid answer.")
     #     if to_test in yes:
-    #         print()
-    #         pygame.midi.Output(_in_).abort()
-    #         pygame.midi.Output(_in_).write_sys_ex(0, construct_exclusive(LED_Diodes)[1])
+    #         # print(f"output dev {OUTPUT_DEVICE}")
+    #         pygame.midi.Output(OUTPUT_DEVICE).abort()
+    #         pygame.midi.Output(OUTPUT_DEVICE).write_sys_ex(0, construct_exclusive(LED_Diodes)[1])
     #         print("Sent to opened device.")
 
 # if pygame_available:
