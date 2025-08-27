@@ -51,8 +51,8 @@ def construct_exclusive(_):             # underscore core part 2
     # f"{____}")
     # if str(input("Copy to clipboard? [y/n]\n")).lower() in ans:
 mode = 0
-yes = ["y", "ye", "yes", "д", "да", "1"]
-no = ["n", "no", "nah", "н", "не", "нет", "0"]
+yes = "y"
+no = "n"
 masks = [0b01111, 0b10111, 0b11011, 0b11101, 0b11110]
 rows_bin = ""
 rows = ["h", "h", "h", "h", "h", "h", "h", "h", "h", "h", "h", "h", "h", "h", "h", "h"]
@@ -256,9 +256,9 @@ if mode == 1:
     # if pygame.midi.get_init() and pygame_available:
     #     while to_test.lower() not in yes and to_test.lower() not in no:
     #         to_test = str(input("Do you wish to test the SysEx right away? [y/n]\n")).lower()
-    #         if to_test not in yes and to_test not in no:
+    #         if not to_test.startswith(yes) and not to_test.startswith(no)::
     #             print("Not a valid answer.")
-    #     if to_test in yes:
+    #     if to_test.startswith(yes):
     #         print()
     #         pygame.midi.Output(OUTPUT_DEVICE).abort()
     #         pygame.midi.Output(OUTPUT_DEVICE).write_sys_ex(0, construct_exclusive(LED_Diodes)[1])
@@ -337,9 +337,9 @@ if mode == 2 and pygame_available:
     # if pygame.midi.get_init() and pygame_available:
     #     while to_test.lower() not in yes and to_test.lower() not in no:
     #         to_test = str(input("Do you wish to test the SysEx right away? [y/n]\n")).lower()
-    #         if to_test not in yes and to_test not in no:
+    #         if not to_test.startswith(yes) and not to_test.startswith(no):
     #             print("Not a valid answer.")
-    #     if to_test in yes:
+    #     if to_test.startswith(yes):
     #         # print(f"output dev {OUTPUT_DEVICE}")
     #         pygame.midi.Output(OUTPUT_DEVICE).abort()
     #         pygame.midi.Output(OUTPUT_DEVICE).write_sys_ex(0, construct_exclusive(LED_Diodes)[1])
