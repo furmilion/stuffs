@@ -96,7 +96,7 @@ Controllers:
 |  0  |    Bank Select MSB    |                                           The most significant byte of the bank                                            |
 |  5  |    Portamento time    |                                              Controls the speed of portamento                                              |
 | 32  |    Bank Select LSB    |                                           The least significant byte of the bank                                           |
-| 65  |      Portamento       |                                      Whether is portamento on. 0~63: Off, 64~127: On                                       |
+| 65  |      Portamento       |                                     Whether is portamento on. 0\~63: Off, 64\~127: On                                      |
 | 66  |       Sostenuto       |                               Like hold pedal, but only sustains notes that already were on                                |
 | 67  |      Soft Pedal       |                                  Softens the notes, as in applies a slight lowpass filter                                  |
 | 84  |  Portamento Control   |                                 Specfies the note to glide from for the next note when set                                 |
