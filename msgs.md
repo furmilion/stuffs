@@ -1,4 +1,8 @@
-The MSGS situation is crazy
+# The MSGS situation is crazy
+
+If you want to skip right to the point, click [here](#the-point).
+
+
 
 ## What is MSGS?
 Well, first of all, you my want to ask me the following question: "What the hell even is MSGS?"
@@ -46,6 +50,64 @@ folder on Windows 10.
 |   CC#91 Reverb    |   No    |          Yes           |    Yes     |
 |   CC#93 Chorus    |   No    |          Yes           |    Yes     |
 
+---
+
+#### Crash course (but on Roland GS)
+
+Roland GS is basically an extended version of General MIDI Level 1 aka GM.
+It adds about this:
+- Extra presets (arranged into "banks", with the default one being 0)
+- Extra controllers (CC#91 Reverb, CC#93 Chorus, CC#94 Delay etc.)
+- Extra drum kits apart from the default one (Power, Analog, Jazz and so on)
+
+Activated via following SysEx: `F0 41 10 42 12 40 00 7F 00 41 F7`
+
+First synthesizer to incorporate Roland's GS standard was Sound Canvas SC-55.
+At Yamaha this mode is referenced to as TG300B mode as they couldn't use the
+trademark.
+
+##### Additions
+
+Percussive sounds:
+
+| Note | Percussion sound |
+|:----:|:----------------:|
+|  25  |    Snare Roll    |
+|  26  |   Finger Snap    |
+|  27  |      High Q      |
+|  28  |       Slap       |
+|  29  |   Scratch Push   |
+|  30  |   Scratch Pull   |
+|  31  |      Stick       |
+|  32  |   Square Click   |
+|  33  | Metronome Click  |
+|  34  |  Metronome Bell  |
+|  82  |      Shaker      |
+|  83  |   Jingle Bell    |
+|  84  |     Belltree     |
+|  85  |    Castanets     |
+|  86  |    Mute Surdo    |
+|  87  |    Open Surdo    |
+
+Controllers:
+
+| CC# |        Purpose        |                                                     Short description                                                      |
+|:---:|:---------------------:|:--------------------------------------------------------------------------------------------------------------------------:|
+|  0  |    Bank Select MSB    |                                           The most significant byte of the bank                                            |
+|  5  |    Portamento time    |                                              Controls the speed of portamento                                              |
+| 32  |    Bank Select LSB    |                                           The least significant byte of the bank                                           |
+| 65  |      Portamento       |                                      Whether is portamento on. 0~63: Off, 64~127: On                                       |
+| 66  |       Sostenuto       |                               Like hold pedal, but only sustains notes that already were on                                |
+| 67  |      Soft Pedal       |                                  Softens the notes, as in applies a slight lowpass filter                                  |
+| 84  |  Portamento Control   |                                 Specfies the note to glide from for the next note when set                                 |
+| 91  |   Reverb Send Level   |                                   Specifies how loud should sound sent to reverb unit be                                   |
+| 93  |   Chorus Send Level   |                                   Specifies how loud should sound sent to chorus unit be                                   |
+| 94  |   Delay Send Level    |                                   Specifies how loud should sound sent to delay unit be                                    |
+| 98  |       NRPN LSB        |                               Sets the NRPN LSB number to send data to. Sent after NRPN MSB                                |
+| 99  |       NRPN MSB        |                               Sets the NRPN MSB number to send data to. Sent before NRPN LSB                               |
+| 120 |    All Sounds Off     |                Cuts all sounds, regardless of whether are they held by CC#64 or CC#65 on specified channel                 |
+| 121 | Reset All Controllers | Resets following controls: Pitchbend, PolyKeyPress, ChannelPress, Mod wheel, Expression, Hold, Portamento, Sostenuto, Soft |
+| 123 |     All Notes Off     |                         Turns all notes off unless held by CC#64 Sustain Pedal or CC#65 Sostenuto                          |
 
 ---
 #### Notes
@@ -54,6 +116,7 @@ folder on Windows 10.
 
 ---
 
+## The point.
 
 So there is an unfinished [MSGS cover](/midis/crystal_msgs.mid) of [Crystal Oscillator](https://youtu.be/uL2XWtx3ePk)
 unfortunately, I will not finish the midi at any cost, due to a simple reason: not enough voices msgs has (32).
