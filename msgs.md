@@ -99,7 +99,7 @@ Controllers:
 | 65  |      Portamento       |                                     Whether is portamento on. 0\~63: Off, 64\~127: On                                      |
 | 66  |       Sostenuto       |                               Like hold pedal, but only sustains notes that already were on                                |
 | 67  |      Soft Pedal       |                                  Softens the notes, as in applies a slight lowpass filter                                  |
-| 84  |  Portamento Control   |                                 Specfies the note to glide from for the next note when set                                 |
+| 84  |  Portamento Control   |                                Specifies the note to glide from for the next note when set                                 |
 | 91  |   Reverb Send Level   |                                   Specifies how loud should sound sent to reverb unit be                                   |
 | 93  |   Chorus Send Level   |                                   Specifies how loud should sound sent to chorus unit be                                   |
 | 94  |   Delay Send Level    |                                   Specifies how loud should sound sent to delay unit be                                    |
