@@ -35,20 +35,20 @@ or redefining of drum channels or use of GS banks, a GS Reset myst be performed.
 The sound set itself is located in `gm.dls` somewhere in `%systemroot%\WinSxS`
 folder on Windows 10.
 
-|                   |  MSGS   |         SC-55          | SC-55mkII  |
-|:-----------------:|:-------:|:----------------------:|:----------:|
-|        GM         |   Yes   | Firmware 1.20 or later |    Yes     |
-|        GS         |   Yes   |          Yes           |    Yes     |
-|       Parts       |   16    |           16           |     16     |
-|      Voices       |   32    |           24           |     28     |
-|   Tones (Basic)   |   226   |          189           |    226     |
-| Tones (MT-32 Map) |    0    |          128           |    128     |
-|     Drum Kits     |    9    |           9            |     9      |
-|    Sample Rate    | 22050hz |        32000hz         |  32000hz   |
-|  Low Pass Filter  |   No    |          Yes           |    Yes     |
-|    Rate Limit     |  None   |       31250 baud       | 31250 baud |
-|   CC#91 Reverb    |   No    |          Yes           |    Yes     |
-|   CC#93 Chorus    |   No    |          Yes           |    Yes     |
+|                   |  MSGS   | MSGS (WinXP_x64) |         SC-55          | SC-55mkII  |
+|:-----------------:|:-------:|:----------------:|:----------------------:|:----------:|
+|        GM         |   Yes   |       Yes        | Firmware 1.20 or later |    Yes     |
+|        GS         |   Yes   |       Yes        |          Yes           |    Yes     |
+|       Parts       |   16    |        16        |           16           |     16     |
+|      Voices       |   32    |        64        |           24           |     28     |
+|   Tones (Basic)   |   226   |       226        |          189           |    226     |
+| Tones (MT-32 Map) |    0    |        0         |          128           |    128     |
+|     Drum Kits     |    9    |        9         |           9            |     9      |
+|    Sample Rate    | 22050hz |   22050hz (?)    |        32000hz         |  32000hz   |
+|  Low Pass Filter  |   No    |        No        |          Yes           |    Yes     |
+|    Rate Limit     |  None   |       None       |       31250 baud       | 31250 baud |
+|   CC#91 Reverb    |   No    |        No        |          Yes           |    Yes     |
+|   CC#93 Chorus    |   No    |        No        |          Yes           |    Yes     |
 
 ---
 
