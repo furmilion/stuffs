@@ -31,7 +31,7 @@ supports [Roland's GS](https://en.wikipedia.org/wiki/Roland_GS) standard.
 Judging by the patch set, MSGS was derived from [SC-55mkII](https://en.wikipedia.org/wiki/Roland_SC-55).
 
 By default, MSGS starts in GM mode, and to use GS features such as addition
-or redefining of drum channels or use of GS banks, a GS Reset myst be performed.
+or redefining of drum channels or use of GS banks, a GS Reset must be performed.
 The sound set itself is located in `gm.dls` somewhere in `%systemroot%\WinSxS`
 folder on Windows 10.
 
