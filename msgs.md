@@ -5,7 +5,7 @@ If you want to skip right to the point, click [here](#the-point).
 
 
 ## What is MSGS?
-Well, first of all, you my want to ask me the following question: "What the hell even is MSGS?"
+Well, first of all, you may want to ask me the following question: "What the hell even is MSGS?"
 Fret not, my dear friend for I will explain to you what is it.
 
 So, you may or may not have a PC. If you do, you can run either
