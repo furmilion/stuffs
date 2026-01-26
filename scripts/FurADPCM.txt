@@ -1,0 +1,47 @@
+﻿Meet FurADPCM: A very lossy DPCM audio codec.
+
+Specs:
+
+    File format: .fa
+    File magic: "FurADPCM"
+    File structure:
+         size | block
+        ------+----------------------
+            8 | FurADPCM File Magic
+            2 | Sample rate / 2
+            1 | Metadata
+            1 | Fx Block Info Start
+           ---+----------------------
+            2 | Block Info Data
+            4 | Flags
+           ---+----------------------
+            1 | F1 Block Info End
+            ? | data
+
+    METADATA:
+        bit 0: is 16-bit
+        bit 1: channels (bit0)
+        bit 2: channels (bit1)
+        bit 3: channels (bit2)
+        bit 4: reserved
+        bit 5: reserved
+        bit 6: reserved
+        bit 7: reserved
+
+    Block format 3:
+        F3 (block info start)
+        Block data:
+            bits 0-3: step change function [lin16, lin64, pow2, pow3]
+            bits 4-15: block size [4096], max data stored: *8
+            bit 16: is int16
+            bits 17-31: reserved
+            bits 32-47: 16-bit correction value
+        Step functions:
+            LIN4: 0 (initial step size), +4 (each iteration)
+            LIN16: 0 (initial step size), +16 (each iteration)
+            POW2: 2 (initial step size), step#**2 (each iteration)
+            POW3: 2 (initial step size), step#**3 (each iteration)
+
+Initial specs include 2 other blocks but those are not yet supported. 
+Current implementation also is very bad.
+  
