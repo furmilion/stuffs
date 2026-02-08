@@ -284,7 +284,7 @@ if mode == 2 and pygame_available:
             # print(_colors_)
             while imgR.get_palette_at(palette_idx_on) != (0, 0, 0, 255):
                 palette_idx_on += 1
-            # print(f"Using index {palette_idx_on} to compare against")
+            print(f"Using index {palette_idx_on} to compare against")
             break
 
     for _ in range(16):
@@ -310,11 +310,12 @@ if mode == 2 and pygame_available:
                 for _symbols_ in range(5):
                     # print(f"for loop i {_symbols_}, contents: {tempStr[_symbols_]}")
                     # print(f"cursor position in LED_Diodes: {(base_pos + _rows_)}")
-                    if tempStr[_symbols_] == palette_idx_on:
+                    if int(tempStr[_symbols_]) == palette_idx_on:
                         # print(f"LED at row {_rows_} pos {(_symbols_ + 1) * (_chunks_ + 1)} is on")
                         pass
                     else:
                         # print(f"LED at row {_rows_} pos {(_symbols_ + 1) * (_chunks_ + 1)} is off, masking")
+                        print(f"{tempStr[_symbols_]} ({int(tempStr[_symbols_])}) == {palette_idx_on} is {int(tempStr[_symbols_]) == palette_idx_on}")
                         LED_Diodes[base_pos + _rows_] &= masks[_symbols_]
                 # print(f"output: {bin(LED_Diodes[base_pos + _rows_])}")
 
@@ -327,7 +328,7 @@ if mode == 2 and pygame_available:
                     # print(f"output: {bin(LED_Diodes[base_pos + _rows_])}")
                     pass
                 else:
-                    # print(f"LED at row {_rows_} pos 16 is off, masking (contents: '{tempStr}')")
+                    print(f"LED at row {_rows_} pos 16 is off, masking (contents: '{tempStr}')")
                     LED_Diodes[base_pos + _rows_] = 0
                     # print(f"output: {bin(LED_Diodes[base_pos + _rows_])}")
 
