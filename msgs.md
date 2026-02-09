@@ -37,6 +37,7 @@ folder on Windows 10 along with its `gmreadme.txt` file.
 
 |                   | MSGS (Win10) | MSGS (WinXP_x64) / MSGS (Pre-Win10) |         SC-55          | SC-55mkII  |
 |:-----------------:|:------------:|:-----------------------------------:|:----------------------:|:----------:|
+|  Interpolation    |   Linear     |              Linear                 |       Linear(?)        |  Linear(?) |
 |        GM         |     Yes      |                 Yes                 | Firmware 1.20 or later |    Yes     |
 |        GS         |     Yes      |                 Yes                 |          Yes           |    Yes     |
 |       Parts       |      16      |                 16                  |           16           |     16     |
