@@ -55,11 +55,65 @@ def explode_byte(bit: int = 255) -> list[int]:
     return bits
 
 
-def ternary(condition, true, false):  # why doesn't python have this 😭
+def ternary(condition, true, false):
+    """
+    Obsolete since guarded conditions
+    :param condition:
+    :param true:
+    :param false:
+    :return:
+    """
     if condition:
         return true
     else:
         return false
+
+def convert_to_float(format: str = "24.8", signed: bool = True) -> int:
+    if type(format) is not str:
+        raise TypeError("Must provide a string denoting the format in 'x.y' style,\n"
+                        "x being the amount of bits in mantissa and y being the amount of bits in exponent.")
+    signed = bool(signed) if type(signed) in [bool, str, int, float] else False
+    mantissa, exponent = format.split('.')
+    mantissa, exponent = (int(mantissa) - 1 if signed else int(mantissa)), int(exponent)
+
+    return mantissa, exponent
+
+def convert_from_float(val: int = 0, format: str = "24.8", is_signed: bool = True) -> float:
+    if type(format) is not str:
+        raise TypeError("Must provide a string denoting the format in 'x.y' style,\n"
+                        "x being the amount of bits in mantissa and y being the amount of bits in exponent.")
+    signed = bool(is_signed) if type(is_signed) in [bool, str, int, float] else False
+    mantissa, exponent = format.split('.')
+    mantissa, exponent = (int(mantissa) - 1 if is_signed else int(mantissa)), int(exponent)
+    sign = 1
+    if is_signed:
+        sign = -1 if val >> exponent + mantissa else 1
+    mask_mantissa = 0
+    mask_exponent = 0
+    for i in range(mantissa):
+        mask_mantissa |= 1 << i
+    for i in range(exponent):
+        mask_exponent |= 1 << i
+    mask_exponent <<= mantissa
+    mantissa_val = val & mask_mantissa
+    mantissa_val_real = (10**(len(str(mantissa_val))) + mantissa_val) / len(str(mantissa_val)) if ((val & mask_exponent) >> mantissa) & 1 else mantissa_val / len(str(mantissa_val))
+    exponent_val = (val & mask_exponent) >> mantissa + 1
+    exponent_val_real = exponent_val - ((mask_exponent >> mantissa) + 1)//2
+    add_1 = ((val & mask_exponent) >> mantissa) & 1
+    print(f"INFO:\n"
+          f"Signed float:    {is_signed}\n"
+          f"Mantissa bits:   {mantissa}\n"
+          f"Mantissa mask:   {mask_mantissa} | {hex(mask_mantissa)} | {bin(mask_mantissa)}\n"
+          f"Mantissa:        {mantissa_val} | {hex(mantissa_val)} | {bin(mantissa_val)}\n"
+          f"Exponent bits:   {exponent}\n"
+          f"Exponent mask:   {mask_exponent} | {hex(mask_exponent)} | {bin(mask_exponent)}\n"
+          f"Exponent:        {exponent_val} | {hex(exponent_val)} | {bin(exponent_val)}\n"
+          f"Exponent (true): {exponent_val - ((mask_exponent >> mantissa) + 1)//2} | {hex(exponent_val - ((mask_exponent >> mantissa) + 1)//2)} | {bin(exponent_val - ((mask_exponent >> mantissa) + 1)//2)}\n"
+          f"Sign:            {None if not signed else val >> exponent + mantissa} ({None if not signed else sign})\n"
+          )
+    return sign * ( mantissa * 2**exponent_val  )
+
+
 
 def log(*args, **kwargs) -> None:
     pass
@@ -70,14 +124,12 @@ def round_to_closest(l,u,v) -> int:
     Works identical to normal round(): rounds down if the value is less than delta, rounds up otherwise.
     Delta is calculated by adding lower and upper values and dividing the result by 2.
     """
-    delta = (l + u)/2
-    if v < delta:
-        return l
-    else:
-        return u
+    return l if v < (l + u)/2 else u
 
 def check_bytes(in_file, val):
     """
+    Obsolete.
+
     This function checks hardcoded amount of bytes (4) in input file to see if they are a specified value.
     If so, it returns len(<input file>).
     """
@@ -130,29 +182,19 @@ def save_riff(#bdep=8, rate=32000, data="sample", loop_start=None, loop_end=None
     """
     # We'll put everything in a nice big fat juicy try block to print out errors if there are any
     try:
-        try:
-            verbose = kwargs["verbose"]
-            try: verbose = bool(verbose)
-            except TypeError: verbose = False
-        except KeyError: verbose = False
+        verbose = kwargs["verbose"] if "verbose" in kwargs else False
+        try: verbose = bool(verbose)
+        except TypeError: verbose = False
 
-        try: bdep = kwargs["bdep"]
-        except KeyError: bdep = 8
-        try: rate = floor(kwargs["rate"])
-        except KeyError: rate = 32000
-        try: data = kwargs["data"]
-        except KeyError:
-            data = [random.randint(0, 255) for _ in range(256*(bdep//8))]
-        try: loop_type = kwargs["loop_type"]
-        except KeyError: loop_type = 0
-        try: loop_start = kwargs["loop_start"]
-        except KeyError: loop_start = (len(data) // (bdep//8))
-        try: loop_end = kwargs["loop_end"] - 1
-        except KeyError: loop_end = (len(data) // (bdep//8)) - 1
-        try: location = kwargs["location"]
-        except KeyError: location = "./output.wav"
+        bdep = kwargs["bdep"] if "bdep" in kwargs else 8
+        rate = floor(kwargs["rate"]) if "rate" in kwargs else 32000
+        data = kwargs["data"] if "data" in kwargs else [random.randint(0, 255) for _ in range(256*(bdep//8))]
+        loop_type = kwargs["loop_type"] if "loop_type" in kwargs else 0
+        loop_start = kwargs["loop_start"] if "loop_start" in kwargs else (len(data) // (bdep//8))
+        loop_end = kwargs["loop_end"] - 1 if "loop_end" in kwargs else (len(data) // (bdep//8)) - 1
+        location = kwargs["location"] if "location" in kwargs else "./output.wav"
 
-        if type(loop_start)== int:
+        if type(loop_start) == int:
             if loop_start < 0:
                 loop_start = 0
         if type(loop_end) == int:
@@ -214,7 +256,15 @@ def save_riff(#bdep=8, rate=32000, data="sample", loop_start=None, loop_end=None
                      0x64, 0x61, 0x74, 0x61,    # 'data' block
                      0x00, 0x00, 0x00, 0x00     # size of that shit
                      ]
+        # TODO: actually make a proper wav writing class
         length_real = len(data) + 0x64
+        new_data = []
+        if max(data) > 255:
+            for i in range(len(data)):
+                new_data.append(data[i] >> 8)
+                new_data.append(data[i] & 255)
+        data = new_data
+        del new_data
         data_length = len(data)
         important[4] = length_real & 0xFF
         important[5] = (length_real >> 8) & 0xFF
@@ -230,12 +280,12 @@ def save_riff(#bdep=8, rate=32000, data="sample", loop_start=None, loop_end=None
         elif type(data) in [list, bytes, bytearray]:
             data = bytes(data)
         elif NUMPY and type(data) is np.ndarray:
-            data = np.array(data, np.uint8)
+            data = np.array(list(data), np.uint8)
         else:
             raise ValueError(f"data has died. (type: {type(data)})")
         if NUMPY:
-            data = np.array(data, np.uint8)
-            header = np.array(important, np.uint8)
+            data = np.array(list(data), np.uint8)
+            header = np.array(list(important), np.uint8)
         else:
             header = important
         # header    = b'RIFF' # RIFF header
@@ -258,6 +308,146 @@ def save_riff(#bdep=8, rate=32000, data="sample", loop_start=None, loop_end=None
     except Exception as e:
         print("Error saving file: %s" % e)
         raise SaveError(e)
+
+
+def pcm12_to_16(data: bytes = None):
+    if not data:
+        return [0, 0]
+
+
+
+# def convert_12bit_to_16bit(audio_data, is_interleaved=True):
+#     """
+#     Convert 12-bit linear audio to 16-bit.
+#
+#     Args:
+#         audio_data: Bytes object or list of integers (12-bit values)
+#         is_interleaved: If True, assumes byte pairs contain two 12-bit samples
+#                        If False, assumes each 12-bit value is already extracted
+#
+#     Returns:
+#         List of 16-bit integer values
+#     """
+#     result = []
+#
+#     if isinstance(audio_data, bytes):
+#         # Convert bytes to list of integers
+#         data = list(audio_data)
+#     else:
+#         data = audio_data
+#
+#     if is_interleaved:
+#         # Process byte pairs to extract 12-bit samples
+#         # Assuming little-endian: [low_byte, high_byte_with_4_bits_from_two_samples]
+#         for i in range(0, len(data) - 2, 3):
+#             # Each 3 bytes contains two 12-bit samples
+#             byte1 = data[i]
+#             byte2 = data[i + 1]
+#             byte3 = data[i + 2]
+#
+#             # Extract first 12-bit sample: byte1 + lower 4 bits of byte2
+#             # sample1 = byte1 | ((byte2 & 0x0F) << 8)
+#             sample1 = (byte1 << 8) | (byte2 & 0xF0)
+#
+#             # Extract second 12-bit sample: upper 4 bits of byte2 + byte3
+#             # sample2 = (byte2 >> 4) | (byte3 << 4)
+#             sample2 = ((byte2 & 0x0F) << 12) | (byte3 << 4)
+#
+#             # Scale to 16-bit and add to result
+#             # Option 1: Simple shift (preserves value)
+#             result.append(sample1)# << 4)
+#             result.append(sample2)
+#
+#             # Option 2: Scale proportionally (better dynamic range preservation)
+#             # result.append((sample1 << 4) | (sample1 >> 8))
+#             # result.append((sample2 << 4) | (sample2 >> 8))
+#
+#     else:
+#         # Data already contains 12-bit values
+#         for sample_12bit in data:
+#             # Mask to ensure we only use 12 bits
+#             sample_12bit = sample_12bit & 0xFFF
+#
+#             # Scale to 16-bit by shifting left by 4 bits
+#             sample_16bit = sample_12bit << 4
+#
+#             # Alternative: Scale proportionally for better dynamic range
+#             # sample_16bit = (sample_12bit << 4) | (sample_12bit >> 8)
+#
+#             # Ensure within 16-bit signed range if needed
+#             # For signed 12-bit (-2048 to 2047), convert to signed 16-bit:
+#             # if sample_12bit >= 2048:
+#             #     sample_16bit = (sample_12bit - 4096) << 4
+#             # else:
+#             #     sample_16bit = sample_12bit << 4
+#
+#             result.append(sample_16bit)
+#
+#     return result
+#
+#
+# # Alternative simpler version for non-interleaved data
+# def simple_12bit_to_16bit(audio_data):
+#     """
+#     Simple conversion of 12-bit audio values to 16-bit.
+#     Assumes input is already extracted 12-bit values (0-4095).
+#     """
+#     if isinstance(audio_data, bytes):
+#         # If bytes, convert to list assuming each byte is part of 12-bit value
+#         # This is a simplified case - use the main function for proper interleaved handling
+#         data = list(audio_data)
+#         result = []
+#         for i in range(0, len(data) - 1, 2):
+#             # Combine two bytes into 12-bit (assuming little-endian)
+#             sample_12bit = data[i] | ((data[i + 1] & 0x0F) << 8)
+#             # Scale to 16-bit
+#             result.append(sample_12bit << 4)
+#         return result
+#     else:
+#         # Assume list of 12-bit values
+#         return [sample << 4 for sample in audio_data]
+
+
+# Example usage
+# if __name__ == "__main__":
+#     # Example 1: Using list of 12-bit values
+#     print("Example 1: List of 12-bit values")
+#     audio_12bit = [0, 512, 1024, 2048, 3072, 4095]
+#     audio_16bit = convert_12bit_to_16bit(audio_12bit, is_interleaved=False)
+#     print(f"12-bit: {audio_12bit}")
+#     print(f"16-bit: {audio_16bit}")
+#     print()
+#
+#     # Example 2: Using bytes (simulated interleaved data)
+#     print("Example 2: Bytes data (interleaved)")
+#     # Simulate 3 bytes containing two 12-bit samples
+#     # Sample1: 0x123 (291 decimal), Sample2: 0x456 (1110 decimal)
+#     test_bytes = bytes([0x23, 0x61, 0x45])  # 0x23, 0x61, 0x45 = 0x123, 0x456
+#     audio_16bit_bytes = convert_12bit_to_16bit(test_bytes, is_interleaved=True)
+#     print(f"Input bytes: {test_bytes.hex()}")
+#     print(f"16-bit samples: {audio_16bit_bytes}")
+
+class PtrManager:
+    """
+    Why did i make this? nobody knows.
+    """
+    def __init__(self):
+        self.pointers = {}
+
+    def add_pointer(self, pointer_value, pointer_name: str = None):
+        self.pointers[f"pointer{len(self.pointers)}" if not pointer_name else pointer_name] = pointer_value if pointer_value else 0
+
+    def get_pointer(self, pointer_name: str = None):
+        return self.pointers[pointer_name] if pointer_name else 0
+
+    def remove_pointer(self, pointer_name: str = None):
+        self.pointers.pop(pointer_name) if pointer_name else 0
+
+    def update_pointer(self, pointer_value, pointer_name: str = None):
+        self.add_pointer(pointer_value, pointer_name) if pointer_name else 0
+
+
+
 
 def split_file(file: str, output_folder: str, length=32136, dpcm_rate=15, type=0) -> None:
     """
@@ -406,338 +596,6 @@ def get_sample_data(raw, smtype="m"):
     )
 
 
-def convert_12_to_16(data: bytes = None) -> list[int]:
-    if not data:
-        return [0, 0]
-    final = []
-    for dt in range(len(data)//3):
-        final.append(
-            ((((data[dt * 3]) << 16 | (data[dt * 3 + 1]) | data[dt * 3 + 2]) >> 12) & 0xFFF) >> 8
-        )
-        final.append(
-            ((((data[dt * 3]) << 16 | (data[dt * 3 + 1]) | data[dt * 3 + 2]) >> 12) & 0xFFF) & 0xFF
-        )
-        final.append(
-            (((data[dt * 3]) << 16 | (data[dt * 3 + 1]) | data[dt * 3 + 2]) & 0xFFF) >> 8
-        )
-        final.append(
-            (((data[dt * 3]) << 16 | (data[dt * 3 + 1]) | data[dt * 3 + 2]) & 0xFFF) & 0xFF
-        )
-    return final
-
-
-class LFSR:
-
-    """
-    A simple class to create, tick and otherwise manage LFSRs.
-    LFSR is short for Linear Feedback Shift Register.
-    In LFSR world, there are taps.
-    A tap (or tap bit) is a bit that will be operated on with a tap method.
-
-    In this example we will use an LFSR of size 6 and initial state of 0b100010,
-    taps 0, 2, 4 and 5 and tap method for all taps being XOR.
-
-    XOR table:
-    0 ^ 0 = 0
-    1 ^ 0 = 1
-    0 ^ 1 = 1
-    1 ^ 1 = 0
-
-    Note that the rightmost bit is always tapped.
-
-    The LFSR works as follows:
-    1. Get defined with size x (6), initial state y (0b100010), taps (0, 2, 4 and 5) and tap method (XOR).
-    2. Tick:
-    2.1. XOR last bit with first tap bit, aka bit 5 ^ bit 4. b5^b4 = 1, according to XOR table.
-    2.2. XOR the result with next tap: 1^0 = 1
-    2.3. XOR with the last tap: 1^1 = 0
-    2.4. Right shift the state and insert the result bit at the first position.
-    3. Repeat.
-
-    """
-
-    class ArgumentError(Exception):
-        """
-        An exception for use with argument errors.
-        """
-        def __init__(self, *args, **kwargs):
-            """Initialize self."""
-            pass
-
-    class СатурнError(Exception):
-        def __init__(self, *args, **kwargs):
-            pass
-
-    def raiseError(self, exception, message):
-        raise exception(message)
-
-    def _(self):
-        return None
-
-    def __init__(self):
-        """
-        Initializes self.
-        """
-        self.data = {}
-        self.all_names = []
-        self.last_calculation = 0
-        self.temp_taps = [0]
-        self.temp_taps2 = []
-        self.len_mask = 0b1
-        self.temp_state = 0
-        self.name = None
-        self.index = None
-        self.lfsr_exists = False
-        self.temp = 0
-        self.temp2 = 0
-        self.current_tap1, self.current_tap2 = None, None
-        self.return_binary = False
-        self.lfsr_types = [
-                           "and",  "or",  "xor",
-                           "nand", "nor", "xnor",
-                           # "imply", "nimply"
-                           ]
-
-    def create(self, **kwargs):
-        """
-        Creates and contains a new LFSR with a name, initial state, size and tap bits.
-        Raises a ValueError if either of parameters not passed.
-        If an LFSR already exists, its parameters get overwritten (default dict behavior).
-        Following values are accepted for taps: 'no','0', 'and', 'nand', 'or', 'xor', 'xnor'
-        """
-        kwargs["name"] if "name" in kwargs else self.raiseError(self.ArgumentError, "LFSR name not provided (provide via 'name' keyword).")
-        temp_state = kwargs["state"] if "state" in kwargs else self.raiseError(self.ArgumentError, "LFSR initial state not provided (provide via 'state' keyword).")
-        temp = kwargs["size"] if "size" in kwargs else self.raiseError(self.ArgumentError, "LFSR size not provided (provide via 'size' keyword).")
-        temp_taps = kwargs["taps"] if "taps" in kwargs else self.raiseError(self.ArgumentError, "LFSR taps not provided (provide via 'taps' keyword).")
-        len_mask = 0b1
-        for i in range(kwargs["size"]):
-            len_mask |= 2**i
-        if type(temp_state) is int:
-            temp_state &= len_mask
-        elif temp_state == "max":
-            temp_state = len_mask
-        else:
-            raise ValueError("'state' keyword only accepts integers or 'max' as a value.")
-        if type(kwargs["taps"]) is not list:
-            temp_taps = list(kwargs["taps"])
-        temp_taps2 = list(range(kwargs["size"] - len(temp_taps)))
-        for i in range(len(temp_taps2)):
-            temp_taps2[i] = 0
-        temp_taps2.append(temp_taps)
-        for i in range(len(self.data)):
-            if kwargs["name"] in self.data[i]:
-                self.lfsr_exists = True
-                self.data[len(self.data)] = {"name": kwargs["name"], "state": self.temp_state,
-                                                      "taps": self.temp_taps2, "size": kwargs["size"]}
-                for j in range(len(self.data)):
-                    if self.data[j]["name"] not in self.all_names:
-                        self.all_names.append(self.data[j]["name"])
-                return (f"Successfully modified an LFSR at position {len(self.data) - 1}:\n"
-                        f"{self.data[f'lfsr{len(self.data) - 1}']}")
-            else:
-                self.lfsr_exists = False
-        if not self.lfsr_exists:
-            self.data[len(self.data)] = {"name": kwargs["name"], "state": self.temp_state,
-                                         "taps": self.temp_taps, "size": kwargs["size"]}
-            for j in range(len(self.data)):
-                if self.data[j]["name"] not in self.all_names:
-                    self.all_names.append(self.data[j]["name"])
-            return (f"Successfully created an LFSR at position {len(self.data) - 1}:\n"
-                    f"{self.data[len(self.data) - 1]}")
-
-    def list_all(self):
-        """
-        Lists names of all currently created LFSRs.
-        """
-        for i in range(len(self.data)):
-            try:
-                if self.data[i]["name"] not in self.all_names:
-                    self.all_names.append(self.data[i]["name"])
-            except KeyError:
-                pass
-        return self.all_names
-
-    def return_state(self, **kwargs):
-        """
-        Returns the current state of an LFSR.
-        Raises a ValueError if name or index not passed or an LFSR with that name or at that index does not exist.
-        Returns binary view if 'return_binary' keyword set.
-        If both arguments are passed, name takes priority.
-        Handling of arguments is subject to change.
-        """
-        self.name = kwargs["name"] if "name" in kwargs else None
-        self.index = kwargs["index"] if "index" in kwargs else None
-        self.return_binary = kwargs["return_binary"] if "return_binary" in kwargs else 0
-        if self.name is None and self.index is None:
-            raise self.ArgumentError("Name of LFSR not passed as an argument.")
-        try:
-            if self.return_binary:
-                return bin(self.data[self.all_names.index(self.name)]["state"])
-            else:
-                return self.data[self.all_names.index(self.name)]["state"]
-        except ValueError:
-            raise ValueError(f"LFSR with name {self.name} does not exist."
-                             f"Use list_all() method to get a list of all names.")
-
-    def flush(self):
-        """
-        Flushes: returns a dict of all LFSRs and their states and clears it.
-        """
-        print(self.data)
-        self.data = {}
-        self.all_names = []
-
-    def get_all(self):
-        """
-        Returns the dict containing all LFSRs.
-        """
-        return self.data
-
-    def pop(self, **kwargs):
-        """
-        Remove and return LFSR at index or at name.
-        Raises an IndexError if no LFSRs are present.
-        Raises a ValueError if neither of arguments is passed.
-        If both arguments are passed, name takes priority.
-        Handling of arguments is subject to change.
-        """
-        index = kwargs["index"] if "index" in kwargs else None
-        name = kwargs["name"] if "name" in kwargs else None
-        if (index is None) and (name is None):
-            raise self.ArgumentError("Name nor index of LFSR not passed as an argument.")
-        elif name is not None and index is not None or name is not None:
-            try:
-                if self.all_names.index(name) == (len(self.all_names) - 1):
-                    temp = self.data[self.all_names.index(name)]
-                    self.data.pop(self.all_names.index(name))
-                    self.all_names.pop(self.all_names.index(name))
-                    return temp
-                else:
-                    temp = self.data[self.all_names.index(name)]
-                    for i in range(self.all_names.index(name), len(self.data)):
-                        try:
-                            temp2 = self.data[i + 1]
-                            self.data[i] = temp2
-                        except KeyError:
-                            pass
-                    self.data.pop(len(self.data) - 1)
-                    self.all_names.pop(self.all_names.index(name))
-                    return temp
-            except KeyError:
-                raise KeyError(f"LFSR with name {name} does not exist."
-                               f"Use list_all() method to get a list of all names.")
-        elif name is None and index is not None:
-            try:
-                if index == (len(self.all_names) - 1):
-                    temp = self.data[index]
-                    self.all_names.pop(self.data[index]["name"])
-                    self.data.pop(index)
-                    return temp
-                else:
-                    temp = self.data[index]
-                    for i in range(index, len(self.data)):
-                        try:
-                            temp2 = self.data[i + 1]
-                            self.data[i] = temp2
-                        except KeyError:
-                            pass
-                    self.data.pop(len(self.data) - 1)
-                    self.all_names.pop(index)
-                    return temp
-            except KeyError:
-                raise IndexError(f"LFSR at index {index} does not exist."
-                                 f"Use list_all() method to get a list of all names.")
-
-    def remove(self, **kwargs):
-        """
-        Remove an LFSR at index or at name.
-        Raises an IndexError if no LFSRs are present.
-        Raises a ValueError if neither of arguments is passed.
-        If both arguments are passed, name takes priority.
-        Handling of arguments is subject to change.
-        """
-        index = kwargs["index"] if "index" in kwargs else None
-        name = kwargs["name"]  if "name" in kwargs else None
-        if (index is None) and (name is None):
-            raise self.ArgumentError("Name nor index of LFSR not passed as an argument.")
-        elif name is not None and index is not None or name is not None:
-            try:
-                if self.all_names.index(name) == (len(self.all_names) - 1):
-                    self.data.pop(self.all_names.index(name))
-                    self.all_names.pop(self.all_names.index(name))
-                    return
-                else:
-                    for i in range(self.all_names.index(name), len(self.data)):
-                        try:
-                            temp2 = self.data[i + 1]
-                            self.data[i] = temp2
-                        except KeyError:
-                            pass
-                    self.data.pop(len(self.data) - 1)
-                    self.all_names.pop(self.all_names.index(name))
-                    return
-            except KeyError:
-                raise KeyError(f"LFSR with name {name} does not exist."
-                               f"Use list_all() method to get a list of all names.")
-        elif name is None and index is not None:
-            try:
-                if index == (len(self.all_names) - 1):
-                    self.all_names.pop(self.data[index]["name"])
-                    self.data.pop(index)
-                    return
-                else:
-                    for i in range(index, len(self.data)):
-                        try:
-                            temp2 = self.data[i + 1]
-                            self.data[i] = temp2
-                        except KeyError:
-                            pass
-                    self.data.pop(len(self.data) - 1)
-                    self.all_names.pop(index)
-                    return
-            except KeyError:
-                raise IndexError(f"LFSR at index {index} does not exist."
-                                 f"Use list_all() method to get a list of all names.")
-
-    def tick(self, **kwargs):
-        """
-        Advances the LFSR at name or index by a single tick and returns the bit that got thrown out when right-shifting.
-        Raises a ValueError if neither of arguments is passed.
-        If both arguments are passed, name takes priority.
-        Handling of arguments is subject to change.
-        """
-        index = kwargs["index"] if "index" in kwargs else None
-        name = kwargs["name"] if "name" in kwargs else None
-        current_tap1, current_tap2, *_, = [None for _ in range(16)]
-        if index is None and name is None:
-            raise self.ArgumentError("Name nor index of LFSR not passed as an argument.")
-
-        if name is not None and (index is not None) or name is not None:
-            if name in self.data:
-                temp = self.data[self.all_names.index(name)]["state"]
-                temp2 = self.data[self.all_names.index(name)]["size"]
-                temp_taps = self.data[self.all_names.index(name)]["taps"]
-
-                for i in range(len(temp_taps), 0):
-                    try:
-                        calculated = False
-                        if temp_taps[i] not in self.lfsr_types:
-                            pass
-                        else:
-                            if current_tap1 is None:
-                                current_tap1 = temp_taps[i]
-                            elif current_tap2 is None:
-                                current_tap2 = temp_taps[i]
-                            elif "h":
-                                pass
-
-
-                    except:  # i'll probably finish everything later
-                        ""
-            else:
-                raise KeyError(f"LFSR with name {name} does not exist."
-                               f"Use list_all() method to get a list of all names.")
-
 def make_dpcm(data: bytes = b"") -> None:
     data = list(data)
     for i in range(len(data)):
@@ -833,25 +691,31 @@ def freq_from_fnum():
     pass
 
 if __name__ == "__main__":
-
-    a_n5 = opll_get_freq(0x09, 0x10)
-    a_n4 = opll_get_freq(0x12, 0x10)
-    a_n3 = opll_get_freq(0x24, 0x10)
-    a_n2 = opll_get_freq(0x49, 0x10)
-    a_n1 = opll_get_freq(0x91, 0x10)
-    a_0  = opll_get_freq(0x22, 0x11)
-    a_1  = opll_get_freq(0x22, 0x13)
-    a_2  = opll_get_freq(0x22, 0x15)
-    a_3  = opll_get_freq(0x22, 0x17)
-    a_4  = opll_get_freq(0x22, 0x19)
-    a_5  = opll_get_freq(0x22, 0x1b)
-    a_6  = opll_get_freq(0x22, 0x1d)
-    a_7  = opll_get_freq(0x22, 0x1f)
-    a_8  = opll_get_freq(0xff, 0x1f)
-    print(f'{a_n5}\n{a_n4}\n'
-          f'{a_n3}\n{a_n2}\n'
-          f'{a_n1}\n{a_0}\n'
-          f'{a_1}\n{a_2}\n'
-          f'{a_3}\n{a_4}\n'
-          f'{a_5}\n{a_6}\n'
-          f'{a_7}\n{a_8}\n')
+    #save_riff(bdep=16, rate=44100, data=pcm12_to_16(open("./tests/amen_12", "rb").read()), location="./tests/amen_12.wav")
+    # a_n5 = opll_get_freq(0x09, 0x10)
+    # a_n4 = opll_get_freq(0x12, 0x10)
+    # a_n3 = opll_get_freq(0x24, 0x10)
+    # a_n2 = opll_get_freq(0x49, 0x10)
+    # a_n1 = opll_get_freq(0x91, 0x10)
+    # a_0  = opll_get_freq(0x22, 0x11)
+    # a_1  = opll_get_freq(0x22, 0x13)
+    # a_2  = opll_get_freq(0x22, 0x15)
+    # a_3  = opll_get_freq(0x22, 0x17)
+    # a_4  = opll_get_freq(0x22, 0x19)
+    # a_5  = opll_get_freq(0x22, 0x1b)
+    # a_6  = opll_get_freq(0x22, 0x1d)
+    # a_7  = opll_get_freq(0x22, 0x1f)
+    # a_8  = opll_get_freq(0xff, 0x1f)
+    # print(f'{a_n5}\n{a_n4}\n'
+    #       f'{a_n3}\n{a_n2}\n'
+    #       f'{a_n1}\n{a_0}\n'
+    #       f'{a_1}\n{a_2}\n'
+    #       f'{a_3}\n{a_4}\n'
+    #       f'{a_5}\n{a_6}\n'
+    #       f'{a_7}\n{a_8}\n')
+    print(
+    convert_to_float("24.8", True)
+    )
+    print(
+    convert_from_float(0x807FFFFF, "24.8", True)
+    )
