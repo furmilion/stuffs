@@ -179,6 +179,9 @@ def save_riff(#bdep=8, rate=32000, data="sample", loop_start=None, loop_end=None
     audio player would not play the file properly, or at all.
 
     This function was made specifically for use with Furnace Tracker (github.com/tildearrow/furnace)
+
+    As of committing this comment, I am planning to replace this backbone with a proper writer function/class,
+    which most likely will be based on Cockos' WDL Library Wave Writer.
     """
     # We'll put everything in a nice big fat juicy try block to print out errors if there are any
     try:
