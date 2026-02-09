@@ -35,20 +35,20 @@ or redefining of drum channels or use of GS banks, a GS Reset must be performed.
 The sound set itself is located in `gm.dls` somewhere in `%systemroot%\System32\drivers\gm.dls`
 folder on Windows 10 along with its `gmreadme.txt` file.
 
-|                   |  MSGS   | MSGS (WinXP_x64) |         SC-55          | SC-55mkII  |
-|:-----------------:|:-------:|:----------------:|:----------------------:|:----------:|
-|        GM         |   Yes   |       Yes        | Firmware 1.20 or later |    Yes     |
-|        GS         |   Yes   |       Yes        |          Yes           |    Yes     |
-|       Parts       |   16    |        16        |           16           |     16     |
-|      Voices       |   32    |        64        |           24           |     28     |
-|   Tones (Basic)   |   226   |       226        |          189           |    226     |
-| Tones (MT-32 Map) |    0    |        0         |          128           |    128     |
-|     Drum Kits     |    9    |        9         |           9            |     9      |
-|    Sample Rate    | 22050hz |   22050hz (?)    |        32000hz         |  32000hz   |
-|  Low Pass Filter  |   No    |        No        |          Yes           |    Yes     |
-|    Rate Limit     |  None   |       None       |       31250 baud       | 31250 baud |
-|   CC#91 Reverb    |   No    |        No        |          Yes           |    Yes     |
-|   CC#93 Chorus    |   No    |        No        |          Yes           |    Yes     |
+|                   | MSGS (Win10) | MSGS (WinXP_x64) / MSGS (Pre-Win10) |         SC-55          | SC-55mkII  |
+|:-----------------:|:------------:|:-----------------------------------:|:----------------------:|:----------:|
+|        GM         |     Yes      |                 Yes                 | Firmware 1.20 or later |    Yes     |
+|        GS         |     Yes      |                 Yes                 |          Yes           |    Yes     |
+|       Parts       |      16      |                 16                  |           16           |     16     |
+|      Voices       |      32      |               64 / 32               |           24           |     28     |
+|   Tones (Basic)   |     226      |                 226                 |          189           |    226     |
+| Tones (MT-32 Map) |      0       |                  0                  |          128           |    128     |
+|     Drum Kits     |      9       |                  9                  |           9            |     9      |
+|    Sample Rate    |   22050hz    |             22050hz (?)             |        32000hz         |  32000hz   |
+|  Low Pass Filter  |      No      |                 No                  |          Yes           |    Yes     |
+|    Rate Limit     |     None     |                None                 |       31250 baud       | 31250 baud |
+|   CC#91 Reverb    |      No      |                 No                  |          Yes           |    Yes     |
+|   CC#93 Chorus    |      No      |                 No                  |          Yes           |    Yes     |
 
 ---
 
@@ -119,15 +119,29 @@ Controllers:
 ## The point.
 
 So there is an unfinished [MSGS cover](/midis/crystal_msgs.mid) of [Crystal Oscillator](https://youtu.be/uL2XWtx3ePk)
-unfortunately, I will not finish the midi at any cost, due to a simple reason: not enough voices msgs has (32).
+unfortunately, I will not finish the midi at any cost, due to a simple reason: ~~not enough voices msgs has (32)~~
+I have reconsidered this and am not as much bothered by voice limitation that much as it seems to not be that obvious after some modifications.
+Here arises the second reason, which I did not mention previously: the song itself it too complex.
+
+Anyway, back to the point:
+
 I have tried Windows XP, but MSGS there differs in general:
 - You can't play several different patches on a single channel (which is what I do for distorted kicks at the end and for this metal sfx at the start)
 - CC#120 All Sounds Off seems to be acting as CC#123 All Notes Off (which is what I use to abruptly cut sounds)
   - After a bit of testing, it seems that despite sharing the action with CC#123 All Notes Off, it still ignores hold pedal and releases notes.
 - It seems to sound a bit brighter?
 
-Here is a comparison between MSGS on [Windows 10](/tests/msgs_10.ogg) and MSGS on [Windows XP/98](/tests/msgs_xp.ogg), on that Crystal Oscillator cover.
+Here is a comparison between MSGS on [Windows 10](/tests/msgs_10.ogg) and MSGS on [Windows 98](/tests/msgs_98.ogg), on that Crystal Oscillator cover.
+I could not be bothered to re-render the Windows XP version, so you have Win98 one as a comparison instead. If anyone is willing to do so,
+pull request it in there and you'll be credited.
 
 And fun fact: this shares the behavior with Windows 98 MSGS (which I did test too).
 
 So uh, sorry, no Crystal Oscillator midi.
+
+To those who are still confused about what "Crystal Oscillator" is:
+
+Crystal Oscillator is a Yamaha OPL3 Original song in HiTech genre with A4=450hz, made my the
+Otomata Labs demogroup, specifically the Abstract64 member of it. It was made for
+Oldskool Music Revision 2025, "<32kb executable" category, in which it took the
+first place with the final file size of around 28 kilobytes.
