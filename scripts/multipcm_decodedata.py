@@ -547,8 +547,7 @@ class MultiPCMSampleExtractor:
                     case 0:
                         return '∞'
                     case 15:
-                        return (attacks[63] / 44100) * self.rate \
-                                if self.rate != 44100 else attacks[63]
+                        return attacks[63]
                     case _:
                         return (attacks[clamp(param1 + param2, 0, 63)] / 44100) * self.rate \
                                 if self.rate != 44100 else attacks[clamp(param1 + param2, 0, 63)]
@@ -557,11 +556,10 @@ class MultiPCMSampleExtractor:
                     case 0:
                         return '∞'
                     case 15:
-                        return (decays[63] / 44100) * self.rate \
-                                if self.rate != 44100 else decays[63]
+                        return decays[63]
                     case _:
-                        return (decays[clamp(param1 + param2, 0, 63)] / 44100) * self.rate \
-                                if self.rate != 44100 else decays[clamp(param1 + param2, 0, 63)]
+                        return (attacks[clamp(param1 + param2, 0, 63)] / 44100) * self.rate \
+                                if self.rate != 44100 else attacks[clamp(param1 + param2, 0, 63)]
             case _:
                 return "Placeholder"
 
@@ -596,7 +594,7 @@ class MultiPCMSampleExtractor:
             case 8:
                 data_ready = []
                 if NUMPY:
-                    data_ready = (np.array(list(self.bank[current_instrument[0]:current_instrument[0] + current_instrument[3]]), int) + 128) & 255
+                    data_ready = (np.array(list(self.bank[current_instrument[0]:current_instrument[0] + current_instrument[3]]), np.uint8) + 128) & 255
                 else:
                     for idx, val in enumerate(self.bank[current_instrument[0]:current_instrument[0] + current_instrument[3]]):
                         data_ready.append((val + 128) & 255)
@@ -616,7 +614,18 @@ class MultiPCMSampleExtractor:
                     loop_start=current_instrument[2],
                 )
             case 12:
-                data_ready = convert_12_to_16(self.bank[current_instrument[1]:current_instrument[1] + current_instrument[3]])
+                # comment text
+                data_raw = self.bank[current_instrument[0]:current_instrument[0] + current_instrument[3]]
+                ptr = 0
+                data_ready = []
+                sample = 0
+                for i in range(current_instrument[3]):
+                    if not i&1:
+                        sample = (data_raw[ptr + 0] << 8) | (data_raw[ptr + 1] & 0xF0)
+                    else:
+                        sample = ((data_raw[ptr + 1] & 0xF) << 4) | (data_raw[ptr + 2] << 8)
+                    ptr += 3
+
                 save_riff(
                     data=data_ready,
                     rate=44100,
@@ -670,7 +679,7 @@ class MultiPCMSampleExtractor:
 
     def extract(self) -> None:  # optimized version
         """
-        The function that continuously calls the extractor itself and passes it the instrument id.
+        The function that continuously calls the extractor itself and passes it the iteration.
         """
         # kill me please
         self.log.write(
