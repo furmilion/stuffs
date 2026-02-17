@@ -12,6 +12,18 @@
 from os import name as osName, system as shl
 
 
+# for standalone use case
+def clamp(val: int = 0, mn: int = 0, mx: int = 9) -> int:
+    """
+    Clamps value to a range.
+    :param val: the value
+    :param mn: the lowest boundary
+    :param mx: the highest boundary
+    :return: clamped value
+    """
+    return max(mn, val) if val <= mn else min(val, mx) if val <= mx else mx
+
+
 class HexViewer:
     def __init__(self):
 
@@ -123,11 +135,14 @@ class HexViewer:
 
         # TODO: fix this specific loop
         for _ in range(self.viewSize[1]):
+
+            # the top row
             viewfield += (
-                    f's 0{hex(_)[2:].upper() + ("0" * (len(hex(self.viewSize[1])[2:]) - 1))}'
-                    if len(hex(self.viewSize[1])[2:]) < len(hex(_)[2:]) else f' FUCK{hex(_)[2:].upper()}'
+                    f' 0{hex(_)[2:].upper()}'
+                    if len(hex(_)[2:]) < 2 else f' s{hex(_)[2:].upper()}'
             )
 
+        # the blank top area to the left
         viewfield += (
                 ' |' '  '
                 + (' ' * self.viewSize[0])
@@ -140,15 +155,20 @@ class HexViewer:
                 + ('--' * self.viewSize[0])
                 + '\n'
         )
+
+        # the actual data display
         for _ in range(self.viewSize[1]):
             viewfield += (
                     ' '
                     + (
-                        hex(_)[2:].upper()
-                        + '0'
+                        # f'0{hex(_)[2:].upper()}'
+                        # if len(hex(_)[2:]) < 2 else f' s{hex(_)[2:].upper()}'
+                        '0'
                         * (len(hex(len(self.file))[2:]) - 1)
                         if len(hex(_)[2:]) < len(hex(len(self.file))[2:])
                         else hex(_)[2:].upper()
+                        +
+                        hex(_)[2:].upper()
                     )
                     + ' |'
             )
@@ -205,7 +225,7 @@ class HexViewer:
                     try:
                         int(cmd[2], 16)
                         int(cmd[1], 16)
-                        self.viewSize = [int(cmd[1], 16), int(cmd[2], 16)]
+                        self.viewSize = [clamp(int(cmd[1], 16), 1, 255), clamp(int(cmd[2], 16), 1, 255)]
                     except ValueError:
                         self.lastStatus = (f'Invalid values {cmd[1]}/{cmd[2]}: either of the arguments cannot be'
                                            f'treated as an integer')
