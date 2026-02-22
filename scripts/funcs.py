@@ -22,6 +22,11 @@ except ImportError:
           "It is recommended to install NumPY as this offers slightly better performance.")
     NUMPY = False
 
+def _():
+    """
+    a wrapper for pass.
+    """
+    pass
 def clamp(val: int = 0, mn: int = 0, mx: int = 9) -> int:
     """
     Clamps value to a range.
