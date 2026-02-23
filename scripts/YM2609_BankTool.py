@@ -19,10 +19,10 @@ SSG2:
 - 3 wave channels
 - 16 waves:
   - 0: Square
-  - 1..8: x/8 pulse wave
-  - 9: Triangle
-  - 10: Sawtooth
-  - 11..15: user
+  - 1..7: x/8 pulse wave
+  - 8: Triangle
+  - 9: Sawtooth
+  - 10..15: user
 Channel effects:
 - Distortion -> (LPF -> HPF) -> Channel Compressor -> System
 System effects:
@@ -30,6 +30,10 @@ System effects:
 - Chorus (with per-channel send and toggle)
 - Compressor
 - 3-band EQ
+
+NOTE: this may not be the entire info, as I wrote that from memory.
+For actual specifications, visit kuma4649/MDPlayer/YM2609.txt on GitHub
+
 
 This tool was built by me just so I could safely close custom
 Furnace fork by LTVA with YM2609 and later recreate instruments.
@@ -134,9 +138,9 @@ Wavetable block format:
 Current status:
 
   Bank saving:
-  - Works(?)
+  - Works
   Bank loading:
-  - Broken at ~20 instruments/waves
+  - Works
 
   Instrument saving:
   - Works
@@ -151,6 +155,89 @@ import zlib
 def explode_16bits(val):
     # always big endian.
     return [(val >> 8) & 0xFF, val & 0xFF]
+
+def fixed_len_str(string: str = '', length: str | int = 0):
+    return string[:(length if type(length) is str else len(length))]
+
+ASCII_lut = {
+     32: ' ',  33: '!',  34: '"',  35: '#',  36: '$',  37: '%',  38: '&',  39: "'",
+     40: '(',  41: ')',  42: '*',  43: '+',  44: ',',  45: '-',  46: '.',  47: '/',
+     58: ':',  59: ';',  60: '<',  61: '=',  62: '>',  63: '?',  64: '@',
+     91: '[',  92: '\\', 93: ']',  94: '^',  95: '_',  96: '`',
+    123: '{', 124: '|', 125: '}', 126: '~', 161: '¡', 162: '¢', 163: '£', 164: '¤',
+    165: '¥', 166: '¦', 167: '§', 168: '¨', 169: '©', 170: 'ª', 171: '«', 172: '¬',
+    174: '®', 175: '¯', 176: '°', 177: '±', 178: '²', 179: '³', 180: '´', 181: 'µ',
+    182: '¶', 183: '·', 184: '¸', 185: '¹', 186: 'º', 187: '»', 188: '¼', 189: '½',
+    190: '¾', 191: '¿',
+    # various punctuation and special characters
+
+    48: '0', 49: '1', 50: '2', 51: '3', 52: '4', 53: '5', 54: '6', 55: '7',
+    56: '8', 57: '9',  # numerals
+
+    65: 'A', 66: 'B', 67: 'C', 68: 'D', 69: 'E', 70: 'F', 71: 'G', 72: 'H',
+    73: 'I', 74: 'J', 75: 'K', 76: 'L', 77: 'M', 78: 'N', 79: 'O', 80: 'P',
+    81: 'Q', 82: 'R', 83: 'S', 84: 'T', 85: 'U', 86: 'V', 87: 'W', 88: 'X',
+    89: 'Y', 90: 'Z',  # capital letters
+
+     97: 'a',  98: 'b',  99: 'c', 100: 'd', 101: 'e', 102: 'f', 103: 'g', 104: 'h',
+    105: 'i', 106: 'j', 107: 'k', 108: 'l', 109: 'm', 110: 'n', 111: 'o', 112: 'p',
+    113: 'q', 114: 'r', 115: 's', 116: 't', 117: 'u', 118: 'v', 119: 'w', 120: 'x',
+    121: 'y', 122: 'z',  # lowercase letters
+
+    192: 'À', 193: 'Á', 194: 'Â', 195: 'Ã', 196: 'Ä', 197: 'Å', 198: 'Æ', 199: 'Ç', 200: 'È',
+    201: 'É', 202: 'Ê', 203: 'Ë', 204: 'Ì', 205: 'Í', 206: 'Î', 207: 'Ï', 208: 'Ð', 209: 'Ñ',
+    210: 'Ò', 211: 'Ó', 212: 'Ô', 213: 'Õ', 214: 'Ö', 215: '×', 216: 'Ø', 217: 'Ù', 218: 'Ú',
+    219: 'Û', 220: 'Ü', 221: 'Ý', 222: 'Þ', 223: 'ß', 224: 'à', 225: 'á', 226: 'â', 227: 'ã',
+    228: 'ä', 229: 'å', 230: 'æ', 231: 'ç', 232: 'è', 233: 'é', 234: 'ê', 235: 'ë', 236: 'ì',
+    237: 'í', 238: 'î', 239: 'ï', 240: 'ð', 241: 'ñ', 242: 'ò', 243: 'ó', 244: 'ô', 245: 'õ',
+    246: 'ö', 247: '÷', 248: 'ø', 249: 'ù', 250: 'ú', 251: 'û', 252: 'ü', 253: 'ý', 254: 'þ',
+    255: 'ÿ'  # accent letters
+}
+
+ASCII_lut_arr = [
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,  # placeholder
+
+    ' ', '!', '"', '#', '$', '%', '&', "'", '(', ')', '*', '+', ',', '-', '.', '/',  # punctuation & special
+
+    '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',  # numeric
+
+    ':', ';', '<', '=', '>', '?', '@',  # punctuation & special
+
+    'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H',
+    'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P',
+    'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X',
+    'Y', 'Z',  # uppercase letters
+
+    '[', '\\', ']', '^', '_', '`',  # punctuation & special
+
+    'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h',
+    'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p',
+    'q', 'r', 's', 't', 'u', 'v', 'w', 'x',
+    'y', 'z',  # lowercase letters
+
+    '{', '|', '}', '~',  # punctuation & special
+
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0,  # placeholder
+
+    '¡', '¢', '£', '¤', '¥', '¦', '§', '¨', '©', 'ª', '«', '¬',  # punctuation & special
+
+    0,  # placeholder
+
+    '®', '¯', '°', '±', '²', '³', '´', 'µ', '¶', '·', '¸', '¹', 'º', '»', '¼', '½',
+    '¾', '¿',  # punctuation & special
+
+    'À', 'Á', 'Â', 'Ã', 'Ä', 'Å', 'Æ', 'Ç',
+    'È', 'É', 'Ê', 'Ë', 'Ì', 'Í', 'Î', 'Ï',
+    'Ð', 'Ñ', 'Ò', 'Ó', 'Ô', 'Õ', 'Ö', '×',
+    'Ø', 'Ù', 'Ú', 'Û', 'Ü', 'Ý', 'Þ', 'ß',
+    'à', 'á', 'â', 'ã', 'ä', 'å', 'æ', 'ç',
+    'è', 'é', 'ê', 'ë', 'ì', 'í', 'î', 'ï',
+    'ð', 'ñ', 'ò', 'ó', 'ô', 'õ', 'ö', '÷',
+    'ø', 'ù', 'ú', 'û', 'ü', 'ý', 'þ', 'ÿ'  # accent letters and multiplication and division signs
+]
 
 class BankTool:
     """
@@ -772,7 +859,7 @@ class BankTool:
             if ins[:4] != b"INST":
                 ins = zlib.decompress(ins)
                 if ins[:4] != b"INST":
-                    print('invalid shit')
+                    print('invalid')
                     return
             this.deconstruct_instrument(ins[4:])
 
@@ -820,6 +907,7 @@ class BankTool:
         this.waves = []
         this.name = ''
         this.set_name('NEW BANK')
+
     def add_instrument(this, name):
         if len(this.instruments) > 255:
             raise this.WaveError("There can't be more that 256 instruments.")
@@ -849,28 +937,43 @@ class BankTool:
         this.waves[index] = wave
     def remove_wave(this, index):
         return this.waves.pop(index)
-    def save_bank(this, compress = False, name = None):
+
+    def save_bank(this,
+                  compress=False,
+                  name=None,
+                  force=False,  # only really used to bypass exception, nothing else
+                  ):
         if not name:
             name = this.name
-        if not len(this.instruments):
-            raise this.InstrumentError("There must be at least one instrument!")
-        if not len(this.waves):
-            raise this.WaveError("There must be at least one wavetable!")
+        if not len(this.instruments) and not force:
+            raise this.InstrumentError("There must be at least one instrument!\n"
+                                       "Technically no-wave bank is possible, but do you really want it to be?")
+        if not len(this.waves) and not force:
+            raise this.WaveError("There must be at least one wavetable!\n"
+                                 "Technically no-wave bank is possible, but do you really want it to be?")
         try:
             bank = open(f"./{name}.2609", "xb")
         except FileExistsError:
             bank = open(f"./{name}.2609", "wb")
-        data = b'2609'
-        data += bytes([len(this.instruments) - 1]) # instruments
-        data += bytes([((len(this.waves) - 1) >> 8), ((len(this.waves) - 1) & 255)]) # waves
-        data += bytes(this.name, 'utf8')
+
+        data = [
+            50, 54, 48, 57,  # "2609"
+        ]
+        for letter in this.name:
+            data.append(ASCII_lut_arr.index(letter))  # name to bytes
+
         for i in range(len(this.instruments)):
-            data += b'INST'
-            data += bytes(this.instruments[i].construct_instrument())
+            data.append(73); data.append(78); data.append(83); data.append(84)  # 'INST'
+            for byte in this.instruments[i].construct_instrument():
+                data.append(byte)  # instrument data
+
         for i in range(len(this.waves)):
-            data += b'WAVE'
-            data += bytes( explode_16bits( (len(this.waves[i]) // 2) - 1) )
-            data += bytes(this.waves[i])
+            data.append(87); data.append(65); data.append(86); data.append(69)  # 'WAVE'
+            wl = len(this.waves[i]) // 2 # wave length. // 2 because it's 2 bytes per sample.
+            data.append((wl >> 8) & 255); data.append(wl & 255)
+            for byte in this.waves[i]:
+                data.append(byte)
+        data = bytes(data)
         bank.write(data) if not compress else bank.write(zlib.compress(data, 2))
         bank.close()
     def load_bank(this, name):
@@ -884,44 +987,63 @@ class BankTool:
             if bank[:4] != b'2609':
                 print('invalid bank :sob:')
                 return
-        name = bank[7:23]
+        name = bank[4:20]
         this.name = ''
         for i in name:
             this.name += chr(i)
-        inst_amnt = bank[4] + 1
-        wave_amnt = ((bank[5] << 8) | bank[6]) + 1
-        data = bank[23:]
-        print(f"bank: {bank}\n"
-              f"data: {data}\n"
-              f"insts: {inst_amnt}\n"
-              f"waves: {wave_amnt}")
-        pointer = 0
-        for i in range(inst_amnt + wave_amnt):
-            data = data[pointer:]
+
+        # print(f"signature:   {bank[:4]}\n"
+        #       f"name:        {bank[4:20]}\n"
+        #       f"bank[20:36]: {bank[20:36]}\n"
+        #       f"bank[:16]:   {bank[:16]}")
+        # print(f"bank: {bank}\n")  # debug
+
+        pointer = 20
+        while 1:
             try:
-                if data[:4] == b'INST':
-                    print("instrument block")
+                if bank[pointer:pointer + 4] == b'INST':
+
+                    # print(f"instrument block\n"  # debug
+                    #       f"{bank[pointer:pointer + 69]}")
+
                     inst = this.YM2609Instrument()
-                    inst.deconstruct_instrument(data[4:])
+                    inst.deconstruct_instrument(bank[pointer + 4:])
                     this.instruments.append(inst)
-                    pointer += 69
-                elif data[:4] == b'WAVE':
-                    print(f"wavetable block\n"
-                          f"{data}")
-                    wave_len = ((data[4] << 8) | data[5]) + 1
+                    pointer += 68
+                elif bank[pointer:pointer + 4] == b'WAVE':
+                    localdata = bank[pointer:]
+
+                    # print(f"wavetable block\n"  # debug
+                    #       f"{bank[pointer:pointer + 16]}")
+
+                    wave_len = (localdata[4] << 8) | localdata[5]
                     wave = []
+
+                    # print(f"identifier:  {localdata[:4]}\n"  # debug
+                    #       f"wave length: {localdata[4:6]}\n"
+                    #       f"             {(localdata[4] << 8) | localdata[5]} [inplace]\n"
+                    #       f"             {wave_len} [wave_len]\n"
+                    #       f"wave data:   {localdata[6:6 + wave_len * 2]}")
+
                     for i in range(wave_len):
-                        wave.append(data[6 + (i * 2)])
-                        wave.append(data[6 + (i * 2) + 1])
+                        wave.append(localdata[6 + (i * 2)])
+                        wave.append(localdata[6 + (i * 2) + 1])
                     this.waves.append(wave)
+                    del localdata
                     pointer += (wave_len * 2) + 6
                 else:
-                    print(
-                        f"hit no data\n"
-                        f"{data[:16]}"
-                        )
+                    try:
+                        bank[pointer]
+                    except IndexError:
+                        # print("what the FUCK.")
+                        break
+                    # print(  # debug
+                    #     f"hit no data\n"
+                    #     f"{bank[pointer:pointer + 16]}"
+                    #     )
+                    pointer += 1
             except IndexError:
-                print("hit index error")
+                # print("hit index error")  # debug
                 break
 
     def set_name(this, name):
