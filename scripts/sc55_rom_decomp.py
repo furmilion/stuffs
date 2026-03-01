@@ -3,6 +3,29 @@
 
 # creds to Kitrinx and NewRisingSun for like 101% of the code
 
+
+
+# March 1st, 2026: minor edits + start implementing lookups
+# ==========================================================
+# area of lookup stuff from sc-55 control roms
+control_rom = open(f"./{input('Please enter the filename of the control ROM\n(must be in the same directory as this script):\n')}", "rb").read()
+
+# could have merged into a single list but cant be bothered to
+def_smp1 = control_rom[0x1DEC0 : 0x1FFFF]  # sample definitions part
+def_smp2 = control_rom[0x1DEC0 : 0x1FFFF]
+# could have merged into a single list but cant be bothered to
+def_ins1 = control_rom[0x10000 : 0x1BCFF] # instr definitions part
+def_ins2 = control_rom[0x20000 : 0x2BCFF]
+# could have merged into a single list but cant be bothered to
+def_prt1 = control_rom[0x1BD00 : 0x1DEBF]
+def_prt2 = control_rom[0x2BD00 : 0x2DEBF]
+
+def_drum = control_rom[0x38000 : 0x3C027]
+
+def get_ins_data():
+    pass
+# ==========================================================
+
 def ternary(condition, true, false):  # why doesnt python have this :sob:
     if condition:
         return true
@@ -85,7 +108,7 @@ def unscramble_byte(byte):
     for bit in range(8):  # loop through the bits and construct new byte
         new_byte |= ((byte >> byte_order[bit]) & 1) << bit
     return new_byte
-def decode_wave(files=None) -> bytearray:
+def descramble_wave(files=None) -> bytearray:
     if files is None:
         files = []
     if files == []:
@@ -101,18 +124,18 @@ def decode_wave(files=None) -> bytearray:
         for y in range(0x100000):
             dec_buf[unscramble_address(y) + (0x100000 * x)] = unscramble_byte(enc_buf[y])
     try:
-        open("wave_dec.rom", "xb").write(bytearray(dec_buf))
+        open("../midis/MIDI Things/wave_dec.rom", "xb").write(bytearray(dec_buf))
     except FileExistsError:
-        open("wave_dec.rom", "wb").write(bytearray(dec_buf))
-    return bytearray(dec_buf)
+        open("../midis/MIDI Things/wave_dec.rom", "wb").write(bytearray(dec_buf))
+    # return bytearray(dec_buf)
 
-# decode_wave(["./roms/55_mk1_03wave1.bin","./roms/55_mk1_04wave2.bin","./roms/55_mk1_05wave3.bin"])
+# descramble_wave(["./roms/55_mk1_03wave1.bin","./roms/55_mk1_04wave2.bin","./roms/55_mk1_05wave3.bin"])
 
 test = []
-buffer = open("./wave_dec.rom", "rb").read()
+buffer = open("../midis/MIDI Things/wave_dec.rom", "rb").read()
 for i in range(0x300000):
     print(f"shenanigans at {i}")
     test.append((do_sample_shenanigans(buffer, i) >> 16) & 0b11111111)
     test.append((do_sample_shenanigans(buffer, i) >> 8 ) & 0b11111111)
     test.append((do_sample_shenanigans(buffer, i) >> 0 ) & 0b11111111)
-open("./wave_dec_dec.rom", "wb").write(bytearray(test))
+open("../midis/MIDI Things/wave_dec_dec.rom", "wb").write(bytearray(test))

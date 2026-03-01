@@ -22,6 +22,11 @@ except ImportError:
           "It is recommended to install NumPY as this offers slightly better performance.")
     NUMPY = False
 
+import builtins as bi  # bi <3
+# i'll write a better list function here later;
+# it will pick either list or np.array depending on availability of numpy
+
+
 def _():
     """
     a wrapper for pass.
@@ -697,6 +702,18 @@ def fnum_from_freq_general(freq, block, clock=3579545, divider=36):
 
 def freq_from_fnum():
     pass
+
+def binarify(string: str = '', split: int = 4):
+    a = ''
+    for idx, char in enumerate(string):
+        if split > 0:
+            if not idx % split and idx > 0:
+                a += ' '
+        b = bin(bytes(char, 'utf8')[0])[2:]
+        while len(str(b)) < 8:
+            b = '0' + b
+        a += b
+    return a
 
 if __name__ == "__main__":
     #save_riff(bdep=16, rate=44100, data=pcm12_to_16(open("./tests/amen_12", "rb").read()), location="./tests/amen_12.wav")
