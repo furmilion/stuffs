@@ -1,14 +1,9 @@
-# Initial commit
-
-
 # creds to Kitrinx and NewRisingSun for like 101% of the code
-
-
 
 # March 1st, 2026: minor edits + start implementing lookups
 # ==========================================================
 # area of lookup stuff from sc-55 control roms
-control_rom = open(f"./{input('Please enter the filename of the control ROM\n(must be in the same directory as this script):\n')}", "rb").read()
+control_rom = open(f"./{input('Please enter the filename of the control ROM (must be in the same directory as this script):')}", "rb").read()
 
 # could have merged into a single list but cant be bothered to
 def_smp1 = control_rom[0x1DEC0 : 0x1FFFF]  # sample definitions part
@@ -26,7 +21,7 @@ def get_ins_data():
     pass
 # ==========================================================
 
-def ternary(condition, true, false):  # why doesnt python have this :sob:
+def ternary(condition, true, false):  # TODO: replace all usages with guarded conditions
     if condition:
         return true
     else:
