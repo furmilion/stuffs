@@ -12,6 +12,7 @@ try:
 except ModuleNotFoundError:
     pass
 from hashlib import sha512, sha256, md5
+from os import mkdir, remove as rm
 
 try:  # numpy is a better option than standard python list stuff
     import numpy as np
@@ -26,7 +27,20 @@ import builtins as bi  # bi <3
 # i'll write a better list function here later;
 # it will pick either list or np.array depending on availability of numpy
 
-
+def test_file(path: str = ".") -> bool:
+    try:
+        open(f"{path}/test.test", 'xb')
+        print("opening test")
+    except (FileExistsError, FileNotFoundError) as e:
+        if isinstance(e, FileExistsError):
+            rm(f"{path}/test.test")
+            print("test success")
+            return True
+        elif isinstance(e, FileNotFoundError):
+            print("test not success")
+            return False
+    print("test success")
+    return True
 def _():
     """
     a wrapper for pass.
@@ -42,7 +56,7 @@ def text_from_bytes(data: bytes | list = None) -> str:
         a += chr(i)
     return a
 
-def clamp(val: int = 0, mn: int = 0, mx: int = 9) -> int:
+def clamp(val: float | int = 0, mn: float | int = 0, mx: float | int = 9) -> float | int:
     """
     Clamps value to a range.
     :param val: the value
@@ -241,7 +255,7 @@ def save_riff(#bdep=8, rate=32000, data="sample", loop_start=None, loop_end=None
                           "'data': %s, 'loop_start': %s, 'loop_end': %s, 'location': %s}"
                           % (verbose, bdep, rate, data, loop_start, loop_end, location))
 
-        rate &= 0xFFFFFF
+        rate &= 0xFFFFFF # technically 4-bit, but furnace refuses to recognize those
         if bdep % 8:
             print("Bad bit depth (not divisible by 8)")
             bdep -= bdep % 8

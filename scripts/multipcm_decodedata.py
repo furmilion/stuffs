@@ -1,5 +1,6 @@
 from time import sleep as s, sleep
 from os import mkdir, remove as rm
+from FurWave import *
 # import wave as w
     
 try:  # numpy is a better option than standard python list stuff
@@ -279,7 +280,7 @@ class MultiPCMSampleExtractor:
     New extractor, now as a class instead of random ass functions.
     """
     def __init__(self,
-                 out_loc:         str = "./samples",  # the output folder. always placed inside "./samples" one.
+                 out_loc:         str = "samples",  # the output folder. always placed inside "./samples" one.
                  log_name:        str = "log",        # the name of the log within the "./samples" folder.
                  bank1:           str = None,         # path to bank 1, for stitching. when None, uses bank2.
                  bank2:           str = None,         # path to bank 2, for stitching. can be omitted.
@@ -315,6 +316,7 @@ class MultiPCMSampleExtractor:
                     0: 8,   # 0b00
                     1: 12,  # 0b01
                     2: 16,  # 0b10
+                    3: 16,  # 0b11
                 }
                 self.rate = 44100 # OPL4: 
             case _:
@@ -322,6 +324,7 @@ class MultiPCMSampleExtractor:
                     0: 8,   # 0b00
                     1: 12,  # 0b01
                     2: 16,  # 0b10
+                    3: 16,  # 0b11
                 }
                 self.rate = clock_rate / (divider * chans)
         self.debug = debug
@@ -330,21 +333,24 @@ class MultiPCMSampleExtractor:
                 print('Bank 2 not none')
                 try:
                     self.bank = open(bank2, 'rb').read()
-                    try:
-                        open(f'./samples/{out_loc}/test.test', 'wb')
-                    except FileNotFoundError:
+                    if test_file(f"./samples/{out_loc}"):
+                        pass
+                    else:
+                        mkdir(f"./samples")
                         mkdir(f"./samples/{out_loc}")
                 except FileNotFoundError:
                     print('File does not exist.')
                     return
             case (_, None):
                 print('Bank 1 not none')
+                self.bank = open(bank1, 'rb').read()
                 try:
                     self.bank = open(bank1, 'rb').read()
-                    try:
-                        open(f'./samples/{out_loc}/test.test', 'wb')
-                        rm(f'./samples/{out_loc}/test.test')
-                    except FileNotFoundError:
+                    # print(f"? {self.bank}") # debug
+                    if test_file(f"./samples/{out_loc}"):
+                        pass
+                    else:
+                        mkdir(f"./samples")
                         mkdir(f"./samples/{out_loc}")
                 except FileNotFoundError:
                     print('File does not exist.')
@@ -353,10 +359,9 @@ class MultiPCMSampleExtractor:
                 print('Stitching')
                 try:
                     self.bank = open(bank1, 'rb').read() + open(bank2, 'rb').read()
-                    try:
-                        open(f'./samples/{out_loc}/test.test', 'wb')
-                        rm(f'./samples/{out_loc}/test.test')
-                    except FileNotFoundError:
+                    if test_file(f"./samples/{out_loc}"):
+                        pass
+                    else:
                         mkdir(f"./samples/{out_loc}")
                 except FileNotFoundError:
                     print('File does not exist.')
@@ -431,16 +436,19 @@ class MultiPCMSampleExtractor:
                         self.samples = len(self.instrument_table) // 12
                         self.switch_ranges = []
                         self.bad_samples = []
+                        # untested
                     case 5:
                         print(self.known_roms[hash][1:])
                         self.samples = len(self.instrument_table) // 12
                         self.switch_ranges = []
                         self.bad_samples = []
+                        # untested
                     case 6:
                         print(self.known_roms[hash][1:])
                         self.samples = len(self.instrument_table) // 12
                         self.switch_ranges = []
                         self.bad_samples = [14]
+                        # untested
                     case _:
                         self.samples = len(self.instrument_table) // 12
                         self.switch_ranges = []
@@ -606,40 +614,47 @@ class MultiPCMSampleExtractor:
                         f'\n'
                     )
                     return
-                save_riff(
-                    data=data_ready,
-                    rate=44100,
-                    bdep=8,
-                    location=f'./samples/{self.out_loc}/sample_{iter}.wav',
-                    loop_start=current_instrument[2],
-                )
+                with WaveWriter(channels=1,
+                                samplerate=44100,
+                                bitdepth=8,
+                                data=list(data_ready)
+                                ) as Wave:
+                    Wave.set_smpl_chunk(sample_loop_count=1,
+                                    loop_types=[0],
+                                    loop_starts=[current_instrument[2]],
+                                    loop_ends=[current_instrument[3] - 1])
+                    Wave.write_file(f"./samples/{self.out_loc}/sample_{iter}.wav")
+                # save_riff(
+                #     data=data_ready,
+                #     rate=44100,
+                #     bdep=8,
+                #     location=f'./samples/{self.out_loc}/sample_{iter}.wav',
+                #     loop_start=current_instrument[2],
+                # )
             case 12:
                 # comment text
                 data_raw = self.bank[current_instrument[0]:current_instrument[0] + current_instrument[3]]
-                ptr = 0
-                data_ready = []
-                sample = 0
-                for i in range(current_instrument[3]):
-                    if not i&1:
-                        sample = (data_raw[ptr + 0] << 8) | (data_raw[ptr + 1] & 0xF0)
-                    else:
-                        sample = ((data_raw[ptr + 1] & 0xF) << 4) | (data_raw[ptr + 2] << 8)
-                    ptr += 3
-
-                save_riff(
-                    data=data_ready,
-                    rate=44100,
-                    bdep=16,
-                    location=f'./samples/{self.out_loc}/sample_{iter}.wav',
-                    loop_start=current_instrument[2],
-                )
+                print("12 bit sample detected, skipping for now.")
             case 16:
-                save_riff(
-                    data=self.bank[current_instrument[1]:current_instrument[1] + current_instrument[3]],
-                    rate=44100,
-                    bdep=16,
-                    location=f'./samples/{self.out_loc}/sample_{iter}.wav'
-                )
+                with WaveWriter(
+                        channels=1,
+                        samplerate=44100,
+                        bitdepth=8,
+                        data=list(self.bank[current_instrument[0]:current_instrument[0] + current_instrument[3]])
+                        ) as Wave:
+                    Wave.set_smpl_chunk(
+                        sample_loop_count=1,
+                        loop_types=[0],
+                        loop_starts=[current_instrument[2]],
+                        loop_ends=[current_instrument[3] - 1]
+                        )
+                    Wave.write_file(f"./samples/{self.out_loc}/sample_{iter}.wav")
+                # save_riff(
+                #     data=self.bank[current_instrument[1]:current_instrument[1] + current_instrument[3]],
+                #     rate=44100,
+                #     bdep=16,
+                #     location=f'./samples/{self.out_loc}/sample_{iter}.wav'
+                # )
 
         # have to precalculate those since cant do inplace
         atk = round(self.calculate_params("atk", current_instrument[4], current_instrument[9]), 4) \
@@ -689,10 +704,12 @@ class MultiPCMSampleExtractor:
             print(f"Current sample: {_}")
             self.actually_save_samples(_, NUMPY)
         return None
-    
+
 if __name__ == "__main__":
+    path = "E:/D Drive (HDD)/PycharmProjects/BananaBot/mpt2fur/rom stuff/roms"
+    print(f"{path}/roms/daytona_sampleroms.raw")
     MultiPCMSampleExtractor(out_loc="daytona_attempt",
                             log_name="daytona_attempt_log",
-                            bank1="./roms/daytona_sampleroms.raw",
+                            bank1=f"{path}/roms/Daytona_sampleroms.raw",
                             debug=False
                             )
