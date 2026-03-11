@@ -10,6 +10,9 @@ Currently contains:
   - Image/Text to Display SysEx converter (awaiting fixing)
   - [Unfinished] ROM Decompressor
 - FurADPCM custom codec encoder/decoder written in python (currently in a terrible state, a rewrite is pending)
+- [funcs](scripts/funcs.py) general purpose function library providing some small functions.
+- FurWAVE Microsoft Wave writer library, supporting both Integer and IEEE Float bit depths, 
+  unlike [`save_riff()`](scripts/funcs.py) from [funcs.py](scripts/funcs.py) which provides only a basic Integer writer
 - Sega MultiPCM/Yamaha OPL4 sample ROM decompressor. Pending expansions:
   - Yamaha S-YXG50/S-YXG2006LE Software synthesizer sample and instrument tables decryption
   - Yamaha MU Series Sample ROM decryption (MU100 and later are yet to be considered)

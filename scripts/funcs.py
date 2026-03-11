@@ -32,6 +32,16 @@ def _():
     a wrapper for pass.
     """
     pass
+
+def text_from_bytes(data: bytes | list = None) -> str:
+    if not data:
+        print("must data")
+        return ""
+    a = ""
+    for i in data:
+        a += chr(i)
+    return a
+
 def clamp(val: int = 0, mn: int = 0, mx: int = 9) -> int:
     """
     Clamps value to a range.
@@ -174,6 +184,7 @@ def check_bytes(in_file, val):
 
 class SaveError(Exception):
     pass
+# legacy, try FurWave first before falling back to this
 def save_riff(#bdep=8, rate=32000, data="sample", loop_start=None, loop_end=None, location="./output.wav",
               **kwargs) -> None or int:  # I have no idea what that "-> tuple" means
     """
