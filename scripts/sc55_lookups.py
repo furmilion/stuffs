@@ -59,4 +59,4 @@ LUT_lfo_depth = [
     1160, 1200, 1250, 1290, 1330, 1370, 1410, 1450,
     1500, 1680, 1870, 2060, 2250, 2440, 2630, 2820,
     3010, 3430, 3860, 4290, 4710, 5140, 5570, 6000
-]  # todo: how does it work? does it use values as pitch in cents as is? is there some function that is applied to calculate final pitch?
+]  # cents.

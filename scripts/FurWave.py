@@ -450,7 +450,7 @@ class WaveWriter:
             while len(sampler_data) < sampler_data_size:
                 sampler_data.append(0)
 
-        data = [
+        data = [  # i cant be bothered to use struct here so deal with this lmao
             (manufacturer >>  0) & 0xFF,        (manufacturer >>  8) & 0xFF,
             (manufacturer >> 16) & 0xFF,        (manufacturer >> 24) & 0xFF,
             (product >>  0) & 0xFF,             (product >>  8) & 0xFF,

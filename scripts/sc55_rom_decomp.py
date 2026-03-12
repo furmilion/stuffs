@@ -22,7 +22,16 @@ def_prt2 = control_rom[0x2BD00 : 0x2DEBF]
 
 def_drum = control_rom[0x38000 : 0x3C027] # drums definitions part
 
-
+class SC55Sample:
+    def __init__(this):
+        this.start = 0
+        this.end = 0
+        this.loop_start = 0
+        this.loop_mode = 0
+class SC55Partial:
+    # blank for now
+    def __init__(this):
+        pass
 class SC55Instrument:
     def __init__(this):
         this.lfo_shapes = {
@@ -92,16 +101,19 @@ class SC55Instrument:
             f'         0x0B Fine pitch:                    {this.partials[partial][11] - 64} cents                       \n'
             f'         0x0C Random pitch:                  {"none" if this.partials[partial][12] == 0 else this.partials[partial][12]}\n'
             f'         0x0D Pitch key follow:              {"full" if this.partials[partial][13] == 0 else "none" if this.partials[partial][13] == 10 else str(10 - this.partials[partial][13]) + "/10"}\n' # is this how it is?
-            f'    Initial pitch envelope level:  {64 - this.partials[partial][18]}                             \n'
-            f'    P.env Attack 1 time:           {64 - this.partials[partial][23]} units                       \n'
-            f'    P.env Attack 1 pitch level:    {64 - this.partials[partial][19]}                             \n'
-            f'    P.env Attack 2 time:           {64 - this.partials[partial][24]} units                       \n'
-            f'    P.env Attack 2 pitch level:    {64 - this.partials[partial][20]}                             \n'
-            f'    P.env Decay 1 time:            {64 - this.partials[partial][25]} units                       \n'
-            f'    P.env pitch Sustain level:     {64 - this.partials[partial][21]}                             \n'
-            f'    P.env Decay 2 time:            {64 - this.partials[partial][26]} units                       \n'
-            f'    P.env Release time:            {64 - this.partials[partial][27]} units                       \n'
-            f'    P.env pitch Release level:     {64 - this.partials[partial][22]}                             \n'
+            f'         0x0E Inst LFO depth:                {this.lfo_depth_lut[14]} cents                      \n'
+            f'         0x0F Part LFO depth:                {this.lfo_depth_lut[15]} cents                      \n'
+            f'         0x10 Pitch envelope depth:          {this.lfo_depth_lut[15]} units                      \n' # todo: figure out later
+            f'         0x12 Initial pitch envelope level:  {64 - this.partials[partial][18]}                             \n'
+            f'         0x17 P.env Attack 1 time:           {64 - this.partials[partial][23]} units                       \n'
+            f'         0x13 P.env Attack 1 pitch level:    {64 - this.partials[partial][19]}                             \n'
+            f'         0x18 P.env Attack 2 time:           {64 - this.partials[partial][24]} units                       \n'
+            f'         0x14 P.env Attack 2 pitch level:    {64 - this.partials[partial][20]}                             \n'
+            f'         0x19 P.env Decay 1 time:            {64 - this.partials[partial][25]} units                       \n'
+            f'         0x15 P.env pitch Sustain level:     {64 - this.partials[partial][21]}                             \n'
+            f'         0x1A P.env Decay 2 time:            {64 - this.partials[partial][26]} units                       \n'
+            f'         0x1B P.env Release time:            {64 - this.partials[partial][27]} units                       \n'
+            f'         0x16 P.env pitch Release level:     {64 - this.partials[partial][22]}                             \n'
         ) if this.exists else print("Instrument does not exist yet!")
 
 
