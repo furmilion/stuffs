@@ -114,6 +114,8 @@ class SC55Instrument:
             f'         0x1A P.env Decay 2 time:            {64 - this.partials[partial][26]} units                       \n'
             f'         0x1B P.env Release time:            {64 - this.partials[partial][27]} units                       \n'
             f'         0x16 P.env pitch Release level:     {64 - this.partials[partial][22]}                             \n'
+            f'         0x22 P.env velocity sensetivity:    {64 - this.partials[partial][34]}×2.4×(127 - v)               \n'
+            f'         0x25 TVF Cutoff Frequency:          {64 - this.partials[partial][37]}               \n'
         ) if this.exists else print("Instrument does not exist yet!")
 
 
