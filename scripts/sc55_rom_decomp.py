@@ -24,10 +24,13 @@ def_drum = control_rom[0x38000 : 0x3C027] # drums definitions part
 
 class SC55Sample:
     def __init__(this):
-        this.start = 0
-        this.end = 0
-        this.loop_start = 0
+        this.volume = 0
+        this.address = 0
+        this.length = 0
+        this.loop_length = 0
         this.loop_mode = 0
+        this.root_key = 0
+        this.Pitch
 class SC55Partial:
     # blank for now
     def __init__(this):
