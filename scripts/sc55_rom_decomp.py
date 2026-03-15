@@ -30,7 +30,7 @@ class SC55Sample:
         this.loop_length = 0
         this.loop_mode = 0
         this.root_key = 0
-        this.Pitch
+        this.pitch
 class SC55Partial:
     # blank for now
     def __init__(this):
