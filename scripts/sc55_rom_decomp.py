@@ -5,20 +5,36 @@ from sc55_lookups import *
 
 # creds to Kitrinx and NewRisingSun for descrambling code
 
+# local auto open stuff
+model = "mk1"
+firmware = "_120"
+wave = "_wave/"  # wave roms
+from pathlib import Path
+mkdir = Path.mkdir
+
+control_rom = open(f"roms/{model}{firmware}/sc55_rom2.bin", "rb").read()
+
+
+inst_count = 224  # instruments per bank
+
 # ==========================================================
 # area of lookup stuff from sc-55 control roms
-control_rom = open(f"./{input('Please enter the filename of the control ROM (must be in the same directory as this script):')}", "rb").read()
+# control_rom = open(f"./{input('Please enter the filename of the control ROM (must be in the same directory as this script):')}", "rb").read()
 
 # could have merged into 3 lists, ond for each type, but cant be botgered to
-# todo: check if addresses differ between versions, add hash detection if so
-def_smp1 = control_rom[0x1DEC0 : 0x1FFFF]  # sample definitions part
-def_smp2 = control_rom[0x1DEC0 : 0x1FFFF]
-
-def_ins1 = control_rom[0x10000 : 0x1BCFF]  # instr definitions part
-def_ins2 = control_rom[0x20000 : 0x2BCFF]
-
-def_prt1 = control_rom[0x1BD00 : 0x1DEBF]  # partials definitions part
-def_prt2 = control_rom[0x2BD00 : 0x2DEBF]
+# todo: add hash detection
+def_smp = [
+    control_rom[0x1DEC0 : 0x20000],  # sample definitions part
+    control_rom[0x2DEC0 : 0x30000]
+]
+def_ins = [
+    control_rom[0x10000 : 0x1BD00],  # instr definitions part
+    control_rom[0x20000 : 0x2BD00]
+]
+def_prt = [
+    control_rom[0x1BD00 : 0x1DEC0],  # partials definitions part
+    control_rom[0x2BD00 : 0x2DEC0]
+]
 
 def_drum = control_rom[0x38000 : 0x3C027] # drums definitions part
 
@@ -31,6 +47,7 @@ class SC55Sample:
         this.loop_mode = 0
         this.root_key = 0
         this.pitch
+
 class SC55Partial:
     # blank for now
     def __init__(this):
@@ -56,24 +73,28 @@ class SC55Instrument:
         this.exists = False
 
     def deconstruct_instrument(this, data: bytes | list = None):
+        # print(data)
         if not data:
             print("must data")
+            return
         if len(data) != 216:
             print("data must be 216 bytes")
             return
-        this.name = text_from_bytes(data[:12])
+        this.name = text_from_bytes(data[:12], 12)
+        print(f"[{this.name}]")
         this.common = data[12:20 + 12]
         this.partials = [
             data[20 + 12:20 + 12 + 88 + 4],                  # partial 1
             data[20 + 12 + 88 + 4:20 + 12 + 88 + 4 + 88 + 4] # partial 2
         ]
-        
+        this.exists = True
 
     def print_inst(this):
         return (
             # the "0xX" indices are just there to help me not get lost in stuff;
             # maybe they will actually be useful to someone else,
             # but for me I am just making sure I didn't get stuff wrong.
+            f'[{this.name}]\n'
             f'======================= INSTRUMENT PARAMETERS =======================\n'
             f'0x0 Attenuation level:       {this.common[0]}                            \n'
             f'0x1 Common LFO shape:        {this.lfo_shapes[this.common[2] & 0xf]}     \n'
@@ -89,7 +110,7 @@ class SC55Instrument:
             f'{this.print_partial(2)}'
         ) if this.exists else print("Instrument does not exist yet!")
     def print_partial(this, partial: int = 1):
-        partial = clamp(partial, 1, 2)
+        partial = clamp(partial, 1, 2) - 1
         return (
             f'Partial {partial}:\n'
             f'    0x00 0x01 Mysterious value:              {(this.partials[partial][0] << 8) | this.partials[partial][1]}\n'
@@ -97,16 +118,16 @@ class SC55Instrument:
             f'         0x04 Part LFO shape:                {this.lfo_shapes[this.partials[partial][4] & 0xf]}            \n'
             f'         0x04 Part LFO phase offset:         {((this.partials[partial][4] >> 4) & 0xf) * 22.5}deg          \n'
             f'         0x05 Part LFO rate:                 {this.lfo_rate_lut[this.partials[partial][5]]}hz              \n'
-            f'         0x06 Part LFO delay:                {this.lfo_time_lut[this.partials[partial][6]]}s              \n'
+            f'         0x06 Part LFO delay:                {this.lfo_time_lut[this.partials[partial][6]]}s               \n'
             f'         0x07 Part LFO fade:                 {this.lfo_time_lut[this.partials[partial][7]]}s               \n'
             f'         0x09 Panpot:                        {"random" if this.partials[partial][9] == 0 else (this.partials[partial][9] - 64)}\n'
             f'         0x0A Coarse pitch:                  {this.partials[partial][10] - 64} semitones                   \n'
             f'         0x0B Fine pitch:                    {this.partials[partial][11] - 64} cents                       \n'
             f'         0x0C Random pitch:                  {"none" if this.partials[partial][12] == 0 else this.partials[partial][12]}\n'
             f'         0x0D Pitch key follow:              {"full" if this.partials[partial][13] == 0 else "none" if this.partials[partial][13] == 10 else str(10 - this.partials[partial][13]) + "/10"}\n' # is this how it is?
-            f'         0x0E Inst LFO depth:                {this.lfo_depth_lut[14]} cents                      \n'
-            f'         0x0F Part LFO depth:                {this.lfo_depth_lut[15]} cents                      \n'
-            f'         0x10 Pitch envelope depth:          {this.lfo_depth_lut[15]} units                      \n' # todo: figure out later
+            f'         0x0E Inst LFO depth:                {this.lfo_depth_lut[14]} cents                                \n'
+            f'         0x0F Part LFO depth:                {this.lfo_depth_lut[15]} cents                                \n'
+            f'         0x10 Pitch envelope depth:          {this.lfo_depth_lut[15]} units                                \n' # todo: figure out later
             f'         0x12 Initial pitch envelope level:  {64 - this.partials[partial][18]}                             \n'
             f'         0x17 P.env Attack 1 time:           {64 - this.partials[partial][23]} units                       \n'
             f'         0x13 P.env Attack 1 pitch level:    {64 - this.partials[partial][19]}                             \n'
@@ -118,20 +139,41 @@ class SC55Instrument:
             f'         0x1B P.env Release time:            {64 - this.partials[partial][27]} units                       \n'
             f'         0x16 P.env pitch Release level:     {64 - this.partials[partial][22]}                             \n'
             f'         0x22 P.env velocity sensetivity:    {64 - this.partials[partial][34]}×2.4×(127 - v)               \n'
-            f'         0x25 TVF Cutoff Frequency:          {64 - this.partials[partial][37]}               \n'
-        ) if this.exists else print("Instrument does not exist yet!")
-
+            f'         0x25 TVF Cutoff Frequency:          {64 - this.partials[partial][37]}                             \n'
+            ) if this.exists else print("Instrument does not exist yet!")
 
 class SC55:
     def __init__(this):
         this.instruments = []
         this.partials = []
 
-def get_ins_data(data: bytes | list = None):
-    if not data:
-        print("must data")
-    if len(data) < 16:
-        pass
+def dump_insts():
+    try: log = open(f"{model}{firmware}_instruments.txt", "xt")
+    except FileExistsError: log = open(f"{model}{firmware}_instruments.txt", "wt") #i wish there was an easiee way to do this
+    try: mkdir(f"{model}{firmware}_instruments")
+    except: pass
+    for bank in def_ins:
+        #print(bank)
+        for ins in range(inst_count):
+            #print(bank[216 * ins:216 * ins + 216])
+            inst = SC55Instrument()
+            inst.deconstruct_instrument(bank[216 * ins:216 * ins + 216])
+            print(f'Inst {ins}: [{inst.name}]')
+            if inst.name:
+                log.write(
+                    f"BANK {def_ins.index(bank)} | INSTRUMENT {ins}\n" +
+                    inst.print_inst()
+                )
+                try: open(f"{model}{firmware}_instruments/{inst.name}_{ins}.txt",'xt').write(
+                    f"BANK {def_ins.index(bank)} | INSTRUMENT {ins}\n" +
+                    inst.print_inst()
+                )
+                except FileExistsError: open(f"{model}{firmware}_instruments/{inst.name}_{ins}.txt",'wt').write(
+                    f"BANK {def_ins.index(bank)} | INSTRUMENT {ins}\n" +
+                    inst.print_inst()
+                )
+        print('done')
+            
 # ==========================================================
 
 def ternary(condition, true, false):  # TODO: replace all usages with guarded conditions
@@ -143,7 +185,7 @@ def ternary(condition, true, false):  # TODO: replace all usages with guarded co
 address_order = [2, 0, 3, 4, 1, 9, 13, 10, 18, 17, 6, 15, 11, 16, 8, 5, 12, 7, 14, 19] # address bit order..?
 byte_order =    [2, 0, 4, 5, 7, 6, 3, 1] # byte bit order
 def unscramble_address(address):
-    print(f"processing address {address}")
+    # print(f"processing address {address}")
     new_addr = 0
     if address >= 0x20:  # The first 32 bytes are not encrypted
         for bit in range(20):
@@ -151,31 +193,43 @@ def unscramble_address(address):
         return new_addr
     else:
         return address
-
 def unscramble_byte(byte):
     new_byte = 0
     for bit in range(8):  # loop through the bits and construct new byte
         new_byte |= ((byte >> byte_order[bit]) & 1) << bit
     return new_byte
-def descramble_wave(files=None) -> bytearray:
+def descramble_wave(files=None, ignore=False, id=-1) -> bytearray | None:
+    if ignore:
+        return
     if files is None:
         files = []
     if files == []:
         raise ValueError("this needs at least some input")
-    dec_buf = [0 for i in range(0x100000 * len(files))]
     for x in range(len(files)):
-        try:
-            enc_buf = open(files[x], "rb").read()
+        try: encoded_rom = open(files[x], "rb").read()
         except FileNotFoundError:
             print(f"uhhhhhhhh where is {files[x]} its like not found\n"
                   f"or something, results will probably break")
             continue
+        
+        dec_buf = [0 for _ in range(0x100000)]
+        try: buffer = open(f"{model}{firmware}_wave{x if len(files) > 1 else id}_decoded.rom", "xb")
+        except FileExistsError: buffer = open(f"{model}{firmware}_wave{x if len(files) > 1 else id}_decoded.rom", "wb")
+        
         for y in range(0x100000):
-            dec_buf[unscramble_address(y) + (0x100000 * x)] = unscramble_byte(enc_buf[y])
-    try:
-        open("../midis/MIDI Things/wave_dec.rom", "xb").write(bytearray(dec_buf))
-    except FileExistsError:
-        open("../midis/MIDI Things/wave_dec.rom", "wb").write(bytearray(dec_buf))
-    # return bytearray(dec_buf)
+            dec_buf[unscramble_address(y)] = unscramble_byte(encoded_rom[y])
+            # print(y)
+        buffer.write(bytearray(dec_buf))
+        buffer.close()
+        # return bytearray(dec_buf)
 
 # descramble_wave(["./roms/55_mk1_03wave1.bin","./roms/55_mk1_04wave2.bin","./roms/55_mk1_05wave3.bin"])
+descramble_wave(
+    [
+        f"roms/{model}{wave}/sc55_waverom1.bin",
+        #f"roms/{model}{wave}/sc55_waverom2.bin",
+        #f"roms/{model}{wave}/sc55_waverom3.bin",
+    ],
+    1, 1
+)
+dump_insts()

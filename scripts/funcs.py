@@ -3,6 +3,7 @@ A module with various useful functions used in other files.
 Imports: random, os if needed, hashlib
 """
 
+from luts import ASCII_lut_arr
 import random
 from math import *
 #from typing import Any
@@ -47,13 +48,16 @@ def _():
     """
     pass
 
-def text_from_bytes(data: bytes | list = None) -> str:
+def text_from_bytes(data: bytes | list = None, minlen: int = 0) -> str:
     if not data:
         print("must data")
         return ""
     a = ""
     for i in data:
-        a += chr(i)
+        a += ASCII_lut_arr[i]
+    if minlen:
+        while len(a) < minlen:
+            a += " "
     return a
 
 def clamp(val: float | int = 0, mn: float | int = 0, mx: float | int = 9) -> float | int:
@@ -530,7 +534,7 @@ def split_file(file: str, output_folder: str, length=32136, dpcm_rate=15, type=0
     ptr = 0
     total_files = 0
     if len(data)/8 > 262144:
-        print(" /!\\ This will likely not fit within 256kb of memory.")
+        print(r" /!\ This will likely not fit within 256kb of memory.")
         if dpcm_rate in range(0,16):
             size = len(data)
             temp_rate = dpcm_rate
@@ -739,6 +743,20 @@ def binarify(string: str = '', split: int = 4):
             b = '0' + b
         a += b
     return a
+
+def note_from_key(key: int = 0):
+    octave = key//12
+    notes = ["C-", "C#", "D-", "D#", "E-", "F-", "F#", "G-", "G#", "A-", "A#", "B-"]
+    notes_neg = ["c_", "c+", "d_", "d+", "e_", "f_", "f+", "g_", "g+", "a_", "a+", "b_"]
+    if key >= 0:
+        while key > 11:
+            key -= 12
+        return notes[key] + str(octave)
+    elif key < 0:
+        while key < 0:
+            key += 12
+        return notes_neg[key] + str(-octave)
+    
 
 if __name__ == "__main__":
     #save_riff(bdep=16, rate=44100, data=pcm12_to_16(open("./tests/amen_12", "rb").read()), location="./tests/amen_12.wav")
