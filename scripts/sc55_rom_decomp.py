@@ -42,11 +42,30 @@ class SC55Sample:
     def __init__(this):
         this.volume = 0
         this.address = 0
+        this.start_offset = 0
         this.length = 0
         this.loop_length = 0
         this.loop_mode = 0
         this.root_key = 0
-        this.pitch
+        this.pitch_offs_preloop = 0
+        this.pitch_offs_loop = 0
+        this.exists = False
+    
+    def deconstruct_sample(this, data: bytes | list = None):
+        if not data:
+            print("must data")
+            return
+        if len(data) != 16:
+            print("data must be 16 bytes")
+            return
+        this.volume = data[0]
+        this.address = (data[1] << 16) | (data[2] << 8) | data[3]
+        this.start_offset = (data[4] << 8) | data[5]
+        this.length = (data[6] << 8) | data[7]
+        this.loop_length = (data[8] << 8) | data[9]
+        this.loop_mode = {0: "forward", 1: "ping-pong", 2: "none"}[data[10]]
+        this.root_key = 0
+        
 
 class SC55Partial:
     # blank for now
@@ -232,4 +251,4 @@ descramble_wave(
     ],
     1, 1
 )
-dump_insts()
+# dump_insts()
