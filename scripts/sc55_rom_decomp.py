@@ -1,6 +1,5 @@
-from funcs import text_from_bytes
-from funcs import clamp
-
+from funcs import text_from_bytes, clamp, note_from_key
+from os import name as osName
 from sc55_lookups import *
 
 # creds to Kitrinx and NewRisingSun for descrambling code
@@ -11,11 +10,16 @@ firmware = "_120"
 wave = "_wave/"  # wave roms
 from pathlib import Path
 mkdir = Path.mkdir
+main = __name__ == "__main__"
 
-control_rom = open(f"roms/{model}{firmware}/sc55_rom2.bin", "rb").read()
+mainpath = "../../roms/" if osName == "posix" else \
+    r"E:\D Drive (HDD)\- THE ULTIMATE STUFF COLLECTION -\Git\Git\NukeYKT Nuked SC-55\Nuked-SC55 ROMSET/"
+control_rom = open(f"{mainpath}{model}{firmware}/sc55_rom2.bin", "rb").read()
 
 
-inst_count = 224  # instruments per bank
+# inst_count = 224  # instruments per bank
+inst_size = 216  # size of a single instrument definituon
+sample_size = 16  # size of a single sample definition
 
 # ==========================================================
 # area of lookup stuff from sc-55 control roms
@@ -37,7 +41,7 @@ def_prt = [
 ]
 
 def_drum = control_rom[0x38000 : 0x3C027] # drums definitions part
-
+# ==========================================================
 class SC55Sample:
     def __init__(this):
         this.volume = 0
@@ -49,6 +53,7 @@ class SC55Sample:
         this.root_key = 0
         this.pitch_offs_preloop = 0
         this.pitch_offs_loop = 0
+        this.bank = 0
         this.exists = False
     
     def deconstruct_sample(this, data: bytes | list = None):
@@ -63,8 +68,25 @@ class SC55Sample:
         this.start_offset = (data[4] << 8) | data[5]
         this.length = (data[6] << 8) | data[7]
         this.loop_length = (data[8] << 8) | data[9]
-        this.loop_mode = {0: "forward", 1: "ping-pong", 2: "none"}[data[10]]
-        this.root_key = 0
+        this.loop_mode = data[10]
+        this.root_key = data[11]
+        this.pitch_offs_preloop = ((data[12] << 8) | data[13]) - 1024
+        this.pitch_offs_loop = ((data[14] << 8) | data[15]) - 1024
+        this.bank = (address & 0x700000) >> 20
+        this.exists = True
+    
+    def print_sample(this):
+        return (
+            f'Volume:               {this.volume}\n'
+            f'Start address in ROM: {this.address}\n'
+            f'Start offset:         {this.start_offset}\n'
+            f'Length:               {this.length}\n'
+            f'Loop length:          {this.loop_length}\n'
+            f'Loop mode:            {["forward", "ping-pong", "none"][this.loop_mode]}\n'
+            f'Root key:             {note_from_key(this.root_key)} ({this.root_key})\n'
+            f'Initial pitch offset: {this.pitch_offs_preloop}\n'
+            f'Loop pitch offset:    {this.pitch_offs_loop}\n\n'
+        ) if this.exists else "This sample does not exist yet!"
         
 
 class SC55Partial:
@@ -166,33 +188,90 @@ class SC55:
         this.instruments = []
         this.partials = []
 
-def dump_insts():
-    try: log = open(f"{model}{firmware}_instruments.txt", "xt")
-    except FileExistsError: log = open(f"{model}{firmware}_instruments.txt", "wt") #i wish there was an easiee way to do this
-    try: mkdir(f"{model}{firmware}_instruments")
-    except: pass
+def decode_roland_dpcm(data: list = None, rom: list = None, smp: SC55Sample = SC55Sample()) -> None | list:
+    if not data:
+        bank_idx = smp.bank + 1
+        length = smp.length
+        match bank_idx:
+            case 0:
+                bank_idx = 0
+            case 1:
+                bank_idx = 1
+            case 2:
+                if model == "mk1":
+                    bank_idx = 1
+                elif model == "mk2":
+                    bank_idx = 2
+            case 3:
+                bank_idx = 2
+            case _:
+                print(f"bank index is {bank_idx} what")
+    else:
+        length = len(data)
+    out = []
+    sample = 0
+    if not data:
+        if not rom:
+            raise ValueError("A decrypted ROM must be provided.")
+        for sample in range(length):
+            c_byte = data[sample]
+def dump_insts(
+        folder=True  # whether to make a folder 
+                     # and dump instruments as
+                     # separate txt files into it
+                     # instead of a single big one
+    ):
+    if not folder:
+        try: log = open(f"{model}{firmware}_instruments.txt", "xt")
+        except FileExistsError: log = open(f"{model}{firmware}_instruments.txt", "wt") #i wish there was an easiee way to do this
+    if folder:
+        try: mkdir(f"{model}{firmware}_instruments")
+        except: pass
     for bank in def_ins:
         #print(bank)
-        for ins in range(inst_count):
+        for ins in range(len(bank)//inst_size):
             #print(bank[216 * ins:216 * ins + 216])
             inst = SC55Instrument()
-            inst.deconstruct_instrument(bank[216 * ins:216 * ins + 216])
+            inst.deconstruct_instrument(bank[inst_size * ins:inst_size * ins + inst_size])
             print(f'Inst {ins}: [{inst.name}]')
             if inst.name:
-                log.write(
-                    f"BANK {def_ins.index(bank)} | INSTRUMENT {ins}\n" +
-                    inst.print_inst()
+                if not folder:
+                    log.write(
+                        f"BANK {def_ins.index(bank)} | INSTRUMENT {ins}\n" +
+                        inst.print_inst() +
+                        "\n"
                 )
-                try: open(f"{model}{firmware}_instruments/{inst.name}_{ins}.txt",'xt').write(
-                    f"BANK {def_ins.index(bank)} | INSTRUMENT {ins}\n" +
-                    inst.print_inst()
-                )
-                except FileExistsError: open(f"{model}{firmware}_instruments/{inst.name}_{ins}.txt",'wt').write(
-                    f"BANK {def_ins.index(bank)} | INSTRUMENT {ins}\n" +
-                    inst.print_inst()
+                if folder:
+                    try: open(f"{model}{firmware}_instruments/{inst.name}_{ins}.txt",'xt').write(
+                        f"BANK {def_ins.index(bank)} | INSTRUMENT {ins}\n" +
+                        inst.print_inst()
+                    )
+                    except FileExistsError: open(f"{model}{firmware}_instruments/{inst.name}_{ins}.txt",'wt').write(
+                        f"BANK {def_ins.index(bank)} | INSTRUMENT {ins}\n" +
+                        inst.print_inst()
                 )
         print('done')
+
             
+def dump_samples(decode_dpcm: bool = False):
+    try: log = open(f"{model}{firmware}_samples.txt", "xt")
+    except FileExistsError: log = open(f"{model}{firmware}_samples.txt", "wt") #i wish there was an easiee way to do this
+    if decode_dpcm:
+        try: mkdir(f"{model}{firmware}_samples")
+        except: pass
+    for bank in def_smp:
+        #print(bank)
+        for smp in range(len(bank)//sample_size):
+            #print(bank[216 * ins:216 * ins + 216])
+            sample = SC55Sample()
+            sample.deconstruct_sample(bank[sample_size * smp:sample_size * smp + sample_size])
+            print(f'Sample {smp}')
+            log.write(
+                f"BANK {def_smp.index(bank)} | SAMPLE {smp}\n" +
+                sample.print_sample()
+            )
+        print('done')
+
 # ==========================================================
 
 def ternary(condition, true, false):  # TODO: replace all usages with guarded conditions
@@ -217,13 +296,21 @@ def unscramble_byte(byte):
     for bit in range(8):  # loop through the bits and construct new byte
         new_byte |= ((byte >> byte_order[bit]) & 1) << bit
     return new_byte
-def descramble_wave(files=None, ignore=False, id=-1) -> bytearray | None:
+def descramble_wave(
+        files=None,
+        ignore=False,  # whether to not do anything so that i dont comment out the entire function
+        id=-1,
+        one_file=False  # whether to dump descrambled roms into a single file
+) -> bytearray | None:
     if ignore:
         return
     if files is None:
         files = []
     if files == []:
         raise ValueError("this needs at least some input")
+    if one_file:
+        try: buffer = open(f"{model}{firmware}_wave_descrambled.rom", "xb")
+        except FileExistsError: buffer = open(f"{model}{firmware}_wave_descrambled.rom", "wb")
     for x in range(len(files)):
         try: encoded_rom = open(files[x], "rb").read()
         except FileNotFoundError:
@@ -232,23 +319,28 @@ def descramble_wave(files=None, ignore=False, id=-1) -> bytearray | None:
             continue
         
         dec_buf = [0 for _ in range(0x100000)]
-        try: buffer = open(f"{model}{firmware}_wave{x if len(files) > 1 else id}_decoded.rom", "xb")
-        except FileExistsError: buffer = open(f"{model}{firmware}_wave{x if len(files) > 1 else id}_decoded.rom", "wb")
+        if not one_file:
+            try: buffer = open(f"{model}{firmware}_wave{x if len(files) > 1 else id}_descrambled.rom", "xb")
+            except FileExistsError: buffer = open(f"{model}{firmware}_wave{x if len(files) > 1 else id}_descrambled.rom", "wb")
         
         for y in range(0x100000):
             dec_buf[unscramble_address(y)] = unscramble_byte(encoded_rom[y])
-            # print(y)
+            print(y)
         buffer.write(bytearray(dec_buf))
-        buffer.close()
+        if not one_file:
+            buffer.close()
         # return bytearray(dec_buf)
-
+    if one_file:
+        buffer.close()
 # descramble_wave(["./roms/55_mk1_03wave1.bin","./roms/55_mk1_04wave2.bin","./roms/55_mk1_05wave3.bin"])
-descramble_wave(
-    [
-        f"roms/{model}{wave}/sc55_waverom1.bin",
-        #f"roms/{model}{wave}/sc55_waverom2.bin",
-        #f"roms/{model}{wave}/sc55_waverom3.bin",
-    ],
-    1, 1
-)
-# dump_insts()
+if main:
+    descramble_wave(
+        [
+            f"{mainpath}{model}{wave}sc55_waverom1.bin",
+            f"{mainpath}{model}{wave}sc55_waverom2.bin",
+            f"{mainpath}{model}{wave}sc55_waverom3.bin",
+        ],
+        0,-1, True
+    )
+    #dump_insts(folder=False)
+    #sdump_samples()
