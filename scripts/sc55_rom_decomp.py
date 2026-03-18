@@ -1,13 +1,31 @@
 from funcs import text_from_bytes, clamp, note_from_key
 from os import name as osName
 from sc55_lookups import *
-
+from FurWave import WaveWriter
 # creds to Kitrinx and NewRisingSun for descrambling code
+
+try:
+    import numpy as np
+except ImportError:
+    print("Please install numpy for this module to work, or it's gonna fail right there.")
 
 # local auto open stuff
 model = "mk1"
 firmware = "_120"
 wave = "_wave/"  # wave roms
+try:
+    WAVE = open(f"{model}{firmware}_wave_descrambled.rom", "rb").read()
+    print("Successfully loaded descrambled unified wave ROM")
+except FileNotFoundError:
+    print("Descrambled unified wave ROM not found, loading separate files")
+    WAVE = []
+    try:
+        WAVE.extend(list(open(f"{model}{firmware}_wave1_descrambled.rom", "rb").read()))
+        WAVE.extend(list(open(f"{model}{firmware}_wave2_descrambled.rom", "rb").read()))
+        WAVE.extend(list(open(f"{model}{firmware}_wave3_descrambled.rom", "rb").read()))
+        print("Successfully loaded descrambled seoarate wave ROMs")
+    except FileNotFoundError: print("None or not all WAVE roms succeeded to load, sample decoding and dumping may fail.")
+
 from pathlib import Path
 mkdir = Path.mkdir
 main = __name__ == "__main__"
@@ -16,30 +34,67 @@ mainpath = "../../roms/" if osName == "posix" else \
     r"E:\D Drive (HDD)\- THE ULTIMATE STUFF COLLECTION -\Git\Git\NukeYKT Nuked SC-55\Nuked-SC55 ROMSET/"
 control_rom = open(f"{mainpath}{model}{firmware}/sc55_rom2.bin", "rb").read()
 
+# ======== Constants and important ========
+address_order = [2, 0, 3, 4, 1, 9, 13, 10, 18, 17, 6, 15, 11, 16, 8, 5, 12, 7, 14, 19] # address bit order..?
+byte_order =    [2, 0, 4, 5, 7, 6, 3, 1] # byte bit order
+def unscramble_address(address):
+    # print(f"processing address {address}")
+    new_addr = 0
+    if address >= 0x20:  # The first 32 bytes are not encrypted
+        for bit in range(20):
+            new_addr |= ((address >> address_order[bit]) & 1) << bit
+        return new_addr
+    else:
+        return address
+def unscramble_byte(byte):
+    new_byte = 0
+    for bit in range(8):  # loop through the bits and construct new byte
+        new_byte |= ((byte >> byte_order[bit]) & 1) << bit
+    return new_byte
 
 # inst_count = 224  # instruments per bank
-inst_size = 216  # size of a single instrument definituon
-sample_size = 16  # size of a single sample definition
-
+bank_offset = 0x10000  # constant distance between 2 banks of definitions
+wave_size = 0x100000   # size of a single wave ROM
+partial_size = 60      # size of a single partial defenition
+inst_size = 216        # size of a single instrument definituon
+sample_size = 16       # size of a single sample definition
+try:
+    byte_lut = np.array(open("LUT_unscrambled_byte.lut", "rb").read(), np.uint8)
+except FileNotFoundError:
+    print("Generating byte lut...")
+    byte_lut = np.array([unscramble_byte(_) for _ in range(256)], np.uint8)
+    print("Done.")
+    open("LUT_unscrambled_byte.lut", "wb").write(bytearray(byte_lut))
+try:
+    address_lut = np.array(open("LUT_unscrambled_address.lut", "rb").read(), np.uint8)
+    address_lut = np.array(address_lut.view(np.uint32), np.uint32)
+except:
+    print("Generating address lut...")
+    address_lut = np.array([unscramble_address(_) for _ in range(wave_size)], np.uint32)
+    print("Done.")
+    open("LUT_unscrambled_address.lut", "wb").write(bytearray(address_lut))
 # ==========================================================
 # area of lookup stuff from sc-55 control roms
 # control_rom = open(f"./{input('Please enter the filename of the control ROM (must be in the same directory as this script):')}", "rb").read()
 
 # could have merged into 3 lists, ond for each type, but cant be botgered to
 # todo: add hash detection
-def_smp = [
-    control_rom[0x1DEC0 : 0x20000],  # sample definitions part
-    control_rom[0x2DEC0 : 0x30000]
-]
+
+# todo: note to self, finding instrument and partial banks may be as simple as searching the name or
+# seeing at how definition sections the order "instrument 》partial 》sample".
+
 def_ins = [
     control_rom[0x10000 : 0x1BD00],  # instr definitions part
-    control_rom[0x20000 : 0x2BD00]
+    control_rom[0x10000 + bank_offset : 0x1BD00 + bank_offset]
 ]
 def_prt = [
     control_rom[0x1BD00 : 0x1DEC0],  # partials definitions part
-    control_rom[0x2BD00 : 0x2DEC0]
+    control_rom[0x1BD00 + bank_offset : 0x1DEC0 + bank_offset]
 ]
-
+def_smp = [
+    control_rom[0x1DEC0 : 0x20000],  # sample definitions part
+    control_rom[0x1DEC0 + bank_offset : 0x20000 + bank_offset]
+]
 def_drum = control_rom[0x38000 : 0x3C027] # drums definitions part
 # ==========================================================
 class SC55Sample:
@@ -72,7 +127,7 @@ class SC55Sample:
         this.root_key = data[11]
         this.pitch_offs_preloop = ((data[12] << 8) | data[13]) - 1024
         this.pitch_offs_loop = ((data[14] << 8) | data[15]) - 1024
-        this.bank = (address & 0x700000) >> 20
+        this.bank = (this.address & 0x700000) >> 20
         this.exists = True
     
     def print_sample(this):
@@ -188,7 +243,7 @@ class SC55:
         this.instruments = []
         this.partials = []
 
-def decode_roland_dpcm(data: list = None, rom: list = None, smp: SC55Sample = SC55Sample()) -> None | list:
+def decode_roland_dpcm(data: list = None, smp: SC55Sample = SC55Sample()) -> None | list:
     if not data:
         bank_idx = smp.bank + 1
         length = smp.length
@@ -211,7 +266,7 @@ def decode_roland_dpcm(data: list = None, rom: list = None, smp: SC55Sample = SC
     out = []
     sample = 0
     if not data:
-        if not rom:
+        if not WAVE:
             raise ValueError("A decrypted ROM must be provided.")
         for sample in range(length):
             c_byte = data[sample]
@@ -279,28 +334,11 @@ def ternary(condition, true, false):  # TODO: replace all usages with guarded co
         return true
     else:
         return false
-
-address_order = [2, 0, 3, 4, 1, 9, 13, 10, 18, 17, 6, 15, 11, 16, 8, 5, 12, 7, 14, 19] # address bit order..?
-byte_order =    [2, 0, 4, 5, 7, 6, 3, 1] # byte bit order
-def unscramble_address(address):
-    # print(f"processing address {address}")
-    new_addr = 0
-    if address >= 0x20:  # The first 32 bytes are not encrypted
-        for bit in range(20):
-            new_addr |= ((address >> address_order[bit]) & 1) << bit
-        return new_addr
-    else:
-        return address
-def unscramble_byte(byte):
-    new_byte = 0
-    for bit in range(8):  # loop through the bits and construct new byte
-        new_byte |= ((byte >> byte_order[bit]) & 1) << bit
-    return new_byte
 def descramble_wave(
-        files=None,
-        ignore=False,  # whether to not do anything so that i dont comment out the entire function
-        id=-1,
-        one_file=False  # whether to dump descrambled roms into a single file
+        files: list = None,
+        ignore: bool | int = False,  # whether to not do anything so that i dont comment out the entire function
+        id: int = -1,
+        one_file: bool | int = False  # whether to dump descrambled roms into a single file
 ) -> bytearray | None:
     if ignore:
         return
@@ -324,7 +362,7 @@ def descramble_wave(
             except FileExistsError: buffer = open(f"{model}{firmware}_wave{x if len(files) > 1 else id}_descrambled.rom", "wb")
         
         for y in range(0x100000):
-            dec_buf[unscramble_address(y)] = unscramble_byte(encoded_rom[y])
+            dec_buf[unscramble_address(y)] = byte_lut[encoded_rom[y]]
             print(y)
         buffer.write(bytearray(dec_buf))
         if not one_file:
@@ -340,7 +378,9 @@ if main:
             f"{mainpath}{model}{wave}sc55_waverom2.bin",
             f"{mainpath}{model}{wave}sc55_waverom3.bin",
         ],
-        0,-1, True
+        ignore=1,
+        id=-1,
+        one_file=True
     )
     #dump_insts(folder=False)
     #sdump_samples()
