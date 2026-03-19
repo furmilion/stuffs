@@ -1,4 +1,4 @@
-from funcs import text_from_bytes, clamp, note_from_key
+from funcs import text_from_bytes, clamp, note_from_key, _
 from os import name as osName
 from sc55_lookups import *
 from FurWave import WaveWriter
@@ -59,20 +59,24 @@ partial_size = 60      # size of a single partial defenition
 inst_size = 216        # size of a single instrument definituon
 sample_size = 16       # size of a single sample definition
 try:
-    byte_lut = np.array(open("LUT_unscrambled_byte.lut", "rb").read(), np.uint8)
+    byte_lut = np.array(list(open("LUT_unscrambled_byte.lut", "rb").read()), np.uint8)
+    print("Loaded descrambled byte LUT.")
 except FileNotFoundError:
-    print("Generating byte lut...")
+    print("Generating byte LUT...")
     byte_lut = np.array([unscramble_byte(_) for _ in range(256)], np.uint8)
     print("Done.")
     open("LUT_unscrambled_byte.lut", "wb").write(bytearray(byte_lut))
 try:
-    address_lut = np.array(open("LUT_unscrambled_address.lut", "rb").read(), np.uint8)
+    address_lut = np.array(list(open("LUT_unscrambled_address.lut", "rb").read()), np.uint8)
     address_lut = np.array(address_lut.view(np.uint32), np.uint32)
+    print("Loaded descrambled address LUT.")
 except:
-    print("Generating address lut...")
+    print("Generating address LUT...")
     address_lut = np.array([unscramble_address(_) for _ in range(wave_size)], np.uint32)
     print("Done.")
     open("LUT_unscrambled_address.lut", "wb").write(bytearray(address_lut))
+#address_lut_gen = np.array([unscramble_address(_) for _ in range(wave_size)], np.uint32)
+#print(f"LUT validation:loaded address lut == generated address lut: {address_lut == address_lut_gen}")
 # ==========================================================
 # area of lookup stuff from sc-55 control roms
 # control_rom = open(f"./{input('Please enter the filename of the control ROM (must be in the same directory as this script):')}", "rb").read()
@@ -104,7 +108,7 @@ class SC55Sample:
         this.start_offset = 0
         this.length = 0
         this.loop_length = 0
-        this.loop_mode = 0
+        this.loop_mode = 0  # 0: fw, 1: bi, 2: oneshot
         this.root_key = 0
         this.pitch_offs_preloop = 0
         this.pitch_offs_loop = 0
@@ -137,7 +141,7 @@ class SC55Sample:
             f'Start offset:         {this.start_offset}\n'
             f'Length:               {this.length}\n'
             f'Loop length:          {this.loop_length}\n'
-            f'Loop mode:            {["forward", "ping-pong", "none"][this.loop_mode]}\n'
+            f'Loop mode:            {["forward", "ping-pong", "oneshot"][this.loop_mode]}\n'
             f'Root key:             {note_from_key(this.root_key)} ({this.root_key})\n'
             f'Initial pitch offset: {this.pitch_offs_preloop}\n'
             f'Loop pitch offset:    {this.pitch_offs_loop}\n\n'
@@ -249,27 +253,46 @@ def decode_roland_dpcm(data: list = None, smp: SC55Sample = SC55Sample()) -> Non
         length = smp.length
         match bank_idx:
             case 0:
-                bank_idx = 0
+                bank_idx = 0 * wave_size
             case 1:
-                bank_idx = 1
+                bank_idx = 1 * wave_size
             case 2:
-                if model == "mk1":
-                    bank_idx = 1
-                elif model == "mk2":
-                    bank_idx = 2
-            case 3:
-                bank_idx = 2
+                if model.lower() == "mk2":
+                    bank_idx = 2 * wave_size
+                else:
+                    bank_idx = 1 * wave_size
+            case 4:
+                bank_idx = 2 * wave_size
             case _:
                 print(f"bank index is {bank_idx} what")
     else:
         length = len(data)
     out = []
-    sample = 0
+    val = 0
     if not data:
+        actual_address = (smp.address & 0xFFFFF) + bank_idx
         if not WAVE:
             raise ValueError("A decrypted ROM must be provided.")
+        rom = WAVE[bank_idx:bank_idx + wave_size]
+        rom_addr = smp.address & 0xFFFFF
         for sample in range(length):
-            c_byte = data[sample]
+            counter = actual_address + sample
+            c_byte = WAVE[counter]
+            c_byte -= 256 if c_byte >= 128 else c_byte
+            
+            shift_addr = ((counter & 0xFFFFF) >> 5) | (counter & 0xF00000)
+            #print(f"shift address is {shift_addr}")
+            sbyte      = WAVE[shift_addr]
+            snibble    = (sbyte >> 4) if (counter & 0x10) else (sbyte & 0x0F)
+    
+            final  = (c_byte << snibble) << 14
+            final  = max(-2147483648, min(2147483647, final))
+            val += final / (1 << 31)
+            print(f"final_accum: {final}\nval: {val}")
+            out.append(val)
+        return out
+        
+            
 def dump_insts(
         folder=True  # whether to make a folder 
                      # and dump instruments as
@@ -325,6 +348,19 @@ def dump_samples(decode_dpcm: bool = False):
                 f"BANK {def_smp.index(bank)} | SAMPLE {smp}\n" +
                 sample.print_sample()
             )
+            if decode_dpcm:
+                with WaveWriter() as w:
+                    w.set_channels(1)
+                    w.set_samplerate(32000)
+                    w.set_data(decode_roland_dpcm(smp=sample))
+                    w.set_depth(32)
+                    w.set_smpl_chunk(
+                        loop_starts = [sample.length - sample.loop_length],
+                        loop_ends = [sample.length],
+                        loop_types = [sample.loop_mode],
+                        midi_unity_note = sample.root_key,
+                    ) if sample.loop_mode > 1 else _()
+                    w.write_file(f"{model}{firmware}_samples/sample_{smp}_{note_from_key(sample.root_key)}.wav")
         print('done')
 
 # ==========================================================
@@ -362,7 +398,7 @@ def descramble_wave(
             except FileExistsError: buffer = open(f"{model}{firmware}_wave{x if len(files) > 1 else id}_descrambled.rom", "wb")
         
         for y in range(0x100000):
-            dec_buf[unscramble_address(y)] = byte_lut[encoded_rom[y]]
+            dec_buf[address_lut[y]] = byte_lut[encoded_rom[y]]
             print(y)
         buffer.write(bytearray(dec_buf))
         if not one_file:
@@ -383,4 +419,4 @@ if main:
         one_file=True
     )
     #dump_insts(folder=False)
-    #sdump_samples()
+    dump_samples(decode_dpcm=True)

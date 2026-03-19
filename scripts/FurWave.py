@@ -419,13 +419,17 @@ class WaveWriter:
                        fraction=0, play_count=0):
         """
         Wrapper for add_chunk(). For more info: https://wavref.til.cafe/chunk/smpl/
+        Loop types:
+            - 0: forwards
+            - 1: ping-pong/ idirectional
+            - 2: reverse
         """
         if loop_identifiers is None:
             loop_identifiers = [0 for _ in range(sample_loop_count)] if sample_loop_count else None
         else:
             while len(loop_identifiers) < sample_loop_count:
                 loop_identifiers.append(0)
-
+        sample_loop_count = min(len(loop_starts), len(loop_ends))
         if loop_types is None:
             loop_types = [0 for _ in range(sample_loop_count)] if sample_loop_count else None
         else:
@@ -763,7 +767,7 @@ class WaveWriter:
 
     # ========== File writing ==========
 
-    def write_file(self, path: str = r".\output.wav") -> None:
+    def write_file(self, path: str = r".\output.wav", overwrite: bool | int = False) -> None:
         """
         Write the WAV file to disk.
 
