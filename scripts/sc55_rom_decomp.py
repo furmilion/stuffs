@@ -112,7 +112,7 @@ class SC55Sample:
         this.root_key = 0
         this.pitch_offs_preloop = 0
         this.pitch_offs_loop = 0
-        this.bank = 0
+        # this.bank = 0
         this.exists = False
     
     def deconstruct_sample(this, data: bytes | list = None):
@@ -131,7 +131,7 @@ class SC55Sample:
         this.root_key = data[11]
         this.pitch_offs_preloop = ((data[12] << 8) | data[13]) - 1024
         this.pitch_offs_loop = ((data[14] << 8) | data[15]) - 1024
-        this.bank = (this.address & 0x700000) >> 20
+        # this.bank = (this.address & 0x700000) >> 20
         this.exists = True
     
     def print_sample(this):
@@ -247,50 +247,41 @@ class SC55:
         this.instruments = []
         this.partials = []
 
-def decode_roland_dpcm(data: list = None, smp: SC55Sample = SC55Sample()) -> None | list:
-    if not data:
-        bank_idx = smp.bank + 1
-        length = smp.length
-        match bank_idx:
-            case 0:
-                bank_idx = 0 * wave_size
-            case 1:
-                bank_idx = 1 * wave_size
-            case 2:
-                if model.lower() == "mk2":
-                    bank_idx = 2 * wave_size
-                else:
-                    bank_idx = 1 * wave_size
-            case 4:
-                bank_idx = 2 * wave_size
-            case _:
-                print(f"bank index is {bank_idx} what")
-    else:
-        length = len(data)
-    out = []
-    val = 0
-    if not data:
-        actual_address = (smp.address & 0xFFFFF) + bank_idx
-        if not WAVE:
-            raise ValueError("A decrypted ROM must be provided.")
-        rom = WAVE[bank_idx:bank_idx + wave_size]
-        rom_addr = smp.address & 0xFFFFF
-        for sample in range(length):
-            counter = actual_address + sample
-            c_byte = WAVE[counter]
-            c_byte -= 256 if c_byte >= 128 else c_byte
-            
-            shift_addr = ((counter & 0xFFFFF) >> 5) | (counter & 0xF00000)
-            #print(f"shift address is {shift_addr}")
-            sbyte      = WAVE[shift_addr]
-            snibble    = (sbyte >> 4) if (counter & 0x10) else (sbyte & 0x0F)
-    
-            final  = (c_byte << snibble) << 14
-            final  = max(-2147483648, min(2147483647, final))
-            val += final / (1 << 31)
-            print(f"final_accum: {final}\nval: {val}")
-            out.append(val)
-        return out
+def decode_roland_dpcm(#data: list = None,
+                       smp: SC55Sample = SC55Sample()) -> None | list:
+    addr_logical = smp.address
+    sample_len = smp.length
+    bank_bits = (addr_logical & 0x700000) >> 20
+    if   bank_bits == 0: bank_idx = 0
+    elif bank_bits == 1: bank_idx = 1
+    elif bank_bits == 2: bank_idx = 1  # SC-55 non-mkII
+    elif bank_bits == 4: bank_idx = 2
+    else: return None
+
+    rom_addr = addr_logical & 0xFFFFF
+    rom = WAVE[bank_idx * wave_size:bank_idx * wave_size + wave_size]
+    if rom_addr + sample_len >= len(rom):
+        return None
+
+    out    = []
+    sample = 0.0
+    for i in range(sample_len + 1):
+        sa   = rom_addr + i
+        data = rom[sa]
+        if data >= 128: data -= 256
+
+        shift_addr = ((sa & 0xFFFFF) >> 5) | (sa & 0xF00000)
+        sbyte      = rom[shift_addr]
+        snibble    = (sbyte >> 4) if (sa & 0x10) else (sbyte & 0x0F)
+
+        final  = (data << snibble) << 14
+        final  = max(-2147483648, min(2147483647, final))
+        sample += final / (1 << 31)
+        print(f"final: {final}\n"
+              f"final/(1<<31): {final / (1 << 31)}\n"
+              f"sample: {sample}")
+        out.append(sample)
+    return out
         
             
 def dump_insts(
@@ -353,7 +344,7 @@ def dump_samples(decode_dpcm: bool = False):
                     w.set_channels(1)
                     w.set_samplerate(32000)
                     w.set_data(decode_roland_dpcm(smp=sample))
-                    w.set_depth(32)
+                    w.set_depth(32.)
                     w.set_smpl_chunk(
                         loop_starts = [sample.length - sample.loop_length],
                         loop_ends = [sample.length],
