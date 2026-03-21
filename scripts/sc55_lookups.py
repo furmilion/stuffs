@@ -1,5 +1,5 @@
 """
-lookup tables for use with sc55_rom_decomp.py
+lookup tables for use with sc55_rom_decomp_main.py
 """
 
 LUT_lfo_rate_raw = (

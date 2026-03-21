@@ -1,9 +1,7 @@
-from funcs import text_from_bytes, clamp, note_from_key, _
-from os import name as osName
-from sc55_lookups import *
-from FurWave import WaveWriter
 # creds to Kitrinx and NewRisingSun for descrambling code
-
+from sc55_lookups import *
+from sc55_rom_decomp_globals import *
+from sc55_rom_decomp_descrambler import *
 try:
     import numpy as np
 except ImportError:
@@ -23,7 +21,7 @@ except FileNotFoundError:
         WAVE.extend(list(open(f"{model}{firmware}_wave1_descrambled.rom", "rb").read()))
         WAVE.extend(list(open(f"{model}{firmware}_wave2_descrambled.rom", "rb").read()))
         WAVE.extend(list(open(f"{model}{firmware}_wave3_descrambled.rom", "rb").read()))
-        print("Successfully loaded descrambled seoarate wave ROMs")
+        print("Successfully loaded descrambled separate wave ROMs")
     except FileNotFoundError: print("None or not all WAVE roms succeeded to load, sample decoding and dumping may fail.")
 
 from pathlib import Path
@@ -35,48 +33,17 @@ mainpath = "../../roms/" if osName == "posix" else \
 control_rom = open(f"{mainpath}{model}{firmware}/sc55_rom2.bin", "rb").read()
 
 # ======== Constants and important ========
-address_order = [2, 0, 3, 4, 1, 9, 13, 10, 18, 17, 6, 15, 11, 16, 8, 5, 12, 7, 14, 19] # address bit order..?
-byte_order =    [2, 0, 4, 5, 7, 6, 3, 1] # byte bit order
-def unscramble_address(address):
-    # print(f"processing address {address}")
-    new_addr = 0
-    if address >= 0x20:  # The first 32 bytes are not encrypted
-        for bit in range(20):
-            new_addr |= ((address >> address_order[bit]) & 1) << bit
-        return new_addr
-    else:
-        return address
-def unscramble_byte(byte):
-    new_byte = 0
-    for bit in range(8):  # loop through the bits and construct new byte
-        new_byte |= ((byte >> byte_order[bit]) & 1) << bit
-    return new_byte
 
-# inst_count = 224  # instruments per bank
 bank_offset = 0x10000  # constant distance between 2 banks of definitions
-wave_size = 0x100000   # size of a single wave ROM
-partial_size = 60      # size of a single partial defenition
-inst_size = 216        # size of a single instrument definituon
-sample_size = 16       # size of a single sample definition
-try:
-    byte_lut = np.array(list(open("LUT_unscrambled_byte.lut", "rb").read()), np.uint8)
-    print("Loaded descrambled byte LUT.")
-except FileNotFoundError:
-    print("Generating byte LUT...")
-    byte_lut = np.array([unscramble_byte(_) for _ in range(256)], np.uint8)
-    print("Done.")
-    open("LUT_unscrambled_byte.lut", "wb").write(bytearray(byte_lut))
-try:
-    address_lut = np.array(list(open("LUT_unscrambled_address.lut", "rb").read()), np.uint8)
-    address_lut = np.array(address_lut.view(np.uint32), np.uint32)
-    print("Loaded descrambled address LUT.")
-except:
-    print("Generating address LUT...")
-    address_lut = np.array([unscramble_address(_) for _ in range(wave_size)], np.uint32)
-    print("Done.")
-    open("LUT_unscrambled_address.lut", "wb").write(bytearray(address_lut))
-#address_lut_gen = np.array([unscramble_address(_) for _ in range(wave_size)], np.uint32)
-#print(f"LUT validation:loaded address lut == generated address lut: {address_lut == address_lut_gen}")
+wave_size =   0x100000   # size of a single wave ROM
+partial_count = 144  # partials per bank
+partial_size  = 60   # size of a single partial defenition
+inst_count    = 224  # instruments per bank
+inst_size     = 216  # size of a single instrument definituon
+sample_count  = 532  # samples per bank
+sample_size   = 16   # size of a single sample definition
+
+#byte_lut = np.array([unscramble_byte(_) for _ in range(256)], np.uint8)
 # ==========================================================
 # area of lookup stuff from sc-55 control roms
 # control_rom = open(f"./{input('Please enter the filename of the control ROM (must be in the same directory as this script):')}", "rb").read()
@@ -356,58 +323,34 @@ def dump_samples(decode_dpcm: bool = False):
 
 # ==========================================================
 
-def ternary(condition, true, false):  # TODO: replace all usages with guarded conditions
-    if condition:
-        return true
-    else:
-        return false
-def descramble_wave(
-        files: list = None,
-        ignore: bool | int = False,  # whether to not do anything so that i dont comment out the entire function
-        id: int = -1,
-        one_file: bool | int = False  # whether to dump descrambled roms into a single file
-) -> bytearray | None:
-    if ignore:
-        return
-    if files is None:
-        files = []
-    if files == []:
-        raise ValueError("this needs at least some input")
-    if one_file:
-        try: buffer = open(f"{model}{firmware}_wave_descrambled.rom", "xb")
-        except FileExistsError: buffer = open(f"{model}{firmware}_wave_descrambled.rom", "wb")
-    for x in range(len(files)):
-        try: encoded_rom = open(files[x], "rb").read()
-        except FileNotFoundError:
-            print(f"uhhhhhhhh where is {files[x]} its like not found\n"
-                  f"or something, results will probably break")
-            continue
-        
-        dec_buf = [0 for _ in range(0x100000)]
-        if not one_file:
-            try: buffer = open(f"{model}{firmware}_wave{x if len(files) > 1 else id}_descrambled.rom", "xb")
-            except FileExistsError: buffer = open(f"{model}{firmware}_wave{x if len(files) > 1 else id}_descrambled.rom", "wb")
-        
-        for y in range(0x100000):
-            dec_buf[address_lut[y]] = byte_lut[encoded_rom[y]]
-            print(y)
-        buffer.write(bytearray(dec_buf))
-        if not one_file:
-            buffer.close()
-        # return bytearray(dec_buf)
-    if one_file:
-        buffer.close()
 # descramble_wave(["./roms/55_mk1_03wave1.bin","./roms/55_mk1_04wave2.bin","./roms/55_mk1_05wave3.bin"])
+fn = [
+    ([f"{mainpath}{model}{wave}sc55_waverom1.bin"], 0, 0),
+    ([f"{mainpath}{model}{wave}sc55_waverom2.bin"], 0, 1),
+    ([f"{mainpath}{model}{wave}sc55_waverom3.bin"], 0, 2),
+]
+roms = [
+    f"{mainpath}{model}{wave}sc55_waverom1.bin",
+    f"{mainpath}{model}{wave}sc55_waverom2.bin",
+    f"{mainpath}{model}{wave}sc55_waverom3.bin"
+]
 if main:
-    descramble_wave(
-        [
-            f"{mainpath}{model}{wave}sc55_waverom1.bin",
-            f"{mainpath}{model}{wave}sc55_waverom2.bin",
-            f"{mainpath}{model}{wave}sc55_waverom3.bin",
-        ],
-        ignore=1,
-        id=-1,
-        one_file=True
-    )
+    if posix:
+        descramble_wave(
+            roms,
+            ignore=0,
+            id=-1,
+            one_file=False
+        )
+    elif nt:
+        descramble_wave_multithread(
+            [
+                [f"{mainpath}{model}{wave}sc55_waverom1.bin"],
+                [f"{mainpath}{model}{wave}sc55_waverom2.bin"],
+                [f"{mainpath}{model}{wave}sc55_waverom3.bin"]
+            ],
+        )
+        pass
+    #print(list(byte_lut))
     #dump_insts(folder=False)
-    dump_samples(decode_dpcm=True)
+    #dump_samples(decode_dpcm=True)
