@@ -1,0 +1,6 @@
+These modules were created for the purpose of being played in my custom Infinitode 2 map.
+The LQ/INFINITODE 2 module is the one heard in the game, and most samples were shrinked down to audible artifacts to fit under ~400kb limitation
+due to the fact that the game uses Base64 encoding in the music block. I, however, think that those artifacts
+give off a kind off "signature" sound.
+
+The HQ module is the LQ module but with samples pulled from the source, retaining as-is quality and thus sounding way cleaner.

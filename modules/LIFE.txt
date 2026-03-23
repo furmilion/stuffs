@@ -1,0 +1,17 @@
+Better viewed with a monospace font.
+This module was created in around a week for a Major BotB battle, it was Winter Chip I think.
+Samples are from:
+- The guitar: Kawai K1v VST custom patch
+- Analog strings: Kawai K1v VST custom patch
+- Square and Filtered square: Roland Juno-106 VST, init preset.
+- Electric piano: Roland Juno-106 VST, likely custom patch as I can't find it in factory presets
+- Pan flute: Korg M1 VST custom patch
+- Drums: random drums from my large 165 GB local sample library --
+ - Kick:                Akai -> S6000 Series            -> Volume 3     -> Kick         -> STUDIO_AMB_KICK     -> ST AMBKIK7-S
+ - Snare:               Akai -> S6000 Series            -> Volume 3     -> Snare2       -> STEREO_AMB_SNARE    -> ST AMBSN3 -S
+ - Tom:                 Akai -> Crypton                 -> DrumBase5000 -> Partition H  -> ROOM KITS #4        -> ROOM.T #09-3
+ - HiHat Closed:        Akai -> S6000 Series            -> Volume 3     -> Hi-Hat       -> 12INCH_LIGHT_HI_HAT -> TT-HH12-CL-S
+ - HiHat Pedal:         Akai -> S6000 Series            -> Volume 3     -> Hi-Hat       -> 12INCH_LIGHT_HI_HAT -> TT-HH12 F7-S
+ - HiHat Open:          Akai -> S6000 Series            -> Volume 3     -> Hi-Hat       -> 12INCH_LIGHT_HI_HAT -> TT-HH12HO6-S
+ - Ride Cymbal:         Akai -> S-Series                -> Volume 3     -> AMB RIDE CYM -> 18AMB RI.1
+ - Crash/Splash Cymbal: ILIO -> Double Platinum Drums 2 -> Partition M  -> GRHKIT1D11.2 -> CRMA16  FD-L
