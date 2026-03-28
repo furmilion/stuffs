@@ -68,7 +68,8 @@ def clamp(val: float | int = 0, mn: float | int = 0, mx: float | int = 9) -> flo
     :param mx: the highest boundary
     :return: clamped value
     """
-    return max(mn, val) if val <= mn else min(val, mx) if val <= mx else mx
+    #return max(mn, val) if val <= mn else min(val, mx) if val <= mx else mx
+    return min(mx, min(mn, val)) # how did i not think of this
 
 def pack_byte(bits=None) -> int:
     """Pack 8 bits into a byte. Excess input will be discarded."""
@@ -105,53 +106,6 @@ def ternary(condition, true, false):
         return true
     else:
         return false
-
-def convert_to_float(format: str = "24.8", signed: bool = True) -> int:
-    if type(format) is not str:
-        raise TypeError("Must provide a string denoting the format in 'x.y' style,\n"
-                        "x being the amount of bits in mantissa and y being the amount of bits in exponent.")
-    signed = bool(signed) if type(signed) in [bool, str, int, float] else False
-    mantissa, exponent = format.split('.')
-    mantissa, exponent = (int(mantissa) - 1 if signed else int(mantissa)), int(exponent)
-
-    return mantissa, exponent
-
-def convert_from_float(val: int = 0, format: str = "24.8", is_signed: bool = True) -> float:
-    if type(format) is not str:
-        raise TypeError("Must provide a string denoting the format in 'x.y' style,\n"
-                        "x being the amount of bits in mantissa and y being the amount of bits in exponent.")
-    signed = bool(is_signed) if type(is_signed) in [bool, str, int, float] else False
-    mantissa, exponent = format.split('.')
-    mantissa, exponent = (int(mantissa) - 1 if is_signed else int(mantissa)), int(exponent)
-    sign = 1
-    if is_signed:
-        sign = -1 if val >> exponent + mantissa else 1
-    mask_mantissa = 0
-    mask_exponent = 0
-    for i in range(mantissa):
-        mask_mantissa |= 1 << i
-    for i in range(exponent):
-        mask_exponent |= 1 << i
-    mask_exponent <<= mantissa
-    mantissa_val = val & mask_mantissa
-    mantissa_val_real = (10**(len(str(mantissa_val))) + mantissa_val) / len(str(mantissa_val)) if ((val & mask_exponent) >> mantissa) & 1 else mantissa_val / len(str(mantissa_val))
-    exponent_val = (val & mask_exponent) >> mantissa + 1
-    exponent_val_real = exponent_val - ((mask_exponent >> mantissa) + 1)//2
-    add_1 = ((val & mask_exponent) >> mantissa) & 1
-    print(f"INFO:\n"
-          f"Signed float:    {is_signed}\n"
-          f"Mantissa bits:   {mantissa}\n"
-          f"Mantissa mask:   {mask_mantissa} | {hex(mask_mantissa)} | {bin(mask_mantissa)}\n"
-          f"Mantissa:        {mantissa_val} | {hex(mantissa_val)} | {bin(mantissa_val)}\n"
-          f"Exponent bits:   {exponent}\n"
-          f"Exponent mask:   {mask_exponent} | {hex(mask_exponent)} | {bin(mask_exponent)}\n"
-          f"Exponent:        {exponent_val} | {hex(exponent_val)} | {bin(exponent_val)}\n"
-          f"Exponent (true): {exponent_val - ((mask_exponent >> mantissa) + 1)//2} | {hex(exponent_val - ((mask_exponent >> mantissa) + 1)//2)} | {bin(exponent_val - ((mask_exponent >> mantissa) + 1)//2)}\n"
-          f"Sign:            {None if not signed else val >> exponent + mantissa} ({None if not signed else sign})\n"
-          )
-    return sign * ( mantissa * 2**exponent_val  )
-
-
 
 def log(*args, **kwargs) -> None:
     pass
@@ -206,6 +160,9 @@ class SaveError(Exception):
 def save_riff(#bdep=8, rate=32000, data="sample", loop_start=None, loop_end=None, location="./output.wav",
               **kwargs) -> None or int:  # I have no idea what that "-> tuple" means
     """
+    This really is a legacy function, you should use FurWAVE instead as it supports floating point and generally has more features.
+    
+    
     Saves an audio file of desired bit depth at desired sample rate with provided data,
     and loop points if specified, at specified location.
     Only supports fixed-point Linear PCM, not floating point.
@@ -354,120 +311,7 @@ def save_riff(#bdep=8, rate=32000, data="sample", loop_start=None, loop_end=None
 
 def pcm12_to_16(data: bytes = None):
     if not data:
-        return [0, 0]
-
-
-
-# def convert_12bit_to_16bit(audio_data, is_interleaved=True):
-#     """
-#     Convert 12-bit linear audio to 16-bit.
-#
-#     Args:
-#         audio_data: Bytes object or list of integers (12-bit values)
-#         is_interleaved: If True, assumes byte pairs contain two 12-bit samples
-#                        If False, assumes each 12-bit value is already extracted
-#
-#     Returns:
-#         List of 16-bit integer values
-#     """
-#     result = []
-#
-#     if isinstance(audio_data, bytes):
-#         # Convert bytes to list of integers
-#         data = list(audio_data)
-#     else:
-#         data = audio_data
-#
-#     if is_interleaved:
-#         # Process byte pairs to extract 12-bit samples
-#         # Assuming little-endian: [low_byte, high_byte_with_4_bits_from_two_samples]
-#         for i in range(0, len(data) - 2, 3):
-#             # Each 3 bytes contains two 12-bit samples
-#             byte1 = data[i]
-#             byte2 = data[i + 1]
-#             byte3 = data[i + 2]
-#
-#             # Extract first 12-bit sample: byte1 + lower 4 bits of byte2
-#             # sample1 = byte1 | ((byte2 & 0x0F) << 8)
-#             sample1 = (byte1 << 8) | (byte2 & 0xF0)
-#
-#             # Extract second 12-bit sample: upper 4 bits of byte2 + byte3
-#             # sample2 = (byte2 >> 4) | (byte3 << 4)
-#             sample2 = ((byte2 & 0x0F) << 12) | (byte3 << 4)
-#
-#             # Scale to 16-bit and add to result
-#             # Option 1: Simple shift (preserves value)
-#             result.append(sample1)# << 4)
-#             result.append(sample2)
-#
-#             # Option 2: Scale proportionally (better dynamic range preservation)
-#             # result.append((sample1 << 4) | (sample1 >> 8))
-#             # result.append((sample2 << 4) | (sample2 >> 8))
-#
-#     else:
-#         # Data already contains 12-bit values
-#         for sample_12bit in data:
-#             # Mask to ensure we only use 12 bits
-#             sample_12bit = sample_12bit & 0xFFF
-#
-#             # Scale to 16-bit by shifting left by 4 bits
-#             sample_16bit = sample_12bit << 4
-#
-#             # Alternative: Scale proportionally for better dynamic range
-#             # sample_16bit = (sample_12bit << 4) | (sample_12bit >> 8)
-#
-#             # Ensure within 16-bit signed range if needed
-#             # For signed 12-bit (-2048 to 2047), convert to signed 16-bit:
-#             # if sample_12bit >= 2048:
-#             #     sample_16bit = (sample_12bit - 4096) << 4
-#             # else:
-#             #     sample_16bit = sample_12bit << 4
-#
-#             result.append(sample_16bit)
-#
-#     return result
-#
-#
-# # Alternative simpler version for non-interleaved data
-# def simple_12bit_to_16bit(audio_data):
-#     """
-#     Simple conversion of 12-bit audio values to 16-bit.
-#     Assumes input is already extracted 12-bit values (0-4095).
-#     """
-#     if isinstance(audio_data, bytes):
-#         # If bytes, convert to list assuming each byte is part of 12-bit value
-#         # This is a simplified case - use the main function for proper interleaved handling
-#         data = list(audio_data)
-#         result = []
-#         for i in range(0, len(data) - 1, 2):
-#             # Combine two bytes into 12-bit (assuming little-endian)
-#             sample_12bit = data[i] | ((data[i + 1] & 0x0F) << 8)
-#             # Scale to 16-bit
-#             result.append(sample_12bit << 4)
-#         return result
-#     else:
-#         # Assume list of 12-bit values
-#         return [sample << 4 for sample in audio_data]
-
-
-# Example usage
-# if __name__ == "__main__":
-#     # Example 1: Using list of 12-bit values
-#     print("Example 1: List of 12-bit values")
-#     audio_12bit = [0, 512, 1024, 2048, 3072, 4095]
-#     audio_16bit = convert_12bit_to_16bit(audio_12bit, is_interleaved=False)
-#     print(f"12-bit: {audio_12bit}")
-#     print(f"16-bit: {audio_16bit}")
-#     print()
-#
-#     # Example 2: Using bytes (simulated interleaved data)
-#     print("Example 2: Bytes data (interleaved)")
-#     # Simulate 3 bytes containing two 12-bit samples
-#     # Sample1: 0x123 (291 decimal), Sample2: 0x456 (1110 decimal)
-#     test_bytes = bytes([0x23, 0x61, 0x45])  # 0x23, 0x61, 0x45 = 0x123, 0x456
-#     audio_16bit_bytes = convert_12bit_to_16bit(test_bytes, is_interleaved=True)
-#     print(f"Input bytes: {test_bytes.hex()}")
-#     print(f"16-bit samples: {audio_16bit_bytes}")
+        return [0, 0] # TODO: check how furnace does this
 
 class PtrManager:
     """
@@ -493,7 +337,8 @@ class PtrManager:
 
 def split_file(file: str, output_folder: str, length=32136, dpcm_rate=15, type=0) -> None:
     """
-
+    This is really useless to normal user, to me even. I made this to goof around with Furnace's 256k NES sample ROM limitation.
+    
     This function takes any raw data as an input and splits it into chunks, each of
     length specified by the parameter, or less.
 

@@ -1,7 +1,7 @@
 Better viewed with a monospace font.
 This module was created in around a week for a Major BotB battle, it was Winter Chip I think.
 Samples are from:
-- The guitar: Kawai K1v VST custom patch
+- The guitar: Kawai K1v VST, modified "IA-2 6 String"
 - Analog strings: Kawai K1v VST custom patch
 - Square and Filtered square: Roland Juno-106 VST, init preset.
 - Electric piano: Roland Juno-106 VST, likely custom patch as I can't find it in factory presets

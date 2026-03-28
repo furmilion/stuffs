@@ -2,15 +2,9 @@
 from sc55_lookups import *
 from sc55_rom_decomp_globals import *
 from sc55_rom_decomp_descrambler import *
-try:
-    import numpy as np
-except ImportError:
-    print("Please install numpy for this module to work, or it's gonna fail right there.")
 
 # local auto open stuff
-model = "mk1"
-firmware = "_120"
-wave = "_wave/"  # wave roms
+
 try:
     WAVE = open(f"{model}{firmware}_wave_descrambled.rom", "rb").read()
     print("Successfully loaded descrambled unified wave ROM")
