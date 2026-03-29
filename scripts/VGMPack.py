@@ -434,7 +434,7 @@ def pack_vgm(vgm: bytes = None, output_file: str = "array", cap: int = None):
                       f"ID:                {hex(vgm[cursor + 1])}                \n"
                       f"Data start offset: {struct.unpack('<I', vgm[cursor + 2:cursor + 6])}      \n"
                       f"Mode:              {hex(vgm[cursor + 6])}\n"
-                      f"                   length mode: {["ignore", "amnt of cmds", "length in msecs", "until data end"]}\n"
+                      f'                   length mode: {["ignore", "amnt of cmds", "length in msecs", "until data end"]}\n'
                       f"                   is reverse: {True if vgm[cursor + 6] & 0x10 else False}\n"
                       f"                   auto loop:  {True if vgm[cursor + 6] & 0x80 else False}\n"
                       f"Length:            {struct.unpack('<I', vgm[cursor + 7:cursor + 11])[0]}\n")
@@ -452,7 +452,7 @@ def pack_vgm(vgm: bytes = None, output_file: str = "array", cap: int = None):
                       f"ID:    {hex(vgm[cursor + 1])}                \n"
                       f"Block: {hex(vgm[vgm[cursor + 3] | cursor + 2])}      \n"
                       f"Mode:  {hex(vgm[cursor + 4])}\n"
-                      f"       length mode: {["ignore", "amnt of cmds", "length in msecs", "until data end"]}\n"
+                      f'       length mode: {["ignore", "amnt of cmds", "length in msecs", "until data end"]}\n'
                       f"       auto loop: {True if vgm[cursor + 4] & 0x1  else False}\n"
                       f"       reverse:    {True if vgm[cursor + 4] & 0x10 else False}\n")
                 cursor += 5
