@@ -86,10 +86,10 @@ class FurADPCM:
 
     METADATA:
         bit 0: is 16-bit
-        bit 1: is stereo
-        bit 2: reserved
-        bit 3: reserved
-        bit 4: reserved
+        bit 1: channels (bit0)
+        bit 2: channels (bit1)
+        bit 3: channels (bit2)
+        bit 4: channels (bit3)
         bit 5: reserved
         bit 6: reserved
         bit 7: reserved
@@ -98,31 +98,32 @@ class FurADPCM:
     Block format 1:
         F0 (block info start)
         Block data:
-            bits 0-1: step size [4]
-            bits 2-15: block size [16384], maximum data stored: *8
-            bits 16-47: data offset in file relative to block end
+            bits 2-15: block size, up to 16384. Up to 32768 samples stored.
+            bits 16-47: reserved.
         F1 (block info end)
-    Step table: [0x7F, 0x3F, 0x1F, 0x0F]
+    8-bit step table:  [  0x80,   0x40,   0x20,  0x10,  0x08,  0x04,  0x02, 0x01]
+    16-bit step table: [0x4000, 0x2000, 0x1000, 0x800, 0x400, 0x200, 0x100, 0x80]
+    A single byte of data in Block Format 1 contains 2 samples.
+    Each sample has 1 bit of sign (direction of where it goes since the last value, up or down),
+    and 3 bits for selecting how much to step from last value. The samples are stored in big-endian order,
+    as in sample 1 comes first and sample 2 comes second.
+    Realistically this should be used with
 
     TODO: flesh this out
     Block format 2:
         F2 (block info start)
         Block data:
-            bits 0-2: 3-bit exponential multiplier of step table
-            bits 3-15: block size [8192], maximum data stored: *4
-            bits 16-47: data offset in file relative to block end
+            bits 0-2: 3-bit multiplier of step table, 1-indexed.
+            bits 3-15: block size, up to 8192. Up to 32768 samples stored.
+            bits 16-47: reserved.
         Step table: [0x0F, 0x07, 0x03, 0x01]
-    Delta calculation formula:
-        [sum of all data in block] * log(delta/[data length] + (delta + max(data) + min(data))/3, delta/[data length])
-        ... honestly what the fuck
 
     Block format 3:
         F3 (block info start)
         Block data:
-            bits 0-3: step change function [lin16, lin64, pow2, pow3]
-            bits 4-15: block size [4096], max data stored: *8
-            bit 16: is int16
-            bits 17-31: reserved
+            bits 0-3:   step change function [lin16, lin64, pow2, pow3]
+            bits 4-15:  block size, up to 4096. Up to 32768 samples stored.
+            bits 16-31: reserved
             bits 32-47: 16-bit correction value
         Step functions:
             LIN4: 0 (initial step size), +4 (each iteration)
@@ -138,7 +139,8 @@ class FurADPCM:
         # TODO: remove this if i actually find this useless
         self.blocks = 0  # amount of blocks in file; will remain unused?
 
-        self.step_table_f1 = [0x7F, 0x3F, 0x1F, 0x0F]  # step table for use with F0 block
+        self.step_table_f1_8b =  [  0x80,   0x40,   0x20,  0x10,  0x08,  0x04,  0x02, 0x01]  # step table for use with F0 block, 8-bit variant
+        self.step_table_f1_16b = [0x4000, 0x2000, 0x1000, 0x800, 0x400, 0x200, 0x100, 0x80]  # step table for use with F0 block, 16-bit variant
         self.step_table_f2 = [0x0F, 0x07, 0x03, 0x01]  # step table for use with F2 block
         self.step_types = ["lin4", "lin16", "pow2", "pow3"]  # step increase functions for use with F3 block
         self.max_step_size = 1024
@@ -146,8 +148,6 @@ class FurADPCM:
         self.little_endian = ["l", "lsb", "little"]
         self.big_endian = ["b", "msb", "big"]
         self.endianness = ["b", "msb", "big", "l", "lsb", "little"]
-        # TODO: will be local to functions?
-        self.delta = 0
 
         # decoder
         self.data_begin = 8  # offset of data beginning in a data block
@@ -155,14 +155,6 @@ class FurADPCM:
 
     # TODO: implement block format 1
     def encode_block_f1(self, encdata=None, block_size=0) -> list[int]:
-        self.delta = 0  # reset delta so that it would not affect further blocks
-        if encdata is None:
-            raise ValueError("Do not leave data empty.")
-        if type(encdata) not in [list, tuple]:
-            raise TypeError("Data must be of type list or tuple.")
-        if block_size > 16383:
-            print("Warning: data block size is over 16383, capping.")
-            block_size = 16383
         return [0]
 
     # TODO: implement block format 2
@@ -204,7 +196,7 @@ class FurADPCM:
         max_val = 255
         if is_int16:  # if we *are* 16-bit...
             new_encdata = []  # define a new temp array
-            for i in range(ceil(len(encdata) / 2)):  # for halp of the encdata length...
+            for i in range(ceil(len(encdata) / 2)):  # for half of the encdata length...
                 new_encdata.append(pack_int16(encdata[i * 2:i * 2 + 2]))  # pack and append a 16-bit int from encdata
             encdata = new_encdata  # to new_encdata and then set encdata to
             del new_encdata  # new_encdata and wipe new_encdata
@@ -237,13 +229,13 @@ class FurADPCM:
         # TODO: refine the block format
         data_block_full: list[int] = \
             [
-                0xF3,  # Block begin
+                0xF3,                                               # Block begin
                 ((self.step_types.index(step_type) & 0b11) << 6) +  # Step type + 6 lower bits of block len
-                (((block_size - 1) >> 8) & 0b111111),  # ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-                (block_size - 1) & 0b11111111,  # Lower 8 bits of block size
-                is_int16 << 7,  # block in 16-bit space?
-                0,  # reserved
-                (correction >> 8) & 255, correction & 255,  # Correction
+                (((block_size - 1) >> 8) & 0b111111),               # ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                (block_size - 1) & 0b11111111,                      # Lower 8 bits of block size
+                is_int16 << 7,                                      # block in 16-bit space?
+                0,                                                  # reserved
+                (correction >> 8) & 255, correction & 255,          # Correction
                 0xF0  # Block end
             ]
 

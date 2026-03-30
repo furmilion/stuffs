@@ -23,7 +23,7 @@ Specs:
         bit 1: channels (bit0)
         bit 2: channels (bit1)
         bit 3: channels (bit2)
-        bit 4: reserved
+        bit 4: channels (bit3)
         bit 5: reserved
         bit 6: reserved
         bit 7: reserved
@@ -38,7 +38,7 @@ Specs:
             bits 32-47: 16-bit correction value
         Step functions:
             LIN4: 0 (initial step size), +4 (each iteration)
-            LIN16: 0 (initial step size), +16 (each iteration)
+            LIN16: 0 (initial step size), +16 (each iteration); if bit 16 in block is set, this is swapped out for LIN64.
             POW2: 2 (initial step size), step#**2 (each iteration)
             POW3: 2 (initial step size), step#**3 (each iteration)
 
