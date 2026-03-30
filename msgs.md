@@ -2,9 +2,13 @@
 
 If you want to skip right to the point, click [here](#the-point).
 
+I'm honestly surprised that this turned into actual somewhat
+documentation of MSGS.
 
 
 ## What is MSGS?
+Ahhhh, the good ol' MSGS.
+
 Well, first of all, you may want to ask me the following question: "What the hell even is MSGS?"
 Fret not, my dear friend for I will explain to you what is it.
 
@@ -35,22 +39,26 @@ or redefining of drum channels or use of GS banks, a GS Reset must be performed.
 The sound set itself is located in `gm.dls` somewhere in `%systemroot%\System32\drivers\gm.dls`
 folder on Windows 10 along with its `gmreadme.txt` file.
 
-|                   | MSGS (Win10) | MSGS (WinXP_x64) / MSGS (Pre-Win10) |         SC-55          | SC-55mkII  |
-|:-----------------:|:------------:|:-----------------------------------:|:----------------------:|:----------:|
-|  Interpolation    |   Linear     |              Linear                 |       Linear(?)        |  Linear(?) |
-|        GM         |     Yes      |                 Yes                 | Firmware 1.20 or later |    Yes     |
-|        GS         |     Yes      |                 Yes                 |          Yes           |    Yes     |
-|       Parts       |      16      |                 16                  |           16           |     16     |
-|      Voices       |      32      |               64 / 32               |           24           |     28     |
-|   Tones (Basic)   |     226      |                 226                 |          189           |    226     |
-| Tones (MT-32 Map) |      0       |                  0                  |          128           |    128     |
-|     Drum Kits     |      9       |                  9                  |           9            |     9      |
-|    Sample Rate    |   22050hz    |             22050hz (?)             |        32000hz         |  32000hz   |
-|  Low Pass Filter  |      No      |                 No                  |          Yes           |    Yes     |
-|    Rate Limit     |     None     |                None                 |       31250 baud       | 31250 baud |
-|   CC#91 Reverb    |      No      |                 No                  |          Yes           |    Yes     |
-|   CC#93 Chorus    |      No      |                 No                  |          Yes           |    Yes     |
+|                          | MSGS (Win10) | MSGS (WinXP_x64) / MSGS (Pre-Win10) |         SC-55          | SC-55mkII  |
+|:------------------------:|:------------:|:-----------------------------------:|:----------------------:|:----------:|
+|      Interpolation       |   Linear     |              Linear                 |       Linear(?)        |  Linear(?) |
+|            GM            |     Yes      |                 Yes                 | Firmware 1.20 or later |    Yes     |
+|            GS            |     Yes      |                 Yes                 |          Yes           |    Yes     |
+|          Parts           |      16      |                 16                  |           16           |     16     |
+|          Voices          |      32      |               64 / 32               |           24           |     28     |
+|      Tones (Basic)       |     226      |                 226                 |          189           |    226     |
+|    Tones (MT-32 Map)     |      0       |                  0                  |          128           |    128     |
+|        Drum Kits         |      9       |                  9                  |           9            |     9      |
+|       Sample Rate        |   22050hz    |             22050hz (?)             |        32000hz         |  32000hz   |
+| Resonant Low Pass Filter |      No      |                 No                  |          Yes           |    Yes     |
+|        Rate Limit        |     None     |                None                 |       31250 baud       | 31250 baud |
+|       CC#91 Reverb       |      No      |                 No                  |          Yes           |    Yes     |
+|       CC#93 Chorus       |      No      |                 No                  |          Yes           |    Yes     |
 
+---
+
+A lot of useful CC and other info on MSGS can be found
+on [Zumi's MSGS blog](https://zumi.neocities.org/stuff/msgs/).
 ---
 
 #### Crash course (but on Roland GS)
@@ -62,12 +70,23 @@ It adds about this:
 - Extra drum kits apart from the default one (Power, Analog, Jazz and so on)
 
 Activated via following SysEx: `F0 41 10 42 12 40 00 7F 00 41 F7`
+Slight note about MSGS is that it always has these additional drum kits
+accessible, regardless of if GS is enabled.
 
 First synthesizer to incorporate Roland's GS standard was Sound Canvas SC-55.
 At Yamaha this mode is referenced to as TG300B mode as they couldn't use the
 trademark.
 
-##### Additions
+As a fun fact, Roland also had CTF (Capital Tone Fallback) which they
+removed in SC-55mkII, supposedly because it was a patented tech
+by Yamaha. What CTF does is basically this:
+```
+[User] Select this tone: [some unavailable patch via Bank MSB]
+[SC55] Ok. Hey CTF, is this tone existent?
+[CTF]  No. Closest tone to that is [closest available tone, rounded down]
+[SC55] Ok, I'll use that.
+```
+##### GS Additions
 
 Percussive sounds:
 
@@ -146,3 +165,21 @@ Crystal Oscillator is a Yamaha OPL3 Original song in HiTech genre with A4=450hz,
 Otomata Labs demogroup, specifically the Abstract64 member of it. It was made for
 Oldskool Music Revision 2025, "<32kb executable" category, in which it took the
 first place with the final file size of around 28 kilobytes.
+
+## Footnotes
+
+Honestly, I love MSGS. The low quality sound is signature IMO.
+A lot of people say MSGS sounds bad. While I'd agree that MSGS
+sounds not entirely good by its own, it can sound on par
+with professional music when you adapt and use its quirks
+to your advantage.
+
+Few such examples are:
+
+[`~ YAOTA ~`](https://www.youtube.com/watch?v=uCP62SBwe5M), by [Bruhman Kot](https://www.youtube.com/@kot_bruhman) (also known just as Kot or KoleOBlack)
+
+[`~ GENERAL SERUM ~`](https://www.youtube.com/watch?v=QhoD5o0SYNU), by Kot and [Abstract64](https://www.youtube.com/@64abstract)
+
+[HueArme](https://soundcloud.com/user-416698216-971657402), the person that pushed the synthesizer to its limits.
+
+And finally, shameless self-promotion here, cover of [Crystal Oscillator](/tests/msgs_10.ogg).
