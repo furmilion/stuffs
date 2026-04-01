@@ -1,5 +1,5 @@
 """
-This is meant to use in out proprietary STMVGM VGM player.
+This is meant to use in out proprietary STMVGM VGM player, which requires a real chip rather than emulating one.
 
 The player basically consists of following stuff:
     THE SETUP:
@@ -19,7 +19,7 @@ import gzip
 
 GZ = gzip
 
-VERSION = 1.33
+VERSION = 1.34
 
 random_messages = [  # random messages to insert at the end of file, every update there is a little bit more added
     "what the fuck", "this sucks", "please help me",
@@ -161,7 +161,9 @@ def pack_vgm(vgm: bytes = None, output_file: str = "array", cap: int = None):
     """
     the actual processor and packer
     """
-    arr = []
+    arr = []         # VGM data
+    data = []        # sample and misc data
+    data_params = [[0, 0,] for _ in range(256)] # block starts and lengths
     if vgm is None:
         raise ValueError("You must provide at least some data to parse.")
     if cap is None:
@@ -237,9 +239,12 @@ def pack_vgm(vgm: bytes = None, output_file: str = "array", cap: int = None):
     print(f"Without GD3: {len(vgm[:metadata['GD3Offset']])}")
     print(f"Only data:   {len(vgm[metadata['VGMDatOFS']:metadata['GD3Offset']])}")
     die = False
+    block_id = 0  # to keep track of current data block id
+    dump_mode = str(input("Block dump mode:\nd: always dump\ni: always ignore\nanything else: ask\n")).lower()  # either ignore all streams or dump all streams since the moment flag is set
+    dump_mode = dump_mode[0] if len(dump_mode) > 1 else "i"
+    print(f"dump mode: {dump_mode}")
     input("Press enter to begin...")
     cursor = metadata["VGMDatOFS"]
-    block_id = 0  # to keep track of current data block id
     while cursor < metadata["EOF"] and not die and cursor < cap:
         # cursor < (len(vgm) - metadata["VGMDatOFS"]) 
         current = vgm[cursor]
@@ -403,74 +408,89 @@ def pack_vgm(vgm: bytes = None, output_file: str = "array", cap: int = None):
                 cursor += 1
             case 0x66: print("done"); die = True
             
-            #streams
+            # streams
             case 0x90:
-                # we dont support that, *yet*
-                print(f"stream setup:                                    \n"
-                      f"ID:        {hex(vgm[cursor + 1])}                  \n"
-                      f"Chip Type: {stream_chip[vgm[cursor + 2]]}  \n"
-                      f"register {hex(vgm[cursor + 3])}\n at port {hex(vgm[cursor + 4])}\n")
+                # very basic support
+                if not dump_mode in ["i", "d"]:
+                    print(f"stream setup:                              \n"
+                          f"ID:        {hex(vgm[cursor + 1])}          \n"
+                          f"Chip Type: {stream_chip[vgm[cursor + 2]]}  \n"
+                          f"register {hex(vgm[cursor + 3])}\n at port {hex(vgm[cursor + 4])}\n")
+                    input("Press enter to continue...")
+                    arr.append(vgm[cursor])
+                    arr.append(vgm[cursor + 1])
                 cursor += 5
-                input("Press enter to continue...")
             case 0x91:
-                # we dont support that, *yet*
-                print(f"stream data:                                    \n"
-                      f"ID: {hex(vgm[cursor + 1])}                      \n"
-                      f"Data bank: {stream_block[vgm[cursor + 2]]}      \n"
-                      f"step base: {hex(vgm[cursor + 3])}\n"
-                      f"step size: {hex(vgm[cursor + 4])}\n")
+                # very basic support
+                if not dump_mode in ["i", "d"]:
+                    print(f"stream data:                                    \n"
+                          f"ID: {hex(vgm[cursor + 1])}                      \n"
+                          f"Data bank: {stream_block[vgm[cursor + 2]]}      \n"
+                          f"step base: {hex(vgm[cursor + 3])}\n"
+                          f"step size: {hex(vgm[cursor + 4])}\n")
+                    input("Press enter to continue...")       
                 cursor += 5
-                input("Press enter to continue...")
             case 0x92:
-                # we dont support that, *yet*
-                print(f"stream frequency:                           \n"
-                      f"ID: {hex(vgm[cursor + 1])}                  \n"
-                      f"Frequency: {struct.unpack('<I', vgm[cursor + 2:cursor + 6])[0]}hz\n")
+                # very basic support
+                if not dump_mode in ["i", "d"]:
+                    print(f"stream frequency:                           \n"
+                          f"ID: {hex(vgm[cursor + 1])}                  \n"
+                          f"Frequency: {struct.unpack('<I', vgm[cursor + 2:cursor + 6])[0]}hz\n")
+                    input("Press enter to continue...")
                 cursor += 6
-                input("Press enter to continue...")
             case 0x93:
-                # we dont support that, *yet*
-                print(f"start stream:                             \n"
-                      f"ID:                {hex(vgm[cursor + 1])}                \n"
-                      f"Data start offset: {struct.unpack('<I', vgm[cursor + 2:cursor + 6])}      \n"
-                      f"Mode:              {hex(vgm[cursor + 6])}\n"
-                      f'                   length mode: {["ignore", "amnt of cmds", "length in msecs", "until data end"]}\n'
-                      f"                   is reverse: {True if vgm[cursor + 6] & 0x10 else False}\n"
-                      f"                   auto loop:  {True if vgm[cursor + 6] & 0x80 else False}\n"
-                      f"Length:            {struct.unpack('<I', vgm[cursor + 7:cursor + 11])[0]}\n")
+                # very basic support
+                if not dump_mode in ["i", "d"]:
+                    datofs = struct.unpack('<I', vgm[cursor + 2:cursor + 6])[0] - 1
+                    datlen = struct.unpack('<I', vgm[cursor + 7:cursor + 11])[0]
+                    print(f"start stream:                             \n"
+                          f"ID:                {hex(vgm[cursor + 1])}                \n"
+                          f"Data start offset: {datofs}      \n"
+                          f"Mode:              {hex(vgm[cursor + 6])}\n"
+                          f"                   length mode: {["ignore", "amnt of cmds", "length in msecs", "until data end"][vgm[cursor + 6]&0b11]}\n"
+                          f"                   is reverse: {True if vgm[cursor + 6] & 0x10 else False}\n"
+                          f"                   auto loop:  {True if vgm[cursor + 6] & 0x80 else False}\n"
+                          f"Length:            {struct.unpack('<I', vgm[cursor + 7:cursor + 11])[0]}\n")
+                    input("Press enter to continue...")
                 cursor += 11
-                input("Press enter to continue...")
             case 0x94:
                 # we dont support that, *yet*
-                print(f"end stream:\n"
-                      f"ID: {hex(vgm[cursor + 1]) if vgm[cursor + 1] < 0xFF else 'all streams'}\n")
+                if not dump_mode in ["i", "d"]:
+                    print(f"end stream:\n"
+                          f"ID: {hex(vgm[cursor + 1]) if vgm[cursor + 1] < 0xFF else 'all streams'}\n")
+                    input("Press enter to continue...")
                 cursor += 2
-                input("Press enter to continue...")
             case 0x95:
                 # we dont support that, *yet*
-                print(f"fast start stream:                             \n"
-                      f"ID:    {hex(vgm[cursor + 1])}                \n"
-                      f"Block: {hex(vgm[vgm[cursor + 3] | cursor + 2])}      \n"
-                      f"Mode:  {hex(vgm[cursor + 4])}\n"
-                      f'       length mode: {["ignore", "amnt of cmds", "length in msecs", "until data end"]}\n'
-                      f"       auto loop: {True if vgm[cursor + 4] & 0x1  else False}\n"
-                      f"       reverse:    {True if vgm[cursor + 4] & 0x10 else False}\n")
+                if not dump_mode in ["i", "d"]:
+                    print(f"fast start stream:                             \n"
+                          f"ID:    {hex(vgm[cursor + 1])}                \n"
+                          f"Block: {hex(vgm[vgm[cursor + 3] | cursor + 2])}      \n"
+                          f"Mode:  {hex(vgm[cursor + 4])}\n"
+                          f"       length mode: {["ignore", "amnt of cmds", "length in msecs", "until data end"]}\n"
+                          f"       auto loop: {True if vgm[cursor + 4] & 0x1  else False}\n"
+                          f"       reverse:    {True if vgm[cursor + 4] & 0x10 else False}\n")
+                    input("Press enter to continue...")
                 cursor += 5
-                input("Press enter to continue...")
             
             # data blocks
             case 0x67:  # omfg the meme
-                if vgm[cursor + 1] != 0x66:
-                    print("something ain't right")
-                print(f"DATA BLOCK:\n"
-                      f"Type:   {stream_block[vgm[cursor + 2]]}\n"
-                      f"Length: {struct.unpack('<I', vgm[cursor + 3:cursor + 7])[0]}")
-                if str(input("dump? [y/n]")).lower()[0] == "y":
+                if not dump_mode in ["i", "d"]:
+                    if vgm[cursor + 1] != 0x66:
+                        print("something ain't right")
+                    print(f"DATA BLOCK:\n"
+                          f"Type:   {stream_block[vgm[cursor + 2]]}\n"
+                          f"Length: {struct.unpack('<I', vgm[cursor + 3:cursor + 7])[0]}")
+                    if str(input("dump? [y/n]")).lower()[0] == "y":
+                        open(f"data_block_{block_id}_" f"{stream_block[vgm[cursor + 2]]}" "_" f"{hex(struct.unpack('<I', vgm[cursor + 3:cursor + 7])[0])}" ".raw", "wb").write(vgm[cursor + 8 - 1:cursor + 8 + struct.unpack('<I', vgm[cursor + 3:cursor + 7])[0] - 1])
+                    else:
+                        print("skipped dumping")
+                elif dump_mode == "d":
                     open(f"data_block_{block_id}_" f"{stream_block[vgm[cursor + 2]]}" "_" f"{hex(struct.unpack('<I', vgm[cursor + 3:cursor + 7])[0])}" ".raw", "wb").write(vgm[cursor + 8 - 1:cursor + 8 + struct.unpack('<I', vgm[cursor + 3:cursor + 7])[0] - 1])
                 else:
-                    print("skipped dumping")
-                block_id += 1
+                    pass
                 cursor += 7 + struct.unpack('<I', vgm[cursor + 3:cursor + 7])[0]
+                block_id += 1
             case 0xE0:
                 print(f"PCM seek location: {struct.unpack('<I', vgm[cursor + 1:cursor + 5])}")
                 cursor += 5
@@ -481,6 +501,8 @@ def pack_vgm(vgm: bytes = None, output_file: str = "array", cap: int = None):
     except FileExistsError:
         array = open(f"./{output_file}.c", "w", encoding='utf8')
     array.write(f"#define ARRAY_LENGTH {len(arr) + 1}\n"
+                f"#define ARRAY2_LENGTH {len(data) + 1}\n"
+                f"#define ARRAY3_LENGTH {len(data) + 1}\n"
                  "const uint8_t vgm[ARRAY_LENGTH] = {\n")
     print("procesing data")
     for _, __ in enumerate(arr):
@@ -489,6 +511,20 @@ def pack_vgm(vgm: bytes = None, output_file: str = "array", cap: int = None):
         else:
             array.write(f"{__}, ")
         # toArray += f"{__},\n" if not (_ % 16) else f"{__}, "
+    print("procesing data2")
+    array.write("const uint8_t data[ARRAY2_LENGTH] = {\n")
+    for _, __ in enumerate(data):
+        if not (_ + 1) % 16:
+            array.write("{%s},\n" % )
+        else:
+            array.write(f"{__}, ")
+    print("procesing data3")
+    array.write("const uint8_t data[ARRAY3_LENGTH][2] = {\n")
+    for _, __ in enumerate(data_params):
+        if not (_ + 1) % 16:
+            array.write("{%s, %s},\n" % (__[0], __[1]))
+        else:
+            array.write("{%s, %s}," % (__[0], __[1]))
     print("spicing things up...")
     array.write("0x66\n};\n//" + f"{random_messages[random.randint(0, len(random_messages) - 1)]}")
     print("done!")

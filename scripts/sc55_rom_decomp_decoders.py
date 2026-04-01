@@ -25,9 +25,13 @@ def rpcm_decode(data: np.int8 | np.uint8 = None) -> int:
     shift = val >> 4
     val &= 15
     if not shift:
-        return val * sign
+        result = val * sign
     else:
-        return ((0x10 + val) << (shift - 1)) * sign
+        result = ((0x10 + val) << (shift - 1)) * sign
+    return result
+    if result < 0:
+        return (~result) - 32768
+    return result
     # CM32L pcm
 
 def ldpcm_decode(data: char = 0):
