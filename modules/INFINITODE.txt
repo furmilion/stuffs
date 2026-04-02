@@ -1,6 +1,35 @@
+Best viewed with a monospace font.
+
 These modules were created for the purpose of being played in my custom Infinitode 2 map.
 The LQ/INFINITODE 2 module is the one heard in the game, and most samples were shrinked down to audible artifacts to fit under ~400kb limitation
 due to the fact that the game uses Base64 encoding in the music block. I, however, think that those artifacts
-give off a kind off "signature" sound.
+give off a kind of "signature" sound.
 
 The HQ module is the LQ module but with samples pulled from the source, retaining as-is quality and thus sounding way cleaner.
+
+Sample sources (samples are in order of their first appearance in sample list):
+- kick2.wav:              I honestly don't remember where it came from
+- chh.wav:                ditto
+- ohh.wav:                ditto
+- chord1.wav:             comes from a "396 // pre-result stream battle" OHB on BotB from
+                          Oldschool series (https://battleofthebits.com/arena/Battle/9218)
+- mind-ocean-ambient-pad: I thought it came from SampleFocus, but apparently it's not
+                          there... so I have no idea where else could it come from.
+- clap.wav:               No idea, but I have a strong suspicion it may have come from
+                          any of "XTc Files of House", "XTc Files of Jungle" or "XTc Files of Techno" by E-Lab.
+- bassorgan.wab:          Comes from Roland JV-2080, preset U038 Club Organ 1, note C-1. Myself I have no JV-2080,
+                          so I took the sample from a "sample" sample library I randomly had around,
+                          and used that. This specific patch is also known as M1 Organ, due to its appearance
+                          in that KORG synthesizer.
+- noise_cut.wav:          I either took some noise sample I already had or imported some other file as raw data.
+- orchhit.wav:            No idea of the exact sample in my library, but the sound itself might have
+                          been sampled off a Sound Canvas module.
+- crash.wav:              No idea.
+- revcrash.wav:           Reversed crash.wav
+- growl.wav:              Sonic Foundry -> Afterhours EDM -> Session 8 - Electro Banger -> Session 8 - LFO Note.wav
+- perc2.wav:              No idea, might be from a Sounc Foundry library
+- perc3_l.wav:            Ditto, as they came from the same place.
+- harmonics.wav:          Guitar Harmonics sampled from Roland SCVA VST.
+- ROOM.T #09-3.wav:       See Tom instrument in LIFE.txt
+- bitsine_lq.wav:         Custom Sytrus preset that I later quantized for use in the song.
+- square.wav:             Square Wave sample, 16 samples long. Made in Furnace.
