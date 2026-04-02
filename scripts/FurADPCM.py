@@ -94,42 +94,127 @@ class FurADPCM:
         bit 6: reserved
         bit 7: reserved
 
-    TODO: flesh this out
+
     Block format 1:
-        F0 (block info start)
-        Block data:
-            bits 2-15: block size, up to 16384. Up to 32768 samples stored.
-            bits 16-47: reserved.
-        F1 (block info end)
+        byte 1:
+            F0 (block info start)
+        byte 2:
+            block size MSByte
+        byte 3:
+            block size LSByte
+        byte 4:
+            initial value MSByte
+        byte 5:
+            initial value LSByte
+        byte 6:
+            reserved
+        byte 7:
+            reserved
+        byte 8:
+            F1 (block info end)
+
     8-bit step table:  [  0x80,   0x40,   0x20,  0x10,  0x08,  0x04,  0x02, 0x01]
     16-bit step table: [0x4000, 0x2000, 0x1000, 0x800, 0x400, 0x200, 0x100, 0x80]
+
     A single byte of data in Block Format 1 contains 2 samples.
     Each sample has 1 bit of sign (direction of where it goes since the last value, up or down),
     and 3 bits for selecting how much to step from last value. The samples are stored in big-endian order,
     as in sample 1 comes first and sample 2 comes second.
-    Realistically this should be used with
+    If there is not enough samples to form a full byte, then lower nibble is 0.
 
-    TODO: flesh this out
+    Initial value is sample value at which decoding starts
+
+
     Block format 2:
-        F2 (block info start)
-        Block data:
-            bits 0-2: 3-bit multiplier of step table, 1-indexed.
-            bits 3-15: block size, up to 8192. Up to 32768 samples stored.
-            bits 16-47: reserved.
-        Step table: [0x0F, 0x07, 0x03, 0x01]
+        byte 1:
+            F2 (block info start)
+        byte 2:
+            bit 1: 3-bit power value, bit 1
+            bit 2: 3-bit power value, bit 2
+            bit 3: 3-bit power value, bit 3
+            bit 4: block size, bit 1.
+            bit 5: block size, bit 2.
+            bit 6: block size, bit 3.
+            bit 7: block size, bit 4.
+            bit 8: block size, bit 5.
+        byte 3:
+            bit 1: block size, bit 6.
+            bit 2: block size, bit 7.
+            bit 3: block size, bit 8.
+            bit 4: block size, bit 9.
+            bit 5: block size, bit 10.
+            bit 6: block size, bit 11.
+            bit 7: block size, bit 12.
+            bit 8: block size, bit 13.
+        byte 4:
+            initial value MSByte
+        byte 5:
+            initial value LSByte
+        byte 6:
+            reserved, any value
+        byte 7:
+            reserved, any value
+        byte 8:
+            F1 (block info end)
+
+        Each byte in Block Format 2 contains 8 samples.
+        Base step is 2. This is then raised to the power of Power value.
+        If the metadata in file tells that this file is 16-bit, then the
+        step value is additionally right-shifted 9 times. After this,
+        1 is subtracted from the final step value.
+        Each sample in a byte has 2 states: go up by step size from previous sample, or go down.
+        If there are not enough samples to fully fill a byte, then other bits are padded in a checkerboard manner.
+
+        Initial value is sample value at which decoding starts
+
 
     Block format 3:
-        F3 (block info start)
-        Block data:
-            bits 0-3:   step change function [lin16, lin64, pow2, pow3]
-            bits 4-15:  block size, up to 4096. Up to 32768 samples stored.
-            bits 16-31: reserved
-            bits 32-47: 16-bit correction value
+        byte 1:
+            F3 (block info start)
+        byte 2:
+            bit 1: step change function
+            bit 2: step change function
+            bit 3: step change function [lin4, lin16, pow2, pow3]
+            bit 4:  block size, bit 1
+            bit 5:  block size, bit 2
+            bit 6:  block size, bit 3
+            bit 7:  block size, bit 4
+            bit 8:  block size, bit 5
+        byte 3:
+            bit 1:  block size, bit 6
+            bit 2:  block size, bit 7
+            bit 3:  block size, bit 8
+            bit 4:  block size, bit 9
+            bit 5:  block size, bit 10
+            bit 6:  block size, bit 11
+            bit 7:  block size, bit 12
+            bit 8:  block size, bit 13
+        byte 4:
+            initial value MSByte
+        byte 5:
+            initial value LSByte
+        byte 6:
+            reserved
+        byte 7:
+            reserved
+        byte 8:
+            F1 (block info end)
+
         Step functions:
-            LIN4: 0 (initial step size), +4 (each iteration)
-            LIN16: 0 (initial step size), +16 (each iteration)
-            POW2: 2 (initial step size), step#**2 (each iteration)
-            POW3: 2 (initial step size), step#**3 (each iteration)
+            function | initial step size | step increase per iteration
+            LIN4     | 0                 | 4
+            LIN16    | 0                 | 16
+            LIN256   | 0                 | 256
+            LIN2048  | 0                 | 2048
+            POW2     | 2                 | iteration**2
+            POW3     | 2                 | iteration**3
+        NOTE: when 16-bit, LIN4 is swapped for LIN256 and LIN16 is swapped out for LIN2048
+
+        Each byte in Block Format 3 contains 8 samples.
+        Each sample only has 2 states: go up from current value and increase step, or go down and increase step.
+        If there are not enough samples to fully fill a byte, then other bits are padded in a checkerboard manner.
+
+        Initial value is sample value at which decoding starts
     """
 
     def __init__(self):
