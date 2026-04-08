@@ -64,17 +64,29 @@ def generate_sine_table(length: int = 1, max: int = 1, signed: bool = True):
     Generates a numpy.ndarray of values of
     sin(math.tau/length*x) across "length" values.
     """
+    if not NUMPY:
+        return "nah"
     match (type(max), signed):
         case (np.uint8, True):
-            arr = [
+            return np.array(
+                [
                     int(
                         sin(tau / length * x)
                         # we'll' bitwise-and the max value
                         # with 127 so that it becomes positive
-                        * (int(max.view(np.int8) & 127)) - 2
-                    ) - 1 for x in range(length)
-                ]
-            return np.array(arr, np.int8), arr
+                        * (int(max.view(np.int8) & 127) + .5) - .5
+                    ) for x in range(length)
+                ], np.int8
+            )
+        case (np.uint8, False):
+            return np.array(
+                [
+                    int(
+                        sin(tau / length * x)/2
+                        * max
+                    )+128 for x in range(length)
+                ], uint8_t
+            )
         case _:
             return "unimplemented"
         
@@ -678,5 +690,6 @@ if __name__ == "__main__":
     #       f'{a_5}\n{a_6}\n'
     #       f'{a_7}\n{a_8}\n')
     print(
-        generate_sine_table(256, np.uint8(127), True)
+        f"{generate_sine_table(256, np.uint8(127), True)}\n"
+        f"{generate_sine_table(256, np.uint8(128), False)}\n"
     )
