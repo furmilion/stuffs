@@ -124,6 +124,8 @@ class FurADPCM:
 
     Initial value is sample value at which decoding starts
 
+    The initial thought. Best of both worlds.
+
 
     Block format 2:
         byte 1:
@@ -166,6 +168,8 @@ class FurADPCM:
         If there are not enough samples to fully fill a byte, then other bits are padded in a checkerboard manner.
 
         Initial value is sample value at which decoding starts
+
+        This is perfect for sudden bursts of noise like drum transients.
 
 
     Block format 3:
@@ -215,7 +219,12 @@ class FurADPCM:
         If there are not enough samples to fully fill a byte, then other bits are padded in a checkerboard manner.
 
         Initial value is sample value at which decoding starts
+
+        Perfect for sound that doesn't change rapidly.
     """
+
+    # TODO: completely rework this thing lmao, this implementation sucks and only has block format 3
+    # TODO: integrate numpy
 
     def __init__(self):
         self.magic = b"FurADPCM"  # bytestring of the file magic
@@ -226,7 +235,7 @@ class FurADPCM:
 
         self.step_table_f1_8b =  [  0x80,   0x40,   0x20,  0x10,  0x08,  0x04,  0x02, 0x01]  # step table for use with F0 block, 8-bit variant
         self.step_table_f1_16b = [0x4000, 0x2000, 0x1000, 0x800, 0x400, 0x200, 0x100, 0x80]  # step table for use with F0 block, 16-bit variant
-        self.step_table_f2 = [0x0F, 0x07, 0x03, 0x01]  # step table for use with F2 block
+        #self.step_table_f2 = [0x0F, 0x07, 0x03, 0x01]  # step table for use with F2 block
         self.step_types = ["lin4", "lin16", "pow2", "pow3"]  # step increase functions for use with F3 block
         self.max_step_size = 1024
 
