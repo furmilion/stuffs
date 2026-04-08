@@ -8,6 +8,7 @@ import random
 from math import *
 #from typing import Any
 
+
 try:
     import argparse
 except ModuleNotFoundError:
@@ -19,14 +20,64 @@ try:  # numpy is a better option than standard python list stuff
     import numpy as np
     NUMPY = True
     # print("nupi")
+    char, uchar, schar,\
+    uint8_t, int8_t,\
+    ushort, uint16_t, short, int16_t,\
+    ulong, uint32_t, long, int32_t,\
+    ulonglong, uint64_t, longlong, int64_t,\
+    float, double, longdouble =\
+    (
+        np.uint8, np.uint8, np.int8, 
+        np.uint8, np.int8,
+        np.uint16, np.uint16, np.int16, np.int16,
+        np.uint32, np.uint32, np.int32, np.int32,
+        np.uint64, np.uint64, np.int64, np.int64,
+        np.float32, np.float64, np.longdouble
+    )
+    f16 = np.float16
 except ImportError:
     print("NumPY not found.\n"
           "It is recommended to install NumPY as this offers slightly better performance.")
     NUMPY = False
+    char, uchar, schar,\
+    uint8_t, int8_t,\
+    ushort, uint16_t, short, int16_t,\
+    ulong, uint32_t, long, int32_t,\
+    ulonglong, uint64_t, longlong, int64_t,\
+    float, double, longdouble =\
+    (
+        int, int, int, 
+        int, int,
+        int, int, int, int,
+        int, int, int, int,
+        int, int, int, int,
+        float, float, float
+    )
+    f16 = float
 
 import builtins as bi  # bi <3
 # i'll write a better list function here later;
 # it will pick either list or np.array depending on availability of numpy
+
+def generate_sine_table(length: int = 1, max: int = 1, signed: bool = True):
+    """
+    Generates a numpy.ndarray of values of
+    sin(math.tau/length*x) across "length" values.
+    """
+    match (type(max), signed):
+        case (np.uint8, True):
+            arr = [
+                    int(
+                        sin(tau / length * x)
+                        # we'll' bitwise-and the max value
+                        # with 127 so that it becomes positive
+                        * (int(max.view(np.int8) & 127)) - 2
+                    ) - 1 for x in range(length)
+                ]
+            return np.array(arr, np.int8), arr
+        case _:
+            return "unimplemented"
+        
 
 def test_file(path: str = ".") -> bool:
     try:
@@ -627,8 +678,5 @@ if __name__ == "__main__":
     #       f'{a_5}\n{a_6}\n'
     #       f'{a_7}\n{a_8}\n')
     print(
-    convert_to_float("24.8", True)
-    )
-    print(
-    convert_from_float(0x807FFFFF, "24.8", True)
+        generate_sine_table(256, np.uint8(127), True)
     )
