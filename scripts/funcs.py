@@ -24,22 +24,30 @@ try:  # numpy is a better option than standard python list stuff
     NUMPY = True
     #print("nupi")
     
-    char, uchar, schar,\
-    uint8_t, int8_t,\
-    ushort, uint16_t, short, int16_t,\
-    ulong, uint32_t, long, int32_t,\
-    ulonglong, uint64_t, longlong, int64_t,\
-    float, double, longdouble =\
-    (
-        np.uint8, np.uint8, np.int8, 
-        np.uint8, np.int8,
-        np.uint16, np.uint16, np.int16, np.int16,
-        np.uint32, np.uint32, np.int32, np.int32,
-        np.uint64, np.uint64, np.int64, np.int64,
-        np.float32, np.float64, np.longdouble
-    )
-    f16 = np.float16
+    char = np.uint8
+    uchar = char
+    schar = np.int8
+    uint8_t = char
+    int8_t = schar
+    ushort = np.uint16
+    uint16_t = ushort
+    short = np.int16
+    int16_t = short
+    ulong = np.uint32
+    uint32_t = ulong
+    long = np.int32
+    int32_t = long
+    ulonglong = np.uint64
+    uint64_t = ulonglong
+    longlong = np.int64
+    int64_t = longlong
+    float = np.float32
+    double = np.float64
+    longdouble = np.longdouble
+    assfloat = np.float16
     def swap_sign(int_type):
+        if not NUMPY:
+            return int_type
         match type(int_type()):
             case uchar: return char
             case schar: return uchar
@@ -61,14 +69,14 @@ except ImportError:
     ushort, uint16_t, short, int16_t,\
     ulong, uint32_t, long, int32_t,\
     ulonglong, uint64_t, longlong, int64_t,\
-    float, double, longdouble =\
+    double, longdouble =\
     (
         int, int, int, 
         int, int,
         int, int, int, int,
         int, int, int, int,
         int, int, int, int,
-        float, float, float
+        float, float
     )
     f16 = float
     def swap_sign(int_type):
@@ -176,7 +184,7 @@ def clamp(val: float | int = 0, mn: float | int = 0, mx: float | int = 9) -> flo
     :return: clamped value
     """
     #return max(mn, val) if val <= mn else min(val, mx) if val <= mx else mx
-    return min(mx, min(mn, val)) # how did i not think of this
+    return min(mx, max(mn, val)) # how did i not think of this
 
 def pack_byte(bits=None) -> int:
     """Pack 8 bits into a byte. Excess input will be discarded."""
@@ -590,6 +598,11 @@ def get_sample_data(raw, smtype="m"):
     )
 
 
+# for gods sake PLEASE DO NOT FUCKING USE IT
+# IF YOU USE IT WI WILL MAKE SURE TO HAVE
+# YOUR ARMS BROKEN. I WILL FIND YOU, I WILL
+# COME TO YOUR HOUSE, I WILL PERSONALLY BREAK
+# YOUR FUCKING ARMS.
 def make_dpcm(data: bytes = b"") -> None:
     data = list(data)
     for i in range(len(data)):
