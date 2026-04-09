@@ -16,10 +16,14 @@ except ModuleNotFoundError:
 from hashlib import sha512, sha256, md5
 from os import mkdir, remove as rm
 
+def types(*variables):
+    return [type(_()) for _ in variables]
+
 try:  # numpy is a better option than standard python list stuff
     import numpy as np
     NUMPY = True
-    # print("nupi")
+    #print("nupi")
+    
     char, uchar, schar,\
     uint8_t, int8_t,\
     ushort, uint16_t, short, int16_t,\
@@ -35,6 +39,19 @@ try:  # numpy is a better option than standard python list stuff
         np.float32, np.float64, np.longdouble
     )
     f16 = np.float16
+    def swap_sign(int_type):
+        match type(int_type()):
+            case uchar: return char
+            case schar: return uchar
+            case ushort: return short
+            case short: return ushort
+            case ulong: return long
+            case long: return ulong
+            case ulonglong: return longlong
+            case longlong: return ulonglong
+            case _: return int_type
+                
+    
 except ImportError:
     print("NumPY not found.\n"
           "It is recommended to install NumPY as this offers slightly better performance.")
@@ -54,6 +71,10 @@ except ImportError:
         float, float, float
     )
     f16 = float
+    def swap_sign(int_type):
+        return int_type
+
+
 
 import builtins as bi  # bi <3
 # i'll write a better list function here later;
@@ -66,27 +87,50 @@ def generate_sine_table(length: int = 1, max: int = 1, signed: bool = True):
     """
     if not NUMPY:
         return "nah"
-    match (type(max), signed):
-        case (np.uint8, True):
+    match (type(max)):
+        case np.uint8:  # numpy types override signs
+            #print("shart")
+            #print(type(max) == schar)
             return np.array(
                 [
-                    int(
-                        sin(tau / length * x)
-                        # we'll' bitwise-and the max value
-                        # with 127 so that it becomes positive
-                        * (int(max.view(np.int8) & 127) + .5) - .5
+                    round(
+                        (sin(tau / length * x) + 1)
+                        * max / 2
                     ) for x in range(length)
-                ], np.int8
+                ], char
             )
-        case (np.uint8, False):
+        case np.int8:
             return np.array(
                 [
-                    int(
-                        sin(tau / length * x)/2
-                        * max
-                    )+128 for x in range(length)
-                ], uint8_t
+                    round(
+                        (sin(tau / length * x))
+                        * (f16(max&127) + .5) - .5
+                    ) for x in range(length)
+                ], schar
             )
+        case np.uint16:  # numpy types override signs
+            #print("shart")
+            #print(type(max) == schar)
+            return np.array(
+                [
+                    round(
+                        (sin(tau / length * x) + 1)
+                        * max / 2
+                    ) for x in range(length)
+                ], ushort
+            )
+        case np.int16:
+            return np.array(
+                [
+                    round(
+                        (sin(tau / length * x))
+                        * (float(max&32767) + .5) - .5
+                    ) for x in range(length)
+                ], short
+            )
+        
+        case bi.int:  # placeholder
+            return 1
         case _:
             return "unimplemented"
         
@@ -690,6 +734,8 @@ if __name__ == "__main__":
     #       f'{a_5}\n{a_6}\n'
     #       f'{a_7}\n{a_8}\n')
     print(
-        f"{generate_sine_table(256, np.uint8(127), True)}\n"
-        f"{generate_sine_table(256, np.uint8(128), False)}\n"
+        f"{generate_sine_table(256, char(127), 0)}\n"
+        f"{generate_sine_table(256, schar(-1), 0)}\n"
+        f"{generate_sine_table(256, ushort(65535), 0)}\n"
+        f"{generate_sine_table(256, short(32767), 0)}\n"
     )
