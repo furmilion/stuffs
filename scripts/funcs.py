@@ -31,7 +31,11 @@ try:  # numpy is a better option than standard python list stuff
     from numpy import ushort, short, uint16 as uint16_t, int16 as int16_t
     from numpy import ulong, long, uint32 as uint32_t, int32 as int32_t
     from numpy import ulonglong, longlong, uint64 as uint64_t, int64 as int64_t
-    from numpy import float32 as float, single, double, float96 as triple, float128 as quadruple
+    from numpy import float32 as float, single, double
+    try: from numpy import float96 as triple
+    except ImportError: pass
+    try: from numpy import float128 as quadruple
+    except ImportError: pass
     from numpy import half, longdouble as veryfloat
 
     def swap_sign(int_type):
@@ -51,9 +55,11 @@ try:  # numpy is a better option than standard python list stuff
             case np.int8 | np.int16 | np.int32 | np.int64:  return True
             case _: return False
     
-except ImportError:
+except Exception as e:
     print("NumPY not found.\n"
-          "It is recommended to install NumPY as this offers slightly better performance.")
+          "It is recommended to install NumPY as this offers slightly better performance.\n"
+          f"Ecxeption: {e}\n"
+          f"Type: {type(e)}")
     NUMPY = False
     char, uchar, schar,\
     uint8_t, int8_t,\
@@ -74,36 +80,6 @@ except ImportError:
         return int_type
 
 
-def generate_sine_table(length: int = 1, max: int = 1, signed: bool = True):
-    """
-    Generates a numpy.ndarray of values of
-    sin(math.tau/length*x) across "length" values.
-    """
-    if not NUMPY:
-        return "nah"
-    if not signed:
-        return np.array(
-            np.clip(
-                [
-                    round(
-                        (sin(tau / length * x) + 1)
-                            * max / 2
-                    ) for x in range(length)
-                ], 0, (2**(8*np.size(max)))
-            ), type(max)
-        )
-    elif signed:
-        return np.array(
-            np.clip(
-                [
-                    round(
-                        (sin(tau / length * x) + 1)
-                        * max / 2
-                    ) for x in range(length)
-                ], 0, (2 ** (8 * np.size(max)))
-            ), type(max)
-        ).view(swap_sign(max)) + ((2 ** (8 * np.size(max)))//2)
-        
 
 def test_file(path: str = ".") -> bool:
     try:
@@ -708,9 +684,16 @@ if __name__ == "__main__":
     #       f'{a_3}\n{a_4}\n'
     #       f'{a_5}\n{a_6}\n'
     #       f'{a_7}\n{a_8}\n')
-    print(
-        f"{generate_sine_table(256, char(127), 0)}\n"
-        f"{generate_sine_table(256, schar(-1), 0)}\n"
-        f"{generate_sine_table(256, ushort(65535), 0)}\n"
-        f"{generate_sine_table(256, short(32767), 0)}\n"
-    )
+    # print(
+    #     f"{generate_sine_table(256, char(255), 0)}\n"
+    #     f"{generate_sine_table(256, schar(127), 1)}\n"
+    #     f"{generate_sine_table(256, ushort(65535), 0)}\n"
+    #     f"{generate_sine_table(256, short(32767), 1)}\n"
+    # )
+    import FurWave
+    with FurWave.WaveWriter(
+        channels = 1,
+        samplerate = 16000,
+        data = generate_sine_table(65536, short(32767), 1)
+    ) as w:
+        w.write_file("_htest.wav")

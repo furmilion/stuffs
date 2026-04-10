@@ -63,7 +63,7 @@ class WaveWriter:
         self.samplerate = samplerate if isinstance(samplerate, int) and samplerate > 0 else 44100
         self.bitdepth = self._validate_bitdepth(bitdepth)
         self.chunks = chunks if chunks and isinstance(chunks, dict) else {}
-        self.packed = packed or (max(data) > 255 if data else False)
+        self.packed = packed or (max(data) > 255 if data is not None else False)
 
         # Determine audio format
         self._is_float = isinstance(self.bitdepth, float) or (
