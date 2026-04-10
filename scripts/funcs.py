@@ -18,45 +18,31 @@ from os import mkdir, remove as rm
 
 def types(*variables):
     return [type(_()) for _ in variables]
+import builtins as bi  # bi <3
+# i'll write a better list function here later;
+# it will pick either list or np.array depending on availability of numpy
 
 try:  # numpy is a better option than standard python list stuff
     import numpy as np
     NUMPY = True
     #print("nupi")
-    
-    char = np.uint8
-    uchar = char
-    schar = np.int8
-    uint8_t = char
-    int8_t = schar
-    ushort = np.uint16
-    uint16_t = ushort
-    short = np.int16
-    int16_t = short
-    ulong = np.uint32
-    uint32_t = ulong
-    long = np.int32
-    int32_t = long
-    ulonglong = np.uint64
-    uint64_t = ulonglong
-    longlong = np.int64
-    int64_t = longlong
-    float = np.float32
-    double = np.float64
-    longdouble = np.longdouble
-    assfloat = np.float16
+    from numpy import uint8 as char, uint8 as uchar, int8 as schar, uint8 as uint8_t, int8 as int8_t
+    from numpy import byte, ubyte
+    from numpy import ushort, short, uint16 as uint16_t, int16 as int16_t
+    from numpy import ulong, long, uint32 as uint32_t, int32 as int32_t
+    from numpy import ulonglong, longlong, uint64 as uint64_t, int64 as int64_t
+    from numpy import float32 as float, single, double, float96 as triple, float128 as quadruple
+    from numpy import half, longdouble as veryfloat
     def swap_sign(int_type):
-        if not NUMPY:
-            return int_type
-        match type(int_type()):
-            case uchar: return char
-            case schar: return uchar
-            case ushort: return short
-            case short: return ushort
-            case ulong: return long
-            case long: return ulong
-            case ulonglong: return longlong
-            case longlong: return ulonglong
+        match int_type:
+            case byte: return char
+            case schar(): return uchar
+            case ushort(): return short
+            case short(): return ushort
+            case ulong(): return long
+            case long(): return ulong
+            case ulonglong(): return longlong
+            case longlong(): return ulonglong
             case _: return int_type
                 
     
@@ -71,22 +57,17 @@ except ImportError:
     ulonglong, uint64_t, longlong, int64_t,\
     double, longdouble =\
     (
-        int, int, int, 
-        int, int,
-        int, int, int, int,
-        int, int, int, int,
-        int, int, int, int,
-        float, float
+        bi.int, bi.int, bi.int,
+        bi.int, bi.int,
+        bi.int, bi.int, bi.int, bi.int,
+        bi.int, bi.int, bi.int, bi.int,
+        bi.int, bi.int, bi.int, bi.int,
+        bi.float, bi.float
     )
-    f16 = float
+    f16 = bi.float
     def swap_sign(int_type):
         return int_type
 
-
-
-import builtins as bi  # bi <3
-# i'll write a better list function here later;
-# it will pick either list or np.array depending on availability of numpy
 
 def generate_sine_table(length: int = 1, max: int = 1, signed: bool = True):
     """
