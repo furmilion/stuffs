@@ -33,18 +33,23 @@ try:  # numpy is a better option than standard python list stuff
     from numpy import ulonglong, longlong, uint64 as uint64_t, int64 as int64_t
     from numpy import float32 as float, single, double, float96 as triple, float128 as quadruple
     from numpy import half, longdouble as veryfloat
+
     def swap_sign(int_type):
         match int_type:
-            case byte: return char
-            case schar(): return uchar
-            case ushort(): return short
-            case short(): return ushort
-            case ulong(): return long
-            case long(): return ulong
-            case ulonglong(): return longlong
-            case longlong(): return ulonglong
+            case np.uint8:  return byte
+            case np.uint16: return short
+            case np.uint32: return long
+            case np.uint64: return longlong
+            case np.int8:  return ubyte
+            case np.int16: return ushort
+            case np.int32: return ulonglong
+            case np.int64: return ulonglong
             case _: return int_type
-                
+    def is_signed(int_type):
+        match int_type:
+            case np.uint8 | np.uint16 | np.uint32 | np.uint64:  return False
+            case np.int8 | np.int16 | np.int32 | np.int64:  return True
+            case _: return False
     
 except ImportError:
     print("NumPY not found.\n"
@@ -76,52 +81,28 @@ def generate_sine_table(length: int = 1, max: int = 1, signed: bool = True):
     """
     if not NUMPY:
         return "nah"
-    match (type(max)):
-        case np.uint8:  # numpy types override signs
-            #print("shart")
-            #print(type(max) == schar)
-            return np.array(
+    if not signed:
+        return np.array(
+            np.clip(
+                [
+                    round(
+                        (sin(tau / length * x) + 1)
+                            * max / 2
+                    ) for x in range(length)
+                ], 0, (2**(8*np.size(max)))
+            ), type(max)
+        )
+    elif signed:
+        return np.array(
+            np.clip(
                 [
                     round(
                         (sin(tau / length * x) + 1)
                         * max / 2
                     ) for x in range(length)
-                ], char
-            )
-        case np.int8:
-            return np.array(
-                [
-                    round(
-                        (sin(tau / length * x))
-                        * (f16(max&127) + .5) - .5
-                    ) for x in range(length)
-                ], schar
-            )
-        case np.uint16:  # numpy types override signs
-            #print("shart")
-            #print(type(max) == schar)
-            return np.array(
-                [
-                    round(
-                        (sin(tau / length * x) + 1)
-                        * max / 2
-                    ) for x in range(length)
-                ], ushort
-            )
-        case np.int16:
-            return np.array(
-                [
-                    round(
-                        (sin(tau / length * x))
-                        * (float(max&32767) + .5) - .5
-                    ) for x in range(length)
-                ], short
-            )
-        
-        case bi.int:  # placeholder
-            return 1
-        case _:
-            return "unimplemented"
+                ], 0, (2 ** (8 * np.size(max)))
+            ), type(max)
+        ).view(swap_sign(max)) + ((2 ** (8 * np.size(max)))//2)
         
 
 def test_file(path: str = ".") -> bool:
