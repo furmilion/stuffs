@@ -29,6 +29,7 @@ def generate_fn_table_advanced(length: int = 1, maxv: int = 1, signed: bool | in
     """
     if not NUMPY:
         return "nah"
+    # TODO: either scale or clip values so that tan() doesnt reror out
     if not signed:
         return np.array([
             round(
