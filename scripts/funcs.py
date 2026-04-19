@@ -690,10 +690,13 @@ if __name__ == "__main__":
     #     f"{generate_sine_table(256, ushort(65535), 0)}\n"
     #     f"{generate_sine_table(256, short(32767), 1)}\n"
     # )
+    
+    # example and also debug usage of wave table generator
     import FurWave
+    import funcs_wavegens
     with FurWave.WaveWriter(
         channels = 1,
-        samplerate = 16000,
-        data = generate_sine_table(65536, short(32767), 1)
+        samplerate = 16743,
+        data = funcs_wavegens.generate_fn_table_advanced(128, short(32767), 1, atan, e*e*e)
     ) as w:
         w.write_file("_htest.wav")
