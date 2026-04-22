@@ -286,27 +286,32 @@ class MultiPCMSampleExtractor:
                  bank2:           str = None,         # path to bank 2, for stitching. can be omitted.
                  debug:           bool = False,       # wait for a keystroke to proceed, after every instrument
                  chip_type:       str = "multipcm_c", # the chip type, affects sample type detection algorithm.
-                                                      # can be: "opl4", "multipcm". case insensetive.
+                                                      # can be: "opl4", "multipcm", "7gew" --
+                                                      # (due to how get_instrument_data() works). case insensetive.
                  bankswitch_type: str = "m",          # left for legacy reasons.
                  clock_rate: int = 8053975,           # chip rate.
                                                       # should really not be filled out
                                                       # unless the rate is different
-                                                      # 33868800 for OPL4, 9878400 for MPCM (to result in 44100hz)
-                 divider: int = 8,                    # clock divider. 32 is the one for OPL4, 8 for MPCM
-                 chans: int = 28,                     # channels. 24 for OPL4, 28 for MPCM
+                                                      # 33868800 for OPL4, 9878400 for MPCM, 8000000 for GEW7
+                                                      # (to result in 44100hz)
+                 divider: int = 8,                    # clock divider. 32 is the one for OPL4, 8 for MPCM, GEW7
+                 chans: int = 28,                     # channels. 24 for OPL4, 28 for MPCM, GEW7
+                 only_log: bool | int = False,        # whether to only log instruments instead of also dumping their samples
                  ):
         self.out_loc = out_loc
         self.log_name = log_name
         self.bank1 = bank1
         self.bank2 = bank2
         self.bankswitch_type = bankswitch_type
-        match chip_type.lower():
+        self.chip_type = chip_type.lower()
+        self.only_log = only_log
+        match self.chip_type:
             case "multipcm":
                 self.formats = {
                     0: 8,          # 0b00
-                    1: "Invalid",  # 0b01
-                    2: 8,          # 0b10
-                    3: 12,         # 0b11
+                    1: 12,         # 0b01
+                    2: -1,         #
+                    3: -1,         #
                 }
                 self.rate = 35955
                 # OpenMSX(?) OPL4 PCM Emulation says that 0b01 if the "Prohibited" of MultiPCM.
@@ -336,7 +341,8 @@ class MultiPCMSampleExtractor:
                     if test_file(f"./samples/{out_loc}"):
                         pass
                     else:
-                        mkdir(f"./samples")
+                        try: mkdir(f"./samples")
+                        except: pass
                         mkdir(f"./samples/{out_loc}")
                 except FileNotFoundError:
                     print('File does not exist.')
@@ -350,7 +356,8 @@ class MultiPCMSampleExtractor:
                     if test_file(f"./samples/{out_loc}"):
                         pass
                     else:
-                        mkdir(f"./samples")
+                        try: mkdir(f"./samples")
+                        except: pass
                         mkdir(f"./samples/{out_loc}")
                 except FileNotFoundError:
                     print('File does not exist.')
@@ -377,6 +384,10 @@ class MultiPCMSampleExtractor:
                                 get_sample_data(self.bank[:12])[1]:
                                 get_sample_data(self.bank[:12])[1] + get_sample_data(self.bank[:12])[3]
                                 ]
+        try:
+            self.log = open(f'./samples/{log_name}.txt', 'x')
+        except FileExistsError:
+            self.log = open(f'./samples/{log_name}.txt', 'w')
 
         self.known_roms_legacy = {  # md5 hashes of full roms, not usable for ones stitched from vgms
             '6ccd6376e416a56f92b21368fd14d9df': "0Virtua Cop Sample ROM",
@@ -389,84 +400,71 @@ class MultiPCMSampleExtractor:
             '48c472241ad7c280f930a9c59b216274': "7Virtua Racing Sample ROM 2",
         }
         self.known_roms = {  # md5 hashes of rom instrument tables
-            'bfc869e4e6009bbbbde9857e0d4602ab': "0Virtua Cop Sample ROM",
-            'dd165c69654084f0dfaaf01b4806a8a9': "1Virtua Cop SFX ROM",
-            'b0996ee23be61a1db77d5bbb82791316': "2Daytona USA Sample ROM",
-            '52c10680b0be2ef357d9f4b90d4ae5ca': "3Daytona USA SFX ROM",
-            '3dcbfe07d62693b7d8bf92fa3777427e': "4OPL4 YRW801",
-            '3ae69910e4efdc398c9ae956f985ef73': "5OutRunners Sample ROM",
-            '75c53fdc5ac0297e4e0947b7467935bd': "6Virtua Racing Sample ROM 1",
-            'f5367cb72a6f8a81933cf6f27dd793fb': "7Virtua Racing Sample ROM 2",
+            'bfc869e4e6009bbbbde9857e0d4602ab': "0_Virtua Cop Sample ROM",
+            'dd165c69654084f0dfaaf01b4806a8a9': "1_Virtua Cop SFX ROM",
+            'b0996ee23be61a1db77d5bbb82791316': "2_Daytona USA Sample ROM",
+            '52c10680b0be2ef357d9f4b90d4ae5ca': "3_Daytona USA SFX ROM",
+            '3dcbfe07d62693b7d8bf92fa3777427e': "4_OPL4 YRW801",
+            '3ae69910e4efdc398c9ae956f985ef73': "5_OutRunners Sample ROM",
+            '75c53fdc5ac0297e4e0947b7467935bd': "6_Virtua Racing Sample ROM 1",
+            'f5367cb72a6f8a81933cf6f27dd793fb': "7_Virtua Racing Sample ROM 2",
+            '865b509bae66b74e02728387f6b7b6fc': "8_Desert Tank Sample ROM",
+            '0c5c205b45495038ba428c647011cda2': "9_Desert Tank SFX ROM",
         }
         if hash := ret_hash(self.bank[
             get_sample_data(self.bank)[1]:
             get_sample_data(self.bank)[1] + get_sample_data(self.bank)[3]]
         ):
-            print("Detected ROM: ", end='')
+            print(f"Hash: {hash}\n"
+                  "Detected ROM: ", end='')
             if hash in self.known_roms:
-                match int(self.known_roms[hash][0]):
-                    case 0:
-                        print(self.known_roms[hash][1:])
-                        self.samples = 82
-                        self.switch_ranges = []
-                        self.bad_samples = []
-                    case 1:
-                        print(self.known_roms[hash][1:])
-                        self.samples = 207
-                        self.switch_ranges = [range(111, 158), range(158, 207)]
-                        self.bad_samples = []
+                match int(self.known_roms[hash].split("_")[0]):
+                    case 0: self.set_rom_params(82, [], [])
+                    case 1: self.set_rom_params(207, [range(111, 158), range(158, 207)], [])
                     case 2:
-                        print(self.known_roms[hash][1:])
-                        self.samples = 198
-                        self.switch_ranges = [range(93, 138), range(138, 65535)]
-                        self.bad_samples = [139,
+                        self.set_rom_params(198, [range(93, 138), range(138, 65535)],
+                                           [139,
                                             142, 145,
                                             150, 151, 152, 153, 154, 156, 159,
                                             161, 163, 164,
                                             198, 199,
                                             200, 201, 202, 203, 204, 205, 206, 207, 208, 209,
                                             210, 211, 212, 213]
-                    case 3:
-                        print(self.known_roms[hash][1:])
-                        self.samples = 185
-                        self.switch_ranges = [range(87, 139), range(139, 65535)]
-                        self.bad_samples = []
-                    case 4:
-                        print(self.known_roms[hash][1:])
-                        self.samples = len(self.instrument_table) // 12
-                        self.switch_ranges = []
-                        self.bad_samples = []
-                        # untested
-                    case 5:
-                        print(self.known_roms[hash][1:])
-                        self.samples = len(self.instrument_table) // 12
-                        self.switch_ranges = []
-                        self.bad_samples = []
-                        # untested
-                    case 6:
-                        print(self.known_roms[hash][1:])
-                        self.samples = len(self.instrument_table) // 12
-                        self.switch_ranges = []
-                        self.bad_samples = [14]
-                        # untested
-                    case _:
-                        self.samples = len(self.instrument_table) // 12
-                        self.switch_ranges = []
-                        self.bad_samples = []
-                        print("Unidentified ROM")
+                                           )
+                    case 3: self.set_rom_params(185, [range(87, 139), range(139, 65535)], [])
+                    case 4: self.set_rom_params(); self.chip_type = "opl4" # untested
+                    case 5: self.set_rom_params() # untested
+                    case 6: self.set_rom_params(bad_samples=[14]) # untested
+                    case 7: self.set_rom_params() # untested
+                    case 8: self.set_rom_params(251, [range(127, 189), range(189, 65536)], [range(53, 63), 100, range(101, 127), range(157, 189)])
+                    case 9: self.set_rom_params(206, [range(127, 175), range(175, 65536)], [range(54, 63), 100, range(118, 127), range(172, 175)])
+                    case _: self.set_rom_params() # any other rom
 
+                print(self.known_roms[hash].split("_")[1] if hash in self.known_roms else "Unidentified ROM")
+                self.log.write(f"ROM hash: {hash}\n"
+                               f"Detected ROM: {self.known_roms[hash].split('_')[1] if hash in self.known_roms else 'Unidentified ROM'}\n")
             else:
-                self.samples = len(self.instrument_table) // 12
-                self.switch_ranges = []
-                self.bad_samples = []
+                self.set_rom_params()
+                self.log.write(f"ROM hash: {hash}\n"
+                               f"Detected ROM: {self.known_roms[hash].split('_')[1] if hash in self.known_roms else 'Unidentified ROM'}\n")
                 print("Unidentified ROM")
-        try:
-            self.log = open(f'./samples/{log_name}.txt', 'x')
-        except FileExistsError:
-            self.log = open(f'./samples/{log_name}.txt', 'w')
         s(2)  # wait 2 secs
         self.extract()
-            
+
+    def set_rom_params(self, samples=None, switch_ranges=None, bad_samples=None):
+        self.samples = samples if samples else len(self.instrument_table) // 12
+        self.switch_ranges = switch_ranges if switch_ranges else []
+        self.bad_samples = []
+        if bad_samples:
+            for val in bad_samples:  # populate the list with ranges also.
+                if isinstance(val, (range, list, tuple)):
+                    self.bad_samples.extend(list(val))
+                elif isinstance(val, int):
+                    self.bad_samples.append(val)
+                else:
+                    log(f"Uh oh, an unsupported value type! {type(val)}")
+                    pass
+
     def check_ranges(self, iter: int = 0) -> int:
         """
         purpose: checking for bankswitch ranges and returning 1048576 << bank, else 0
@@ -483,7 +481,7 @@ class MultiPCMSampleExtractor:
             param2: int = 0,
             param3: int = 0, # reserved
             param4: int = 0  # reserved
-    ) -> str | float:
+    ) -> str | bi.float | int:
         """
         returns parameter values
         """
@@ -571,7 +569,7 @@ class MultiPCMSampleExtractor:
             case _:
                 return "Placeholder"
 
-    def actually_save_samples(self, iter: int = 0, NUMPY: bool = False) -> None:
+    def actually_save_samples(self, iter: int = 0, NUMPY: bool = False, only_log: bool | int = False) -> None:
         """
         This function takes in a sample index, fetches the data from instrument table and then fetches the sample itself from the data.
         """
@@ -583,7 +581,7 @@ class MultiPCMSampleExtractor:
                 f'\n'
             )
             return None
-        current_instrument = list(get_sample_data(self.bank[(iter * 12) + 12:(iter * 12) + 24]))
+        current_instrument = list(get_sample_data(self.bank[(iter * 12) + 12:(iter * 12) + 24], self.chip_type))
         current_instrument[0] += self.check_ranges(iter)
         if self.debug:
             print(f"Current Instrument: {iter}\n"
@@ -598,22 +596,22 @@ class MultiPCMSampleExtractor:
                   f'\n'
                   )
             input()
+        data = list(self.bank[current_instrument[0]:current_instrument[0] + current_instrument[3]])
+        if len(data) == 0 or int(min(data)) == int(max(data)):
+            print("Sample empty, skipping")
+            self.log.write(
+                f'##############################################\n'
+                f'Instrument {iter} is empty\n'
+                f'\n'
+            )
+            return
+        if only_log: return
         match (self.formats[current_instrument[1]] if current_instrument[1] in self.formats else "invalid"):  # pcm format
             case 8:
-                data_ready = []
                 if NUMPY:
-                    data_ready = (np.array(list(self.bank[current_instrument[0]:current_instrument[0] + current_instrument[3]]), np.uint8) + 128) & 255
+                    data_ready = (np.array(data, np.uint8) + 128) & 255
                 else:
-                    for idx, val in enumerate(self.bank[current_instrument[0]:current_instrument[0] + current_instrument[3]]):
-                        data_ready.append((val + 128) & 255)
-                if int(min(data_ready)) == int(max(data_ready)):
-                    print("Sample empty, skipping")
-                    self.log.write(
-                        f'##############################################\n'
-                        f'Instrument {iter} is empty\n'
-                        f'\n'
-                    )
-                    return
+                    data_ready = [(val + 128) & 255 for val in data]
                 with WaveWriter(channels=1,
                                 samplerate=44100,
                                 bitdepth=8,
@@ -640,7 +638,7 @@ class MultiPCMSampleExtractor:
                         channels=1,
                         samplerate=44100,
                         bitdepth=8,
-                        data=list(self.bank[current_instrument[0]:current_instrument[0] + current_instrument[3]])
+                        data=data
                         ) as Wave:
                     Wave.set_smpl_chunk(
                         sample_loop_count=1,
@@ -702,14 +700,20 @@ class MultiPCMSampleExtractor:
         )
         for _ in range(self.samples):
             print(f"Current sample: {_}")
-            self.actually_save_samples(_, NUMPY)
+            self.actually_save_samples(_, NUMPY, self.only_log)
         return None
 
 if __name__ == "__main__":
-    path = "E:/D Drive (HDD)/PycharmProjects/BananaBot/mpt2fur/rom stuff/roms"
-    print(f"{path}/roms/daytona_sampleroms.raw")
-    MultiPCMSampleExtractor(out_loc="daytona_attempt",
-                            log_name="daytona_attempt_log",
-                            bank1=f"{path}/roms/Daytona_sampleroms.raw",
-                            debug=False
-                            )
+    if nt:
+        path = "E:/D Drive (HDD)/PycharmProjects/BananaBot/mpt2fur/rom stuff/roms"
+    elif posix:
+        path = "../../mpcm"
+    else:
+        path = "."
+    print(f"{path}/roms/desert_samplerom.raw")
+    MultiPCMSampleExtractor(
+        out_loc="desert_tank_samples",
+        log_name="desert_tank_sample_log",
+        bank1=f"{path}/roms/desert_samplerom.raw",
+        debug=False
+        )

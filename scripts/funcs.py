@@ -8,13 +8,14 @@ import random
 from math import *
 #from typing import Any
 
-
 try:
     import argparse
 except ModuleNotFoundError:
     pass
 from hashlib import sha512, sha256, md5
-from os import mkdir, remove as rm
+from os import mkdir, remove as rm, name as osName
+posix = osName == "posix"
+nt = osName == "nt"
 
 def types(*variables):
     return [type(_()) for _ in variables]
@@ -385,7 +386,29 @@ class PtrManager:
     def update_pointer(self, pointer_value, pointer_name: str = None):
         self.add_pointer(pointer_value, pointer_name) if pointer_name else 0
 
+def combine_odd_even(file1: list = None, file2: list = None) -> np.ndarray | None:
+    """
+    i have no idea how to describe this but what it does is basically
+    combine whatever 2 input files it was given by sliding bytes of the
+    files inbetween eachother
+    """
+    match (not file1, not file2):
+        case (True, True):
+            raise ValueError("input requred")
+        case (True, False):
+            return file2
+        case (False, True):
+            return file1
 
+    final_len = min(len(file1), len(file2))
+    arr = np.array([0 for _ in range(final_len * 2)], ubyte)
+    for i in range(0, final_len):
+        if not i % (1 << 16):
+            print(i)
+        arr[i * 2] = file1[i]
+        arr[i * 2 + 1] = file2[i]
+    return arr
+    #return b'what'
 
 
 def split_file(file: str, output_folder: str, length=32136, dpcm_rate=15, type=0) -> None:
@@ -499,7 +522,7 @@ def write_ins(instype=28, samples=None, name="Instrument"):
             "MA", ]
 
 
-def get_sample_data(raw, smtype="m"):
+def get_sample_data(raw, chip_type="m"):
     """
     Returns contents of a 12-byte instrument header
     of MultiPCM-like chips, those being Sega MultiPCM itself (also known as Yamaha YMW258-F) and
@@ -507,33 +530,100 @@ def get_sample_data(raw, smtype="m"):
     Takes any data as input data and any text as mode.
     If first letter of mode matches 'm', return MultiPCM data, if matches 'o', return OPL4 data, return None otherwise.
     """
-    return (
-        (((raw[0x0000] & 0x3F) << 16 ) |                        #  0. start address
-          (raw[0x0001] << 8) |
-          (raw[0x0002])),
+    match chip_type[0]:
+        case "o" :  # OPL4 (YMF278B)
+            return (
+                (((raw[0x0000] & 0x3F) << 16 ) |                        #  0. start address
+                  (raw[0x0001] << 8) |
+                  (raw[0x0002])),
 
-        ( (raw[0x0000] >> 6) & 0b11),                           #  1. data format (0: 8bit, 1: 12bit, 2: 16bit)
+                ( (raw[0x0000] >> 6) & 0b11),                           #  1. data format (0: 8bit, 1: 12bit, 2: 16bit)
 
-        ( (raw[0x0003] << 8) |                                  #  2. loop start
-          (raw[0x0004]) + 1),
+                ( (raw[0x0003] << 8) |                                  #  2. loop start
+                  (raw[0x0004]) + 1),
 
-        (0x10000 - (
-          (raw[0x0005] << 8) |                                  #  3. sample length in samples, caps at 65535
-          (raw[0x0006]))),
+                (0x10000 - (
+                  (raw[0x0005] << 8) |                                  #  3. sample length in samples, caps at 65535
+                  (raw[0x0006]))),
 
-        ( (raw[0x0008] >> 4) & 0x0F),                           #  4. instrument attack rate
-        (  raw[0x0008] & 0x0F),                                 #  5. instrument decay 1 rate
+                ( (raw[0x0008] >> 4) & 0x0F),                           #  4. instrument attack rate
+                (  raw[0x0008] & 0x0F),                                 #  5. instrument decay 1 rate
 
-        (  raw[0x0009] & 0x0F),                                 #  6. instrument decay 2 rate
-        ( (raw[0x0009] >> 4) & 0x0F),                           #  7. instrument decay level
+                (  raw[0x0009] & 0x0F),                                 #  6. instrument decay 2 rate
+                ( (raw[0x0009] >> 4) & 0x0F),                           #  7. instrument decay level
 
-        (  raw[0x000A] & 0x0F),                                 #  8. instrument release rate
-        ( (raw[0x000A] >> 4) & 0x0F),                           #  9. instrument rate envelope correction
+                (  raw[0x000A] & 0x0F),                                 #  8. instrument release rate
+                ( (raw[0x000A] >> 4) & 0x0F),                           #  9. instrument rate envelope correction
 
-        (  raw[0x0007] & 0b111),                                # 10. vibrato strength
-        (  raw[0x000B] & 0b111),                                # 11. amplitude modulation strength
-        ( (raw[0x0007] >> 3) & 0b111),                          # 12. lfo speed
-    )
+                (  raw[0x0007] & 0b111),                                # 10. vibrato strength
+                (  raw[0x000B] & 0b111),                                # 11. amplitude modulation strength
+                ( (raw[0x0007] >> 3) & 0b111),                          # 12. lfo speed
+            )
+        case "8" | "m":  # MultiPCM (GEW8, YMW258-F, Sega 315-5560)
+            # MAME emulator at src/devices/sound/multipcm.cpp says that the chip has
+            # FM support, referencing Edward d-tech's article.
+            # I myself don't really believe it does, and I think it is exclusively a
+            # sample chip. Well, we'll never know until Saturn gets one on his hands,
+            # which is pretty unlikely considering it's a quad package and has to be
+            # soldered off board first and is unlikely to be on sale by itself from
+            # factory.
+            return (
+                (((raw[0x0000] & 0x3F) << 16) |  # 0. start address; there is one free bit as the address space is
+                 (raw[0x0001] << 8) |            #                 ; still 22 bits.
+                 (raw[0x0002])),
+
+                ((raw[0x0000] >> 6) & 1),  # 1. data format (0: 8bit, 1: 12bit)
+
+                ((raw[0x0003] << 8) |  # 2. loop start
+                 (raw[0x0004]) + 1),
+
+                (0x10000 - (
+                        (raw[0x0005] << 8) |  # 3. sample length in samples, caps at 65535
+                        (raw[0x0006]))),
+
+                ((raw[0x0008] >> 4) & 0x0F),  # 4. instrument attack rate
+                (raw[0x0008] & 0x0F),  # 5. instrument decay 1 rate
+
+                (raw[0x0009] & 0x0F),  # 6. instrument decay 2 rate
+                ((raw[0x0009] >> 4) & 0x0F),  # 7. instrument decay level
+
+                (raw[0x000A] & 0x0F),  # 8. instrument release rate
+                ((raw[0x000A] >> 4) & 0x0F),  # 9. instrument rate envelope correction
+
+                (raw[0x0007] & 0b111),  # 10. vibrato strength
+                (raw[0x000B] & 0b111),  # 11. amplitude modulation strength
+                ((raw[0x0007] >> 3) & 0b111),  # 12. lfo speed
+            )
+        case "7" :  # GEW7 (YMW270-F)
+            return (
+                (((raw[0x0000] & 0x1F) << 16) | # 0. start address
+                  (raw[0x0001] << 8) |          #
+                  (raw[0x0002])) & 0x1fffff,    # ;; address space is much smaller. huh
+                                                #
+                 ((raw[0x0000] >> 6) & 0b11),   # 1. data format (0: 8bit, 1: 12bit)
+                                                #
+                 ((raw[0x0003] << 8) |          # 2. loop start ;; how does it even work lmao
+                  (raw[0x0004]) + 1),           #
+                                                #
+                (0x4000 - (                     #
+                  (raw[0x0005] << 8) |          # 3. sample length in samples, caps at... 16384 for GEW7??? huh.
+                  (raw[0x0006]))),              #
+                                                # ;; ADSR is laid slightly different compared to GEW8
+                 ((raw[0x0009] >> 4) & 0x0F),   # 4. instrument attack rate
+                  (raw[0x0009] & 0x0F),         # 5. instrument decay 1 rate
+                                                #
+                 ((raw[0x000A] >> 4) & 0x0F),   # 6. instrument decay 2 rate
+                  (raw[0x000B] & 0x0F),         # 7. instrument decay level
+                                                #
+                  (raw[0x000A] & 0x0F),         # 8. instrument release rate
+                 ((raw[0x000B] >> 4) & 0x0F),   # 9. instrument rate envelope correction
+                                                #
+                  (raw[0x0007] & 0b111),        # 10. vibrato strength
+                  (raw[0x0008] & 0b111),        # 11. amplitude modulation strength
+                 ((raw[0x0007] >> 3) & 0b111),  # 12. lfo speed ;; ???????
+            )
+        case _:
+            raise ValueError("Invalid chip type!")
 
 
 # for gods sake PLEASE DO NOT FUCKING USE IT
@@ -692,11 +782,31 @@ if __name__ == "__main__":
     # )
     
     # example and also debug usage of wave table generator
-    import FurWave
-    import funcs_wavegens
-    with FurWave.WaveWriter(
-        channels = 1,
-        samplerate = 16743,
-        data = funcs_wavegens.generate_fn_table_advanced(128, short(32767), 1, atan, e*e*e)
-    ) as w:
-        w.write_file("_htest.wav")
+    # import FurWave
+    # import funcs_wavegens
+    # with FurWave.WaveWriter(
+    #     channels = 1,
+    #     samplerate = 16743,
+    #     data = funcs_wavegens.generate_fn_table_advanced(128, short(32767), 1, atan, e*e*e)
+    # ) as w:
+    #     w.write_file("_htest.wav")
+    fp = r"E:\D Drive (HDD)\PycharmProjects\BananaBot\mpt2fur\rom stuff\roms\roms\sw1000xg"
+    open(
+        f"{fp}/wave1_16m.raw",
+        "wb"
+    ).write(
+        combine_odd_even(
+            list(open(f"{fp}/xv389a0.ic122", "rb").read()),
+            list(open(f"{fp}/xv390a0.ic121", "rb").read())
+        )
+    )
+    open(
+        fr"{fp}/wave2_4m.raw",
+        "wb"
+    ).write(
+        combine_odd_even(
+            list(open(f"{fp}/xt445a0-828.ic124", "rb").read()),
+            list(open(f"{fp}/xt461a0-829.ic123", "rb").read())
+        )
+    )
+    a = np.array([0], ushort)
