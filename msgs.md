@@ -181,5 +181,8 @@ Few such examples are:
 [`~ GENERAL SERUM ~`](https://www.youtube.com/watch?v=QhoD5o0SYNU), by Kot and [Abstract64](https://www.youtube.com/@64abstract)
 
 [HueArme](https://soundcloud.com/user-416698216-971657402), the person that pushed the synthesizer to its limits.
+- of notable example is [PIPI](https://www.youtube.com/watch?v=6RIIdi_DA10);
+it's one I find really cool. Using an electronic piano as a kick? you need
+quite the creativity to come up with that.
 
 And finally, shameless self-promotion here, cover of [Crystal Oscillator](/tests/msgs_10.ogg).

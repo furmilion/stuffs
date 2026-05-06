@@ -6,7 +6,7 @@ I have no idea, but it seems that SONiVOX
 had an FM synth in use as GM synthesizer
 in some of the phones instead of a sample
 based one. Those tables are built based
-on source code of aforementioned FM synth.
+on source code<sup>[[1]](https://github.com/sdugit/sonivox_7025)[[2]](https://github.com/sdugit/sonivox_7025/tree/ics/arm-hybrid-22k)</sup> of aforementioned FM synth.
 
 
 Algorithms mod table:

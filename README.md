@@ -18,5 +18,7 @@ Currently contains:
   - Yamaha MU Series Sample ROM decryption (MU100 and later are yet to be considered)
   - SC-55 ROM decompression (which would make the other utility obsolete)
   - SC-88 ROM decompression? 
+  - TODO: YMW270-F GEW7
 - (Not the best) Console HEX Editor written in python
+- Customizable (and slow due to how it works) audio engine. (Currently WIPs)
 
