@@ -1,4 +1,23 @@
+"""
+This is my custom sound engine.
+The concept is as simple as it gets: iterate over a wave form at sample rate.
 
+Currently, only a single core thing has been partially implemented: a Channel.
+
+A channel is the sound producing unit of the engine.
+It has the following properties:
+    - Waveform (i.e. square, wavetable etc.)
+    - Pulse width for pulse wave
+    - Wavetable for wavetable and sample waves
+    - Sample rate, which also controls root frequency of a sample
+    - Panpot
+    - Volume
+    - FM: (completely unimplemented right now)
+        Per-operator ADSR
+        Per-operator frequency control
+        Operator matrix
+        Operator ADSR
+"""
 
 class Channel:
     def __init__(self,
@@ -35,11 +54,12 @@ class Channel:
         self.sample_rate = sample_rate # sample rate of the channel; also affects base sample playback freq
         
         # special
-        self.phase = phase # will be updated when the chabnel is asked to update
-                           # used to calculate next phase. basically, points at where the playhead is in the wave
+        self.phase = phase  # will be updated when the channel is asked to update
+                            # used to calculate next phase. basically, points at where
+                            # the playhead is in the wave
         self.panning = panning # channel panning. self-explanatory; not used right now, might implement later
         self.volume = volume
-        self.finish_setup() # validate some stuff so it doesnt die
+        self.finish_setup() # validate some stuff so it doesn't die
     def finish_setup(self):
         if isinstance(self.c_type, str):
             match self.c_type:
