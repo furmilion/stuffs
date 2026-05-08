@@ -129,6 +129,11 @@ Controllers:
 | 121 | Reset All Controllers | Resets following controls: Pitchbend, PolyKeyPress, ChannelPress, Mod wheel, Expression, Hold, Portamento, Sostenuto, Soft |
 | 123 |     All Notes Off     |                         Turns all notes off unless held by CC#64 Sustain Pedal or CC#65 Sostenuto                          |
 
+MSGS, however, ignores portamento and soft pedal controls (a software synthesizer built to be
+fast and cheap with an acceptable sound quality, after all).
+Also, MSGS accepts all of these apart from Bank controls even when in GM mode,
+including the extra percussion always being available.
+
 ---
 #### Notes
 <a name="msgs"></a>
@@ -166,7 +171,7 @@ Otomata Labs demogroup, specifically the Abstract64 member of it. It was made fo
 Oldskool Music Revision 2025, "<32kb executable" category, in which it took the
 first place with the final file size of around 28 kilobytes.
 
-## Footnotes
+## Personal notes
 
 Honestly, I love MSGS. The low quality sound is signature IMO.
 A lot of people say MSGS sounds bad. While I'd agree that MSGS
