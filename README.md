@@ -20,5 +20,11 @@ Currently contains:
   - SC-88 ROM decompression? 
   - TODO: YMW270-F GEW7
 - (Not the best) Console HEX Editor written in python
-- Customizable (and slow due to how it works) audio engine. (Currently WIPs)
+- [FurSound](scripts/FurSound.py): customizable (and slow due to how it works) audio engine. (Currently WIPs)
 
+Some status rundown:
+- FurADPCM: stable in all cases I tested it in, but I'll rewrite it someday
+- FurWAVE: stable; solid as is
+- Sample ROM decompressor: pretty much stable; wip
+- FurSound: stable; wip
+- Console HEX Editor: stable; wip
