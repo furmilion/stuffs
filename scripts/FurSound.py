@@ -37,14 +37,15 @@ class Channel:
         # constants
 
         # wave types
-        self.square     = "square";  self.pulse    = "pulse"
-        self.sine       = "sine";    self.sawtooth = "sawtooth"
-        self.sample     = "pcm";     self.pcm      = self.sample
-        self.noise_1bit = "n1b";     self.noise    = "n"
+        self.square     = "square";    self.pulse    = "pulse"
+        self.sine       = "sine";      self.sawtooth = "sawtooth"
+        self.sample     = "pcm";       self.pcm      = self.sample
+        self.noise_1bit = "n1b";       self.noise    = "n"
+        self.wt         = "wavetable"; self.triangle = "triangle"
 
         # coming: more types; replaced with the closest ones by sound
         self.fm = self.sine
-        self.triangle = self.square; self.xor_triangle = self.pulse
+        self.xor_triangle = self.pulse
         self.xor_sine = self.sine;   self.xor_sawtooth = self.sawtooth
 
         # special
@@ -85,8 +86,13 @@ class Channel:
                     self.wavetable = []
                 case self.sawtooth:
                     self.wavetable = [_ for _ in range(256)]
+                case self.triangle:
+                    self.wavetable = [abs(_) for _ in range(-255, 256) ]
+                    #self.wavetable = [abs(_) for _ in range(-255, 256, 2)]
                 case self.sample:
                     pass  # assume already valid wavetable
+                case self.wt:
+                    self.wavetable = self.wavetable if self.wavetable else [0 if _ < 128 else 255 for _ in range(256)]
                 case _:
                     self.wavetable = [0 if _ < 128 else 255 for _ in range(256)] # square fallback
         else:
@@ -109,17 +115,27 @@ class Channel:
         # print(f"phase {self.phase}\n"
         #       f"wave access at: {floor(self.phase * len(self.wavetable))}, value: {self.wavetable[floor(self.phase * len(self.wavetable))]}\n"
         #       f"phase % 1: {self.phase % 1}\n")
+        phase = self.phase * len(self.wavetable)
         match self.i_type:
             case self.i_none:
-                out = self.wavetable[floor(self.phase * len(self.wavetable))]
+                out = self.wavetable[floor(phase)]
             case self.i_lin:
-                out = floor(
-                               (
-                                   self.wavetable[floor(self.phase * len(self.wavetable))] +
-                                   self.wavetable[(floor(self.phase * len(self.wavetable)) + 1) % len(self.wavetable)] # modulo to avoid OOB access exception
-                               ) / 2
-                           ) # doesnt work as intended rn but ill fix it later
+                out = (
+                    floor( self.wavetable[floor(phase) % len(self.wavetable)] - 
+                        (
+                            (self.wavetable[floor(phase) % len(self.wavetable)] - self.wavetable[ceil(phase) % len(self.wavetable)]) * (phase - floor(phase))
+                        )
+                    )
+                )
         self.phase = (self.phase + (self._freq / self.sample_rate)) % 1  # modulo so that it automatically wraps around at 1
+        
+        # debug output
+        #print(f"output:  {out}\n"
+        #      f"wt:      {self.wavetable[floor(self.phase) % len(self.wavetable)]}\n"
+        #      f"wt+1:    {self.wavetable[ceil(self.phase) % len(self.wavetable)]}\n"
+        #      f"phase:   {self.phase}\n"
+        #      f"phase*l: {self.phase * len(self.wavetable)}\n"
+        #)
         return out
                 
 
@@ -127,13 +143,18 @@ class Channel:
 
 if __name__ == "__main__":  # test
     sr = 44100
-    pulseChannel = Channel(
-        type_ = "sawtooth",
+    Channel = Channel(
+        type_ = "triangle",
         sample_rate = sr,
-        interpolation = "linear"
+        interpolation = "linear",
+        wavetable = [0, 192, 255, 192],
         )
     # print(pulseChannel.wavetable)
-    pulseChannel._freq = 22.5
+    Channel._freq = 1
     fs_test = open("fursound_test.raw", "wb")
-    fs_test.write(bytes([pulseChannel.update() for _ in range(sr*5)]))
+    arr = []
+    for _ in range(sr*5):
+        arr.append(funcs.clamp(Channel.update(), 0, 255))
+        Channel._freq += .005
+    fs_test.write(bytes(arr))
         
