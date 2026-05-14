@@ -22,11 +22,13 @@ It has the following properties:
 
 import funcs  # later use
 from math import tau, pi, sin, cos, sinh, cosh, tan, tanh, asin, asinh, acos, acosh, atan, atan2, atanh, floor, ceil
+import FurWave
 
 class Channel:
     def __init__(self,
     type_:         str         = "square",
-    width:         float | int = 0,
+    width:         float | int = 0,    # pulse width for the pulse wave
+    length:        int         = 256,  # the length of the preset waves
     wavetable:     list[int]   = None,
     sample_rate:   int         = 44100,
     phase:         float | int = 0,
@@ -69,6 +71,7 @@ class Channel:
         self.panning = panning # channel panning. self-explanatory; not used right now, might implement later
         self.volume = volume
         self.i_type = interpolation
+        self.length = abs(length)
         
         self.finish_setup() # validate some stuff so it doesn't die
         
@@ -79,22 +82,27 @@ class Channel:
         if isinstance(self.c_type, str):
             match self.c_type:
                 case self.square:
-                    self.wavetable = [0 if _ < 128 else 255 for _ in range(256)] # the most basic waveform
+                    self.wavetable = [-1 if _ < self.length // 2 else 1 for _ in range(self.length)] # the most basic waveform
                 case self.pulse:
                     self.wavetable = []
                 case self.sine:
-                    self.wavetable = []
+                    self.wavetable = [sin(tau / self.length * _) for _ in range(self.length)]
                 case self.sawtooth:
-                    self.wavetable = [_ for _ in range(256)]
+                    self.wavetable = [(_ / self.length) * 2 - 1 for _ in range(self.length)]
                 case self.triangle:
-                    self.wavetable = [abs(_) for _ in range(-255, 256) ]
+                    self.wavetable = [abs(_ / self.length) * 2 - 1 for _ in range(-self.length // 2, self.length) ]
                     #self.wavetable = [abs(_) for _ in range(-255, 256, 2)]
                 case self.sample:
                     pass  # assume already valid wavetable
                 case self.wt:
-                    self.wavetable = self.wavetable if self.wavetable else [0 if _ < 128 else 255 for _ in range(256)]
+                    if self.wavetable:
+                        pass
+                    else:
+                        self.c_type = self.square
+                        self.finish_setup()
                 case _:
-                    self.wavetable = [0 if _ < 128 else 255 for _ in range(256)] # square fallback
+                    self.c_type = self.square
+                    self.finish_setup()
         else:
             raise ValueError("'type' must be a string!")
         
@@ -121,10 +129,9 @@ class Channel:
                 out = self.wavetable[floor(phase)]
             case self.i_lin:
                 out = (
-                    floor( self.wavetable[floor(phase) % len(self.wavetable)] - 
-                        (
-                            (self.wavetable[floor(phase) % len(self.wavetable)] - self.wavetable[ceil(phase) % len(self.wavetable)]) * (phase - floor(phase))
-                        )
+                    self.wavetable[floor(phase) % len(self.wavetable)] - 
+                    (
+                        (self.wavetable[floor(phase) % len(self.wavetable)] - self.wavetable[ceil(phase) % len(self.wavetable)]) * (phase - floor(phase))
                     )
                 )
         self.phase = (self.phase + (self._freq / self.sample_rate)) % 1  # modulo so that it automatically wraps around at 1
@@ -144,17 +151,22 @@ class Channel:
 if __name__ == "__main__":  # test
     sr = 44100
     Channel = Channel(
-        type_ = "triangle",
+        type_ = "sawtooth",
         sample_rate = sr,
         interpolation = "linear",
         wavetable = [0, 192, 255, 192],
         )
     # print(pulseChannel.wavetable)
     Channel._freq = 1
-    fs_test = open("fursound_test.raw", "wb")
     arr = []
     for _ in range(sr*5):
-        arr.append(funcs.clamp(Channel.update(), 0, 255))
+        arr.append(Channel.update())
         Channel._freq += .005
-    fs_test.write(bytes(arr))
+    with FurWave.WaveWriter(channels=1,
+                    samplerate=44100,
+                    bitdepth=32.,
+                    data=arr,
+                    packed=True,
+                    ) as Wave:
+        Wave.write_file(f"fursound_test.wav")
         
