@@ -89,9 +89,17 @@ class Channel:
                     self.wavetable = [sin(tau / self.length * _) for _ in range(self.length)]
                 case self.sawtooth:
                     self.wavetable = [(_ / self.length) * 2 - 1 for _ in range(self.length)]
-                case self.triangle:
-                    self.wavetable = [abs(_ / self.length) * 2 - 1 for _ in range(-self.length // 2, self.length) ]
-                    #self.wavetable = [abs(_) for _ in range(-255, 256, 2)]
+                    for i in range(len(self.wavetable)):
+                        self.wavetable[i] += (1-max(self.wavetable))/2
+                    for i in range(len(self.wavetable)):
+                        self.wavetable[i] *= 1/max(self.wavetable)
+                case self.triangle:  # unfortunately it was too troublesome for me to get triangle working properly so instead i opted for a saw generator extended by itself reversed
+                    self.wavetable = [(_ / self.length) * 2 - 1 for _ in range(self.length)]
+                    for i in range(len(self.wavetable)):
+                        self.wavetable[i] += (1-max(self.wavetable))/2
+                    for i in range(len(self.wavetable)):
+                        self.wavetable[i] *= 1/max(self.wavetable)
+                    self.wavetable.extend(self.wavetable[::-1])
                 case self.sample:
                     pass  # assume already valid wavetable
                 case self.wt:
@@ -120,9 +128,6 @@ class Channel:
     def update(self):
         # do a little funny trick: set the output to whatever position we land at right now, *then* increase phase.
         # this is done to make phase 0 the default phase instead of outputting next phase.
-        # print(f"phase {self.phase}\n"
-        #       f"wave access at: {floor(self.phase * len(self.wavetable))}, value: {self.wavetable[floor(self.phase * len(self.wavetable))]}\n"
-        #       f"phase % 1: {self.phase % 1}\n")
         phase = self.phase * len(self.wavetable)
         match self.i_type:
             case self.i_none:
@@ -151,19 +156,20 @@ class Channel:
 if __name__ == "__main__":  # test
     sr = 44100
     Channel = Channel(
-        type_ = "sawtooth",
+        type_ = "wavetable",
         sample_rate = sr,
         interpolation = "linear",
-        wavetable = [0, 192, 255, 192],
+        wavetable = [0, .75, 1, .75],
+        length=1024,
         )
     # print(pulseChannel.wavetable)
-    Channel._freq = 1
+    Channel._freq = 65.256
     arr = []
-    for _ in range(sr*5):
+    for _ in range(sr*20):
         arr.append(Channel.update())
-        Channel._freq += .005
+        Channel.wavetable = [ (((_*64)>>24)&255)/255, (((_*64)>>16)&255)/255, (((_*64)>>8)&255)/255, (((_*64)>>0)&255)/255]
     with FurWave.WaveWriter(channels=1,
-                    samplerate=44100,
+                    samplerate=88200,
                     bitdepth=32.,
                     data=arr,
                     packed=True,
