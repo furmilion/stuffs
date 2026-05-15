@@ -147,20 +147,6 @@ def explode_byte(bit: int = 255) -> list[int]:
         bits[i] = (bit >> (7 - i)) & 1
     return bits
 
-
-def ternary(condition, true, false):
-    """
-    Obsolete since guarded conditions
-    :param condition:
-    :param true:
-    :param false:
-    :return:
-    """
-    if condition:
-        return true
-    else:
-        return false
-
 def log(*args, **kwargs) -> None:
     pass
 
@@ -171,6 +157,11 @@ def round_to_closest(l,u,v) -> int:
     Delta is calculated by adding lower and upper values and dividing the result by 2.
     """
     return l if v < (l + u)/2 else u
+
+# removed: save_riff()
+# removed: make_dpcm()
+# removed: split_file()
+# removed: ternary()
 
 def check_bytes(in_file, val):
     """
@@ -206,161 +197,6 @@ def check_bytes(in_file, val):
             start_from -= 4
         f.close()
         return start_from + 5
-
-
-class SaveError(Exception):
-    pass
-# legacy, try FurWave first before falling back to this
-def save_riff(#bdep=8, rate=32000, data="sample", loop_start=None, loop_end=None, location="./output.wav",
-              **kwargs) -> None or int:  # I have no idea what that "-> tuple" means
-    """
-    This really is a legacy function, you should use FurWAVE instead as it supports floating point and generally has more features.
-    
-    
-    Saves an audio file of desired bit depth at desired sample rate with provided data,
-    and loop points if specified, at specified location.
-    Only supports fixed-point Linear PCM, not floating point.
-    According to Microsoft WAVE format, only following bit depths are allowed:
-    [8, 16, 24, 32].
-
-    The thing stopping you from having an arbitrary bit depth is so-called 'Bytes per Block' value.
-    As you might've guessed, it is a hexadecimal representation of an integer.
-    Despite there being proper channel + bit depth configurations, it is likely that your
-    audio player would not play the file properly, or at all.
-
-    This function was made specifically for use with Furnace Tracker (github.com/tildearrow/furnace)
-
-    As of committing this comment, I am planning to replace this backbone with a proper writer function/class,
-    which most likely will be based on Cockos' WDL Library Wave Writer.
-    """
-    # We'll put everything in a nice big fat juicy try block to print out errors if there are any
-    try:
-        verbose = kwargs["verbose"] if "verbose" in kwargs else False
-        try: verbose = bool(verbose)
-        except TypeError: verbose = False
-
-        bdep = kwargs["bdep"] if "bdep" in kwargs else 8
-        rate = floor(kwargs["rate"]) if "rate" in kwargs else 32000
-        data = kwargs["data"] if "data" in kwargs else [random.randint(0, 255) for _ in range(256*(bdep//8))]
-        loop_type = kwargs["loop_type"] if "loop_type" in kwargs else 0
-        loop_start = kwargs["loop_start"] if "loop_start" in kwargs else (len(data) // (bdep//8))
-        loop_end = kwargs["loop_end"] - 1 if "loop_end" in kwargs else (len(data) // (bdep//8)) - 1
-        location = kwargs["location"] if "location" in kwargs else "./output.wav"
-
-        if type(loop_start) == int:
-            if loop_start < 0:
-                loop_start = 0
-        if type(loop_end) == int:
-            if loop_end < 0:
-                loop_end = (len(data) // (bdep//8)) - 1
-        else:
-            loop_end = len(data) - 1
-        if str(loop_type).lower() in ["forwards", "forward", "fw", "f", "0"]:
-            loop_type = 0
-        elif str(loop_type).lower() in ["backwards", "backward", "bw", "f", "2"]:
-            loop_type = 2
-        elif str(loop_type).lower() in ["pingpong", "ping-pong", "ping", "pong", "1", "p"]:
-            loop_type = 1
-        else:
-            loop_type = 0
-
-        if verbose: print(f"args: {kwargs}\n"
-                          "vals: "
-                          "{'verbose': %s, 'bdep': %s, 'rate': %s,"
-                          "'data': %s, 'loop_start': %s, 'loop_end': %s, 'location': %s}"
-                          % (verbose, bdep, rate, data, loop_start, loop_end, location))
-
-        rate &= 0xFFFFFF # technically 4-bit, but furnace refuses to recognize those
-        if bdep % 8:
-            print("Bad bit depth (not divisible by 8)")
-            bdep -= bdep % 8
-        blka = (1 * bdep)//8
-        rate2 = (rate * blka) & 0xFFFFFFFF
-        # Sample bit depth seems to be simple, a single byte to indicate bytes per samples:
-        # 1 for 8-bit, 2 for 16-bit and so on.
-        # Floating point samples seem to be using another method to store data, but we're not interested in that.
-        important = [0x52, 0x49, 0x46, 0x46,    # RIFF header
-                     0x00, 0x00, 0x00, 0x00,    # The size of the data after this block
-                     0x57, 0x41, 0x56, 0x45,    # 'WAVE' block
-                     0x66, 0x6D, 0x74, 0x20,    # 'fmt ' block
-                     0x10, 0x00, 0x00, 0x00,    # Chunk size or something. 16.
-                     0x01, 0x00, 0x01, 0x00,    # Linear PCM, 1 channel
-                     rate & 0xFF,  (rate >> 8) & 0xFF,  (rate >> 16) & 0xFF,  (rate >> 24) & 0xFF,  # Sample rate
-                     rate2 & 0xFF, (rate2 >> 8) & 0xFF, (rate2 >> 16) & 0xFF, (rate2 >> 24) & 0xFF,  # Byte rate
-                     blka, 0x00, bdep, 0x00,    # Block align and bit depth
-                     0x73, 0x6D, 0x70, 0x6C,    # 'smpl' block
-                     0x3C, 0x00, 0x00, 0x00,    # Block size.
-                     0x00, 0x00, 0x00, 0x00,
-                     0x00, 0x00, 0x00, 0x00,
-                        0,    0, 0x00, 0x00,    # No idea what those 2 bytes are
-                        0,    0,    0,    0,    # help
-                        0,    0,    0,    0,    # loop pont marker? the text is ")\ÅB"
-                        0,    0,    0,    0,
-                        0,    0,    0,    0,
-                     0x01, 0x00, 0x00, 0x00,
-                     0x00, 0x00, 0x00, 0x00,    # some more data
-                     0x00, 0x00, 0x00, 0x00,
-                     loop_type, 0x00, 0x00, 0x00,    # even more
-                     # loop points
-                     loop_start & 0xFF, (loop_start >> 8) & 0xFF, (loop_start >> 16) & 0xFF, (loop_start >> 24) & 0xFF,
-                     loop_end & 0xFF,   (loop_end >> 8) & 0xFF,   (loop_end >> 16) & 0xFF,   (loop_end >> 24) & 0xFF,
-                     0x00, 0x00, 0x00, 0x00,
-                     0x00, 0x00, 0x00, 0x00,    # some more unknown data
-                     0x64, 0x61, 0x74, 0x61,    # 'data' block
-                     0x00, 0x00, 0x00, 0x00     # size of that shit
-                     ]
-        # TODO: actually make a proper wav writing class
-        length_real = len(data) + 0x64
-        new_data = []
-        if max(data) > 255:
-            for i in range(len(data)):
-                new_data.append(data[i] >> 8)
-                new_data.append(data[i] & 255)
-        data = new_data
-        del new_data
-        data_length = len(data)
-        important[4] = length_real & 0xFF
-        important[5] = (length_real >> 8) & 0xFF
-        important[6] = (length_real >> 16) & 0xFF
-        important[7] = (length_real >> 24) & 0xFF
-        important[-4] = data_length & 0xFF
-        important[-3] = (data_length >> 8) & 0xFF
-        important[-2] = (data_length >> 16) & 0xFF
-        important[-1] = (data_length >> 24) & 0xFF
-
-        if type(data) is str:
-            data = bytes(data, "utf8")
-        elif type(data) in [list, bytes, bytearray]:
-            data = bytes(data)
-        elif NUMPY and type(data) is np.ndarray:
-            data = np.array(list(data), np.uint8)
-        else:
-            raise ValueError(f"data has died. (type: {type(data)})")
-        if NUMPY:
-            data = np.array(list(data), np.uint8)
-            header = np.array(list(important), np.uint8)
-        else:
-            header = important
-        # header    = b'RIFF' # RIFF header
-        # length    = b'' # Length of the rest of the file, will be calculated later
-        # important = b'WAVEfmt \x10\x00\x00\x00\x01\x00\x01\x00' # important data or something
-        # rate_real = bytes([(rate >> 8) & 0xff,   # sample rate, seems to be 3 bytes long
-        #                    (rate >> 16) & 0xff,
-        #                    (rate >> 24) & 0xff]) # FIFO: first in, first out
-        try:
-            h = open(location, "xb")
-            h.write(bytes(header) + bytes(data))
-            h.close()
-        except FileExistsError:
-            #print("File already present, overwriting...")
-            h = open(location, "wb")
-            h.write(bytes(header) + bytes(data))
-            h.close()
-        if verbose: return bytes(header) + bytes(data)
-        else: return 1
-    except Exception as e:
-        print("Error saving file: %s" % e)
-        raise SaveError(e)
 
 
 def pcm12_to_16(data: bytes = None):
@@ -410,81 +246,6 @@ def combine_odd_even(file1: list = None, file2: list = None) -> np.ndarray | Non
     return arr
     #return b'what'
 
-
-def split_file(file: str, output_folder: str, length=32136, dpcm_rate=15, type=0) -> None:
-    """
-    This is really useless to normal user, to me even. I made this to goof around with Furnace's 256k NES sample ROM limitation.
-    
-    This function takes any raw data as an input and splits it into chunks, each of
-    length specified by the parameter, or less.
-
-    :param file: The input file to split.
-    :param length: The length of each chunk.
-    :param output_folder: The output folder for resulting split files.
-    :param dpcm_rate: Specifies the NES DPCM rate, if applicable. 15 if not set.
-    :param type: Specifies the type of NES machine, if applicable. 0: NTSC, 1: PAL. This affects playback frequency slightly.
-    :return:
-    """
-    dpcm_rates_table_ntsc = {
-         0: 4182,   1: 4710,   2: 5264,   3: 5593,
-         4: 6258,   5: 7046,   6: 7919,   7: 8363,
-         8: 9420,   9: 11186, 10: 12604, 11: 13983,
-        12: 16885, 13: 21307, 14: 24858, 15: 33144,
-    }
-    dpcm_rates_table_pal = {
-         0: 4177,   1: 4697,   2: 5261,   3: 5579,
-         4: 6024,   5: 7045,   6: 7917,   7: 8397,
-         8: 9447,   9: 11234, 10: 12596, 11: 14090,
-        12: 16965, 13: 21316, 14: 25191, 15: 33252,
-    }
-    if dpcm_rate not in range(0, 16):
-        final_rate = dpcm_rate
-        print("Selected rate not compatible with NES DPCM")
-    elif type == 0:
-        final_rate = dpcm_rates_table_ntsc[dpcm_rate]
-        print(f"Selected machine type: NTSC, DPCM Pitch: {dpcm_rate}, {dpcm_rates_table_ntsc[dpcm_rate]}hz")
-    elif type == 1:
-        final_rate = dpcm_rates_table_pal[dpcm_rate]
-        print(f"Selected machine type: NTSC, DPCM Pitch: {dpcm_rate}, {dpcm_rates_table_pal[dpcm_rate]}hz")
-    try:
-        data = open(file, "rb").read()
-    except FileNotFoundError:
-        raise FileNotFoundError("not file 😔")
-    if length in [None, False]:
-        raise ValueError("Length must be non-zero")
-    ptr = 0
-    total_files = 0
-    if len(data)/8 > 262144:
-        print(r" /!\ This will likely not fit within 256kb of memory.")
-        if dpcm_rate in range(0,16):
-            size = len(data)
-            temp_rate = dpcm_rate
-            recommended_rate = dpcm_rate
-            while size/8 > 262144:
-                size = ceil(size * (dpcm_rates_table_ntsc[temp_rate - 1]/dpcm_rates_table_ntsc[temp_rate]))
-                recommended_rate -= 1
-                temp_rate -= 1
-                print(f"deb: size {size} | "
-                      f"rate {dpcm_rates_table_ntsc[temp_rate]} | "
-                      f"rate-1 {dpcm_rates_table_ntsc[temp_rate-1] if (temp_rate-1) in dpcm_rates_table_ntsc else 0} | "
-                      f"coefficient {(dpcm_rates_table_ntsc[temp_rate - 1]/dpcm_rates_table_ntsc[temp_rate]) if (temp_rate-1) in dpcm_rates_table_ntsc else 0} | "
-                      f"< 262144 {size < 262144}")
-                if temp_rate < 1:
-                    print("No suitable rate has been found to fit this in under 256kb.")
-                    break
-
-
-            print(f"Recommended DPCM rate (assuming NTSC): {recommended_rate}, {dpcm_rates_table_ntsc[recommended_rate]}hz")
-    for i in range(0, (len(data)//length) + 1):
-        temp_data = data[ptr:ptr + length]
-        save_riff(rate=final_rate, bdep=8,data=temp_data,location=f"{output_folder}/split_{i}.wav")
-        ptr += length
-        total_files += 1
-    print(f"Total files: {total_files}")
-    print(f"Recommended tick rate at Speed 60: {round((final_rate*0.0018555394641564084)*(32136/length), 2)}hz")
-
-    # final_rate*0.0018555394641564084*1.9695872556118754
-
 def ret_hash(data, mode="md5", **kwargs):
     """
     A quick way to get hash in one of these modes:
@@ -513,6 +274,7 @@ def write_ins(instype=28, samples=None, name="Instrument"):
         samples = []
     elif len(samples) == 1:
         samples = samples[0]
+    # will be finished, some day
     """
     Writes a proper Furnace Tracker instrument, with samples if provided.
     """
@@ -625,90 +387,6 @@ def get_sample_data(raw, chip_type="m"):
         case _:
             raise ValueError("Invalid chip type!")
 
-
-# for gods sake PLEASE DO NOT FUCKING USE IT
-# IF YOU USE IT WI WILL MAKE SURE TO HAVE
-# YOUR ARMS BROKEN. I WILL FIND YOU, I WILL
-# COME TO YOUR HOUSE, I WILL PERSONALLY BREAK
-# YOUR FUCKING ARMS.
-def make_dpcm(data: bytes = b"") -> None:
-    data = list(data)
-    for i in range(len(data)):
-        data[i] //= 2
-    if len(data) % 8:
-        for i in range(len(data) % 8):
-            data.append((i % 2 is True))
-    final = [ data[0] for _ in range(len(data)) ]
-    final_dmc = [0 for _ in range(len(data)) ]
-    current = data[0]
-    for l in range(len(data)):
-        if current < data[l]:
-            current += 1
-            final_dmc[l] = 1
-        elif current > data[l]:
-            current -= 1
-            final_dmc[l] = 0
-        else:
-            if final[l - 1] == 0:
-                current += 1
-                final_dmc[l] = 1
-            elif final[l - 1] == 127:
-                current -= 1
-                final_dmc[l] = 0
-            if current < 0:
-                current = 0
-                final_dmc[l] = 0
-            elif current > 127:
-                current = 127
-                final_dmc[l] = 0
-        final[l] = current
-    for i in range(len(final)):
-        final[i] *= 2
-    final_dmc_truly = [0 for _ in range(len(final_dmc)//8)]
-    for i in range(len(final_dmc_truly)):
-        bit = 0b11111111
-        if final_dmc[(8*i)]:
-            bit &= 0b11111111
-        else:
-            bit &= 0b01111111
-        if final_dmc[(8*i) + 1]:
-            bit &= 0b11111111
-        else:
-            bit &= 0b10111111
-        if final_dmc[(8*i) + 2]:
-            bit &= 0b11111111
-        else:
-            bit &= 0b11011111
-        if final_dmc[(8*i) + 3]:
-            bit &= 0b11111111
-        else:
-            bit &= 0b11101111
-        if final_dmc[(8*i) + 4]:
-            bit &= 0b11111111
-        else:
-            bit &= 0b11110111
-        if final_dmc[(8*i) + 5]:
-            bit &= 0b11111111
-        else:
-            bit &= 0b11111011
-        if final_dmc[(8*i) + 6]:
-            bit &= 0b11111111
-        else:
-            bit &= 0b11111101
-        if final_dmc[(8*i) + 7]:
-            bit &= 0b11111111
-        else:
-            bit &= 0b11111110
-
-        final_dmc_truly[i] = bit
-    save_riff(rate=33144, bdep=8, data=final, location="./output.wav")
-    try:
-        print("yay")
-        open("./output.dmc", "wb").write(bytearray(final_dmc_truly))
-    except FileNotFoundError:
-        print("shit")
-        open("./output.dmc", "xb").write(bytearray(final_dmc_truly))
-    return None
 
 # АХТУНГ ДЕТКА
 
