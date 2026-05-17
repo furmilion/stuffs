@@ -144,6 +144,7 @@ class Channel:
             raise ValueError("what is this magic data i dont understand it i need string")
     
     def update(self, supress_phase_update=False):
+        out, phase_reset_flag = 0, False
         # do a little funny trick: set the output to whatever position we land at right now, *then* increase phase.
         # this is done to make phase 0 the default phase instead of outputting next phase.
         if self.c_type != self.none:
@@ -195,9 +196,9 @@ class Channel:
         self.wavetable = wavetable if wavetable else None # set channel wavetable if one is passed; will be overwritten if not wave type
         self._finish_setup_()
 
-    def change_width(self, width: float | int = .25,):
+    def change_width(self, width: float | int = .25):
         self.p_width = abs(width)
-        self.wavetable = [-1 if _ < (self.length * 2) * abs(width) else 1 for _ in range(self.length * 2)]
+        self.wavetable = [-1 if _ < (self.length * 2) * self.p_width else 1 for _ in range(self.length * 2)]
         
 
 
@@ -208,15 +209,15 @@ if __name__ == "__main__":  # main loop where i test stuff; currently its pw
         type_ = "pulse",
         sample_rate = sr,
         interpolation = "linear",
-        length = 16,
+        length = 64,
         volume = .4,
         width = 0
     )
     arr = []
     ChannelPulse._freq = 132
     for _ in range(sr*5):
-        arr.extend(ChannelPulse.update()[0]) # its not stereo anyway
-        ChannelPulse.change_width(ChannelPulse.p_width += .005 % 1)
+        arr.extend([ChannelPulse.update()[0]])  # its not stereo anyway
+        ChannelPulse.change_width((ChannelPulse.p_width + .25)/20 % 1)
 
     # ChannelCarrier = Channel(  # the carrier of osc sync
     #     type_ = "triangle",
