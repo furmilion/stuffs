@@ -27,7 +27,7 @@ import FurWave  # custom wav writer; i made it because the builtin one didnt hav
 class Channel:
     def __init__(self,
     type_:         str         = "square", # the default wave upon class spawn
-    width:         float | int = 0,    # pulse width for the pulse wave
+    width:         float | int = .25,    # pulse width for the pulse wave
     length:        int         = 256,  # the length of the preset waves
     wavetable:     list[int]   = None, # wavetable
     sample_rate:   int         = 44100, # default sample rate...
@@ -130,7 +130,7 @@ class Channel:
                 case _:
                     raise ValueError("where wave")
         else:
-            raise ValueError("'type' must be a string!")
+            raise ValueError("what is this magic data i dont understand it i need string")
         
         if isinstance(self.i_type, str):
             match self.i_type:
@@ -141,7 +141,7 @@ class Channel:
                 case _:
                     self.i_type = self.i_none
         else:
-            raise ValueError("'type' must be a string!")
+            raise ValueError("what is this magic data i dont understand it i need string")
     
     def update(self, supress_phase_update=False):
         # do a little funny trick: set the output to whatever position we land at right now, *then* increase phase.
@@ -186,48 +186,66 @@ class Channel:
     
     def change_wave(self,  # this is basically a copy of some init stuff, except as a separate function.
         type_:         str         = "square",
-        width:         float | int = 0,
+        width:         float | int = .25,
         length:        int         = 256,
         wavetable:     list[int]   = None,
     ):
         self.c_type = type_
-        self.p_width = round(abs(width), 5) # round to 5 decimal digits
+        self.p_width = abs(width)
         self.wavetable = wavetable if wavetable else None # set channel wavetable if one is passed; will be overwritten if not wave type
         self._finish_setup_()
+
+    def change_width(self, width: float | int = .25,):
+        self.p_width = abs(width)
+        self.wavetable = [-1 if _ < (self.length * 2) * abs(width) else 1 for _ in range(self.length * 2)]
         
 
 
 
-if __name__ == "__main__":  # main loop where i test stuff; currently its osc sync
+if __name__ == "__main__":  # main loop where i test stuff; currently its pw
     sr = 44100
-    ChannelCarrier = Channel(  # the carrier of osc sync
-        type_ = "triangle",
+    ChannelPulse = Channel(
+        type_ = "pulse",
         sample_rate = sr,
         interpolation = "linear",
         length = 16,
-        panning = -1,
         volume = .4,
-        )
-    panIncrement = 2/(sr*5)
-    ChannelCarrier._freq = 196.28*8
-    ChannelModulator = Channel(  # the actual sound against which the phase will be reset
-        type_ = "none",
-        sample_rate = sr,
-        interpolation = "none",
-        length = 32,
-        )
-    ChannelModulator._freq = 132
+        width = 0
+    )
     arr = []
+    ChannelPulse._freq = 132
     for _ in range(sr*5):
-        arr.extend(ChannelCarrier.update()[0:2])
-        ChannelCarrier._freq -= 0.007 # slowly lower the carrier frequency over time
-        ChannelCarrier.panning += panIncrement # 
-        if ChannelModulator.update()[2]:
-            ChannelCarrier.phase_reset()
-        if not _ % sr:
-            print(f"second {_ // sr} generated")
+        arr.extend(ChannelPulse.update()[0]) # its not stereo anyway
+        ChannelPulse.change_width(ChannelPulse.p_width += .005 % 1)
+
+    # ChannelCarrier = Channel(  # the carrier of osc sync
+    #     type_ = "triangle",
+    #     sample_rate = sr,
+    #     interpolation = "linear",
+    #     length = 16,
+    #     panning = -1,
+    #     volume = .4,
+    #     )
+    # panIncrement = 2/(sr*5)
+    # ChannelCarrier._freq = 196.28*8
+    # ChannelModulator = Channel(  # the actual sound against which the phase will be reset
+    #     type_ = "none",
+    #     sample_rate = sr,
+    #     interpolation = "none",
+    #     length = 32,
+    #     )
+    # ChannelModulator._freq = 132
+    # arr = []
+    # for _ in range(sr*5):
+    #     arr.extend(ChannelCarrier.update()[0:2])
+    #     ChannelCarrier._freq -= 0.007 # slowly lower the carrier frequency over time
+    #     ChannelCarrier.panning += panIncrement #
+    #     if ChannelModulator.update()[2]:
+    #         ChannelCarrier.phase_reset()
+    #     if not _ % sr:
+    #         print(f"second {_ // sr} generated")
         #Channel.wavetable = [ (((_*64)>>24)&255)/255, (((_*64)>>16)&255)/255, (((_*64)>>8)&255)/255, (((_*64)>>0)&255)/255]
-    with FurWave.WaveWriter(channels=2,
+    with FurWave.WaveWriter(channels=1,
                     samplerate=sr,
                     bitdepth=32.,
                     data=arr,
