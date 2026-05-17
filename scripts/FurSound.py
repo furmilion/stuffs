@@ -17,7 +17,6 @@ It has the following properties:
         Per-operator ADSR
         Per-operator frequency control
         Operator matrix
-        Operator ADSR
 Technically, FM and PM are already possible, but not in a convenient way.
 """
 
@@ -55,6 +54,9 @@ class Channel:
         self.test = self.square
         self.unimplemented = self.sine
         self.none = "none"
+        self.h = "h"
+        self.H = "H"
+        self.ZeroDivisionError = "ZeroDivisionError"
 
         # interpolation types
         self.i_none = "none"
@@ -62,7 +64,7 @@ class Channel:
         
         # common
         self.c_type = type_
-        self.p_width = round(abs(width), 5) # round to 5 decimal digits
+        self.p_width = abs(width)
         self.wavetable = wavetable if wavetable else None # set channel wavetable if one is passed; will be overwritten if not wave type
         self.sample_rate = 44100 if not sample_rate or sample_rate < 1 else sample_rate # sample rate of the channel; also affects base sample playback freq
         
@@ -79,7 +81,7 @@ class Channel:
         self._finish_setup_() # validate some stuff so it doesn't die
         
         # internal stuff
-        self._freq = 0  # would be funny if this causes a div by 0 error somewhere
+        self._freq = 0  # would be funny if this causes a div by 0 error somewhere ever
         
     def _finish_setup_(self):
         if isinstance(self.c_type, str):
@@ -87,6 +89,8 @@ class Channel:
                 case self.square:
                     self.wavetable = [-1 if _ < self.length else 1 for _ in range(self.length * 2)] # the most basic waveform
                 case self.pulse:
+                    self.wavetable = [-1 if _ < (self.length * 2) * self.p_width else 1 for _ in range(self.length * 2)]
+                case self.ZeroDivisionError:
                     self.wavetable = []
                 case self.sine:
                     self.wavetable = [sin(tau / self.length * 2 * _) for _ in range(self.length * 2)]
@@ -98,7 +102,11 @@ class Channel:
                     maximizer = 1/max(self.wavetable)
                     for i in range(len(self.wavetable)):
                         self.wavetable[i] *= maximizer
-                case self.triangle:  # unfortunately it was too troublesome for me to get triangle working properly so instead i opted for a saw generator extended by itself reversed
+                case self.triangle:
+                    # unfortunately it was too troublesome for me to get triangle working properly
+                    # so instead i opted for a saw generator extended by itself reversed
+                    # which also made all waves 2 times longer since now length isnt just length of the
+                    # entire wave but only of one slope
                     self.wavetable = [(_ / self.length) * 2 - 1 for _ in range(self.length)]
                     centerer = (1-max(self.wavetable))/2
                     for i in range(len(self.wavetable)):
@@ -108,18 +116,19 @@ class Channel:
                         self.wavetable[i] *= maximizer
                     self.wavetable.extend(self.wavetable[::-1])
                 case self.sample:
-                    pass  # assume already valid wavetable
+                    if not self.wavetable:
+                        raise ValueError("where wave")
                 case self.wt:
-                    if self.wavetable:
-                        pass
-                    else:
-                        self.c_type = self.square
-                        self.finish_setup()
+                    if not self.wavetable:
+                        raise ValueError("where wave")
                 case self.none:
                     pass
+                case self.h:
+                    self.wavetable = [104]
+                case self.H:
+                    self.wavetable = [72]
                 case _:
-                    self.c_type = self.square
-                    self.finish_setup()
+                    raise ValueError("where wave")
         else:
             raise ValueError("'type' must be a string!")
         
@@ -139,14 +148,16 @@ class Channel:
         # this is done to make phase 0 the default phase instead of outputting next phase.
         if self.c_type != self.none:
             phase = self.phase * len(self.wavetable)
+            Fphase = floor(self.phase * len(self.wavetable))
+            Cphase = ceil(self.phase * len(self.wavetable))
             match self.i_type:
                 case self.i_none:
-                    out = self.wavetable[floor(phase) % len(wavetable)]
+                    out = self.wavetable[Fphase % len(self.wavetable)]
                 case self.i_lin:
                     out = (
-                        self.wavetable[floor(phase) % len(self.wavetable)] - 
+                        self.wavetable[Fphase % len(self.wavetable)] - 
                         (
-                            (self.wavetable[floor(phase) % len(self.wavetable)] - self.wavetable[ceil(phase) % len(self.wavetable)]) * (phase - floor(phase))
+                            (self.wavetable[Fphase % len(self.wavetable)] - self.wavetable[Cphase % len(self.wavetable)]) * (phase - Fphase)
                         )
                     )
         else:  # if we have a special "none" wave, straight up ignore the sound logic and just update the phase
@@ -189,7 +200,7 @@ class Channel:
 
 if __name__ == "__main__":  # main loop where i test stuff; currently its osc sync
     sr = 44100
-    ChannelCarrier = Channel(
+    ChannelCarrier = Channel(  # the carrier of osc sync
         type_ = "triangle",
         sample_rate = sr,
         interpolation = "linear",
@@ -199,7 +210,7 @@ if __name__ == "__main__":  # main loop where i test stuff; currently its osc sy
         )
     panIncrement = 2/(sr*5)
     ChannelCarrier._freq = 196.28*8
-    ChannelModulator = Channel(
+    ChannelModulator = Channel(  # the actual sound against which the phase will be reset
         type_ = "none",
         sample_rate = sr,
         interpolation = "none",
@@ -209,8 +220,8 @@ if __name__ == "__main__":  # main loop where i test stuff; currently its osc sy
     arr = []
     for _ in range(sr*5):
         arr.extend(ChannelCarrier.update()[0:2])
-        ChannelCarrier._freq -= 0.007
-        ChannelCarrier.panning += panIncrement
+        ChannelCarrier._freq -= 0.007 # slowly lower the carrier frequency over time
+        ChannelCarrier.panning += panIncrement # 
         if ChannelModulator.update()[2]:
             ChannelCarrier.phase_reset()
         if not _ % sr:
