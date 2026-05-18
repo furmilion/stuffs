@@ -24,6 +24,8 @@ Technically, FM and PM are already possible, but not in a convenient way.
 # crazy how in about a week i went from a blank
 # file to some fancy math that generates sounds
 #                                       - Furmilion
+# огибающая писалась за две минуты хуем на коленке и
+# поэтому из всего говнокода она наиговнокоднейшая 
 
 0x686f7720646f6573207468697320657665620776f726b
 
@@ -91,7 +93,7 @@ class Channel:
                             # 4: released
                             # 5: no sound
         self.env_y = 0  # envelope vol multiplier
-        self.env_acc = ((1 / (sr * self.adsr[0])) * (1 - self.env_y)) if self.adsr[0] > 0 else 1  # rate accumulator
+        self.env_acc = ((1 / (self.sample_rate * self.adsr[0])) * (1 - self.env_y)) if self.adsr[0] > 0 else 1  # rate accumulator
         
         # special
         self.phase = self.init_phase = phase
@@ -181,38 +183,40 @@ class Channel:
         else:
             raise ValueError("what is this magic data i dont understand it i need string")
     
-    def update(self, supress_phase_update=False, supress_noise_update=False):
+    def update(self, suppress_phase_update=False, suppress_noise_update=False):
         out, phase_reset_flag = 0, False
         
         if self.c_type != self.none:
             # envelope update logic
-            match self.env_state:  # i should optimize this somehow, recalculating a single value every second is expensive
-                case 0:  # but what if envelope decides to suddenly change on the fly?
+            #print(f"acc {self.env_acc}\n"
+            #      f"sta {self.env_state}\n"
+            #      f"env {self.env_y}"
+            #      )
+            match self.env_state:
+                case 0:
                     self.env_y += self.env_acc
                     if self.env_y >= 1:
+                        #print("advance")
                         self.env_y = 1
-                        self.env_state = 1
-                        self.env_acc = ((1 / (sr * self.adsr[1])) * self.env_y) if self.adsr[1] > 0 else 1
+                        self.__update_envelope__(1)
                 case 1:
                     self.env_y -= self.env_acc
                     if self.env_y <= self.adsr[2]:
-                        self.env_state = 2
+                        #print("advance")
+                        self.__update_envelope__(2)
                 case 2:
                     if not self.adsr[3] < 0:
-                        self.env_state = 3
-                        self.env_acc = ((1 / (sr * self.adsr[3])) * self.env_y) if self.adsr[3] > 0 else 1
+                        #print("advance")
+                        self.__update_envelope__(3)
                 case 3:
                     self.env_y -= self.env_acc
                     if self.env_y <= 0:
-                        self.env_y = 0
-                        self.env_state = 5
-                        self.skip_sound = True
+                        #print("advance")
+                        self.__update_envelope__(5)
                 case 4:
                     self.env_y -= self.env_acc
                     if self.env_y <= 0:
-                        self.env_y = 0
-                        self.env_state = 5
-                        self.skip_sound = True
+                        self.__update_envelope__(5)
                     
         # do a little funny trick: set the output to whatever position we land at right now, *then* increase phase.
         # this is done to make phase 0 the default phase instead of outputting next phase.
@@ -248,13 +252,13 @@ class Channel:
         elif self.c_type in [self.noise_1bit, self.noise]:  # if we have either noise, then force no interpolation as i have no fucking idea how to deal with that
             out = self.wavetable[floor(self.phase * len(self.wavetable)) % len(self.wavetable)]  # and do you even really need one for noise
             
-        if not supress_phase_update:
+        if not suppress_phase_update:
             self.phase = (self.phase + (self._freq / self.sample_rate))
             phase_reset_flag = self.phase > 1
             if phase_reset_flag:
-                if self.c_type == self.noise_1bit and not supress_noise_update:  # generate noise packets
+                if self.c_type == self.noise_1bit and not suppress_noise_update:  # generate noise packets
                     self.wavetable = [(round(random()) -.5) * 2 for _ in range(self.length * 2)]
-                elif self.c_type == self.noise and not supress_noise_update:
+                elif self.c_type == self.noise and not suppress_noise_update:
                     self.wavetable = [(random() -.5) * 2 for _ in range(self.length * 2)]
             self.phase %= 1  # modulo so that it automatically wraps around at 1
         
@@ -298,7 +302,7 @@ class Channel:
             self.wavetable = [(random() -.5) * 2 for _ in range(self.length * 2)]
     
     def release_channel(self):  # release adsr
-        self.env_acc = (1 / (sr * self.adsr[4])) * self.env_y  # same as below but lower speed for lower volumes
+        self.env_acc = (1 / (self.sample_rate * self.adsr[4])) * self.env_y  # same as below but lower speed for lower volumes
         self.env_state = 4
         print("key off")
     def cut_channel(self):      # what this flag does i pretty much told you already
@@ -308,7 +312,7 @@ class Channel:
     def press_channel(self, force_reset=True): # press adsr
         if force_reset:  # reset current envelope multiplier
             self.env_y = 0
-        self.env_acc = ((1 / (sr * self.adsr[0])) * (1 - self.env_y)) if self.adsr[0] > 0 else 1  # account for not fully decayed sound by lowering speed
+        self.env_acc = ((1 / (self.sample_rate * self.adsr[0])) * (1 - self.env_y)) if self.adsr[0] > 0 else 1  # account for not fully decayed sound by lowering speed
         self.env_state = 0
         self.skip_sound = False
         print("key on")
@@ -317,28 +321,63 @@ class Channel:
         Set attack time, in seconds
         """
         self.adsr[0] = attack
+        self.__update_envelope__(self.env_state)
     def set_decay1(self, decay = 1):
         """
         Set decay 1 time, in seconds
         """
         self.adsr[1] = decay
+        self.__update_envelope__(self.env_state)
     def set_sustain(self, level = 1):
         """
         Set sustain level, %
         """
         self.adsr[2] = level
+        self.__update_envelope__(self.env_state)
     def set_decay2(self, decay = .25):
         """
         Set decay 2 time, in seconds
         """
         self.adsr[3] = decay
+        self.__update_envelope__(self.env_state)
     def set_release(self, release = .125):
         """
         Set release time, in seconds
         """
         self.adsr[4] = release
+        self.__update_envelope__(self.env_state)
     
-    
+    # prelimary envelope support
+    def __update_envelope__(self, state = 5):
+        """
+        __update_envelope__ help
+        """
+        match state:
+            case 0:
+                self.skip_sound = False
+                self.env_state = 0
+                self.env_acc = ((1 / (self.sample_rate * self.adsr[0])) * (1 - self.env_y)) if self.adsr[0] > 0 else 1
+            case 1:
+                self.env_state = 1
+                self.env_acc = ((1 / (self.sample_rate * self.adsr[1])) * self.env_y) if self.adsr[1] > 0 else 1
+            case 2:
+                if self.adsr[3] > 0:
+                    self.__update_envelope__(3)
+                else:
+                    self.env_y = self.adsr[2]
+            case 3:
+                self.env_state = 3
+                self.env_acc = ((1 / (self.sample_rate * self.adsr[3])) * self.env_y) if self.adsr[3] > 0 else 1
+            case 4:
+                self.env_state = 4
+                self.env_acc = ((1 / (self.sample_rate * self.adsr[4])) * self.env_y) if self.adsr[4] > 0 else 1
+            case 5:
+                self.env_state = 5
+                self.env_acc = 0
+                self.env_y = 0
+                self.skip_sound = True
+                
+    # TODO: redo envelope logic
     def __toggle_envelope__(self):
         if self.env_state < 6:
             self.env_state = 5 * self.env_state
@@ -347,10 +386,10 @@ class Channel:
             self.env_state //= 5
             print("env resume")
     def __force_advance_envelope_state__(self):
-        self.env_state = (self.env_state + 1) % 5
+        self.__update_envelope__((self.env_state + 1) % 5)
         print(f"env state forced to {self.env_state}")
     def __force_envelope_state__(self, state):
-        self.env_state = state % 5
+        self.__update_envelope__(state % 5)
         print(f"env state set to {self.env_state}")
     
 ##############################
@@ -389,16 +428,16 @@ class ChannelGroup:
             for _ in self.channels:
                 _._freq = freq
     
-    def update(self, supress_phase_update=False, supress_noise_update=False):
+    def update(self, suppress_phase_update=False, suppress_noise_update=False):
          if NUMPY:
              out = np.array([0, 0], np.float32)
              for _ in self.channels:
-                out += _.update(supress_phase_update, supress_noise_update)[:2]
+                out += _.update(suppress_phase_update, suppress_noise_update)[:2]
              out /= len(self.channels)
          else:
              out = [0, 0]
              for _ in self.channels:
-                 out.extend[_.update(supress_phase_update, supress_noise_update)[:2]]
+                 out.extend([_.update(suppress_phase_update, suppress_noise_update)[:2]])
              for _ in range(len(out)//2):
                  out[0] += out[_ * 2]/len(self.channels)
                  out[1] += out[_ * 2 + 1]/len(self.channels)
@@ -414,6 +453,7 @@ class ChannelGroup:
 
 if __name__ == "__main__":  # main loop where i test stuff; envelopes
     sr = 44100
+    length = 10#length
     print("READY")
     ChannelPulse = Channel(
         type_ = "pulse",
@@ -439,15 +479,15 @@ if __name__ == "__main__":  # main loop where i test stuff; envelopes
         width = 0
     )
     ChannelNoise = Channel(
-        type_ = "n",
+        type_ = "n1b",
         sample_rate = sr,
         interpolation = "none",
         length = 16,
-        volume = .1,
+        volume = .1 ,
         width = 0
     )
     ChannelNoise2 = Channel(
-        type_ = "n",
+        type_ = "n1b",
         sample_rate = sr,
         interpolation = "none",
         length = 4,
@@ -459,8 +499,8 @@ if __name__ == "__main__":  # main loop where i test stuff; envelopes
     ChannelNoise2._freq = 65.077/2 # C-2
     ChannelNoise.set_release()
     ChannelNoise2.set_release()
-    ChannelNoise.set_attack(0); ChannelNoise.set_decay1(.6); ChannelNoise.set_sustain(0); ChannelNoise.set_decay2(-1); ChannelNoise2.set_release(0)
-    ChannelNoise2.set_attack(0);ChannelNoise2.set_decay1(.6);ChannelNoise2.set_sustain(0);ChannelNoise2.set_decay2(-1);ChannelNoise2.set_release(0)
+    ChannelNoise.set_attack(0); ChannelNoise.set_decay1(.2); ChannelNoise.set_sustain(0); ChannelNoise.set_decay2(-1); ChannelNoise2.set_release(0)
+    ChannelNoise2.set_attack(0);ChannelNoise2.set_decay1(.2);ChannelNoise2.set_sustain(0);ChannelNoise2.set_decay2(-1);ChannelNoise2.set_release(0)
     
     
     
@@ -477,7 +517,7 @@ if __name__ == "__main__":  # main loop where i test stuff; envelopes
     
     import time
     start = time.perf_counter()
-    for _ in range(sr*10):
+    for _ in range(sr*length):
         # this thing works at the peak of its performance and takes about 20 seconds to generate 20 seconds of audio on my phone
         # takes about quarter the required time on my laptop
         
@@ -485,8 +525,8 @@ if __name__ == "__main__":  # main loop where i test stuff; envelopes
         #arr.extend([(ChannelPulse.update()[0] + ChannelNoise.update()[0])/2,(ChannelTooth.update()[0] + ChannelNoise.update()[0])/2])  # 2 channels mapped to stereo
         #arr.extend([ChannelNoise.update()[0], ChannelNoise2.update()[0]])
         #arr.extend([ChannelNoise.update()[0], ChannelNoise2.update()[0]])
-        #arr.extend([ChannelNoise.update(supress_noise_update=True)[0], ChannelSquare.update()[0]])
-        arr.extend([ChannelNoise.update(supress_noise_update=True)[0], ChannelNoise2.update(supress_noise_update=True)[0]])
+        #arr.extend([ChannelNoise.update(suppress_noise_update=True)[0], ChannelSquare.update()[0]])
+        arr.extend([ChannelNoise.update(suppress_noise_update=True)[0], ChannelNoise2.update(suppress_noise_update=True)[0]])
         #arr.extend([ChannelNoise.update()[0]])
         # technically with how i did the noise ingraining here, it is updated twice as quicky and is full independent stereo
         #ChannelPulse.change_width(ChannelPulse.p_width + (.125/sr) % 1) # pwm is STUPIDLY expensive to generate when using interpolation
@@ -496,7 +536,7 @@ if __name__ == "__main__":  # main loop where i test stuff; envelopes
         if not _ % (sr//8):
             ChannelNoise.force_generate_new_noise_packets()
             ChannelNoise2.force_generate_new_noise_packets()
-        if not _ % (sr//2):  # gate at roughly 120 beats
+        if not _ % (sr//8):  # gate at roughly 120 beats, every 16th note
             ChannelNoise.press_channel()
             ChannelNoise2.press_channel()
         #if _ == sr * 2:
@@ -522,7 +562,7 @@ if __name__ == "__main__":  # main loop where i test stuff; envelopes
         #    ChannelNoise.__force_advance_envelope_state__()
         #    ChannelNoise2.__force_advance_envelope_state__()
     elapsed = time.perf_counter() - start
-    print(f"{elapsed:.3f}/20s")
+    print(f"{elapsed:.3f}/{length}s")
     # ChannelCarrier = Channel(  # the carrier of osc sync
     #     type_ = "triangle",
     #     sample_rate = sr,
