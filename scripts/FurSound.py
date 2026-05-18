@@ -20,9 +20,12 @@ It has the following properties:
 Technically, FM and PM are already possible, but not in a convenient way.
 """
 
-import funcs  # some useful funcations from generic ass library; only uses clamp as of now
+0x686f7720646f6573207468697320657665620776f726b
+
+from funcs import clamp
 from math import tau, sin, cos, floor, ceil
 import FurWave  # custom wav writer; i made it because the builtin one didnt have support for chunks and now i use it because im just used to
+from random import random
 
 class Channel:
     def __init__(self,
@@ -73,8 +76,8 @@ class Channel:
                             # will be updated when the channel is asked to update
                             # used to calculate next phase. basically, points at where
                             # the playhead is in the wave
-        self.panning = funcs.clamp(panning, -1, 1) # channel panning. self-explanatory; not used right now, might implement later
-        self.volume = funcs.clamp(volume, 0, 1)
+        self.panning = clamp(panning, -1, 1) # channel panning. self-explanatory
+        self.volume = clamp(volume, 0, 1)
         self.i_type = interpolation
         self.length = abs(length) if length else None
         
@@ -86,6 +89,8 @@ class Channel:
     def _finish_setup_(self):
         if isinstance(self.c_type, str):
             match self.c_type:
+                # virtually any wave aside from binary ones is a wavetable so you can get cool artefacts with low lengths
+                # i have about no idea how to do that in realtime
                 case self.square:
                     self.wavetable = [-1 if _ < self.length else 1 for _ in range(self.length * 2)] # the most basic waveform
                 case self.pulse:
@@ -96,6 +101,7 @@ class Channel:
                     self.wavetable = [sin(tau / self.length * 2 * _) for _ in range(self.length * 2)]
                 case self.sawtooth:
                     self.wavetable = [(_ / self.length * 2) * 2 - 1 for _ in range(self.length * 2)]
+                    # normalization here and in tri wave is because with low length it simply does not go high enough to reach 1
                     centerer = (1-max(self.wavetable))/2
                     for i in range(len(self.wavetable)):
                         self.wavetable[i] += centerer
@@ -127,8 +133,16 @@ class Channel:
                     self.wavetable = [104]
                 case self.H:
                     self.wavetable = [72]
+                case self.noise_1bit:  # noise gen is wavetable as i have no idea how to go without it as otherwise it will be updated every sample
+                    self.wavetable = [(round(random()) -.5) * 2 for _ in range(self.length * 2)]  # and we want controllable pitchs
+                    self.length = 16  # fixed at length 16 to roughly be in pitch with other oscillators as they compensate for higher pitches
+                case self.noise:      # by higher phase step which in case of noise means higher frequency
+                    self.wavetable = [(random() -.5) * 2 for _ in range(self.length * 2)]
+                    self.length = 16
                 case _:
-                    raise ValueError("where wave")
+                    raise Exception("?SYNTAX  ERROR")
+                    # raise ValueError("where wave")
+                    # обработка ошибок уровень метамфетамин
         else:
             raise ValueError("what is this magic data i dont understand it i need string")
         
@@ -143,32 +157,50 @@ class Channel:
         else:
             raise ValueError("what is this magic data i dont understand it i need string")
     
-    def update(self, supress_phase_update=False):
+    def update(self, supress_phase_update=False, supress_noise_update=False):
         out, phase_reset_flag = 0, False
         # do a little funny trick: set the output to whatever position we land at right now, *then* increase phase.
         # this is done to make phase 0 the default phase instead of outputting next phase.
-        if self.c_type != self.none:
+        if self.c_type not in [self.none, self.noise_1bit, self.noise]:
             phase = self.phase * len(self.wavetable)
-            Fphase = floor(self.phase * len(self.wavetable))
-            Cphase = ceil(self.phase * len(self.wavetable))
+            idx = floor(phase) % len(self.wavetable)
+            Fphase = floor(phase)
+            Cphase = ceil(phase)
             match self.i_type:
                 case self.i_none:
-                    out = self.wavetable[Fphase % len(self.wavetable)]
+                    match self.c_type:
+                        case self.square:
+                            # why do we need to use a wave when we use pulse or square
+                            # if its cheaper to generate it on the fly when without interpolation
+                            # this comes with a slight change: pwm will no longer sound blocky on low lengths
+                            out = -1 if phase < self.length else 1
+                        case self.pulse: 
+                            out = -1 if phase < self.length * 2 * self.p_width else 1 # i accidentally generated a square from 0 to 1 instead of -1 to 1 :wilted_rose:
+                        case _: out = self.wavetable[idx]
                 case self.i_lin:
                     out = (
-                        self.wavetable[Fphase % len(self.wavetable)] - 
+                        self.wavetable[idx] - 
                         (
-                            (self.wavetable[Fphase % len(self.wavetable)] - self.wavetable[Cphase % len(self.wavetable)]) * (phase - Fphase)
+                            (self.wavetable[idx] - self.wavetable[(idx + 1) % len(self.wavetable)]) * (phase - Fphase)
                         )
                     )
-        else:  # if we have a special "none" wave, straight up ignore the sound logic and just update the phase
+        elif self.c_type == self.none:  # if we have a special "none" wave, straight up ignore the sound logic and just update the phase
             self.phase = (self.phase + (self._freq / self.sample_rate))
             phase_reset_flag = self.phase > 1
             self.phase %= 1 
             return (0, 0, phase_reset_flag)
+            
+        elif self.c_type in [self.noise_1bit, self.noise]:  # if we have either noise, then force no interpolation as i have no fucking idea how to deal with that
+            out = self.wavetable[floor(self.phase * len(self.wavetable)) % len(self.wavetable)]  # and do you even really need one for noise
+            
         if not supress_phase_update:
             self.phase = (self.phase + (self._freq / self.sample_rate))
             phase_reset_flag = self.phase > 1
+            if phase_reset_flag:
+                if self.c_type == self.noise_1bit and not supress_noise_update:  # generate noise packets
+                    self.wavetable = [(round(random()) -.5) * 2 for _ in range(self.length * 2)]
+                elif self.c_type == self.noise and not supress_noise_update:
+                    self.wavetable = [(random() -.5) * 2 for _ in range(self.length * 2)]
             self.phase %= 1  # modulo so that it automatically wraps around at 1
         
         # debug output
@@ -198,27 +230,84 @@ class Channel:
 
     def change_width(self, width: float | int = .25):
         self.p_width = abs(width)
-        self.wavetable = [-1 if _ < (self.length * 2) * self.p_width else 1 for _ in range(self.length * 2)]
-        
+        match self.i_type:
+            case self.i_none:
+                pass
+            case _:
+                self.wavetable = [-1 if _ < (self.length * 2) * self.p_width else 1 for _ in range(self.length * 2)]
+    
+    def force_generate_new_noise_packets(self):
+        if self.c_type == self.noise_1bit:  # generate noise packets but as a function
+            self.wavetable = [(round(random()) -.5) * 2 for _ in range(self.length * 2)]
+        elif self.c_type == self.noise:
+            self.wavetable = [(random() -.5) * 2 for _ in range(self.length * 2)]
 
 
 
-if __name__ == "__main__":  # main loop where i test stuff; currently its pw
+if __name__ == "__main__":  # main loop where i test stuff; simultaneous channels
     sr = 44100
+    print("READY")
     ChannelPulse = Channel(
         type_ = "pulse",
         sample_rate = sr,
-        interpolation = "linear",
-        length = 64,
+        interpolation = "none",
+        length = 2,
         volume = .4,
         width = 0
     )
+    ChannelSquare = Channel(
+        type_ = "square",
+        sample_rate = sr,
+        interpolation = "none",
+        length = 2,
+        volume = .1,
+    )
+    ChannelTooth = Channel(
+        type_ = "sawtooth",
+        sample_rate = sr,
+        interpolation = "none",
+        length = 32,
+        volume = .4,
+        width = 0
+    )
+    ChannelNoise = Channel(
+        type_ = "n1b",
+        sample_rate = sr,
+        interpolation = "linear",
+        length = 16,
+        volume = .1,
+        width = 0
+    )
+    ChannelNoise2 = Channel(
+        type_ = "n1b",
+        sample_rate = sr,
+        interpolation = "linear",
+        length = 4,
+        volume = .1,
+        width = 0
+    )
     arr = []
-    ChannelPulse._freq = 132
+    ChannelNoise._freq = 64.0/2    # handpicked detune
+    ChannelNoise2._freq = 65.077/2 # C-2
+    
+    ChannelPulse._freq = 65.077
+    ChannelSquare._freq = 65.077
+    ChannelTooth._freq = 174.5
     for _ in range(sr*5):
-        arr.extend([ChannelPulse.update()[0]])  # its not stereo anyway
-        ChannelPulse.change_width((ChannelPulse.p_width + .25)/20 % 1)
-
+        #arr.extend([(ChannelPulse.update()[0] + ChannelNoise.update()[0])/2,(ChannelTooth.update()[0] + ChannelNoise.update()[0])/2])  # 2 channels mapped to stereo
+        #arr.extend([ChannelNoise.update()[0], ChannelNoise2.update()[0]])
+        #arr.extend([ChannelNoise.update()[0], ChannelNoise2.update()[0]])
+        #arr.extend([ChannelNoise.update(supress_noise_update=True)[0], ChannelSquare.update()[0]])
+        arr.extend([ChannelNoise.update(supress_noise_update=True)[0], ChannelNoise2.update(supress_noise_update=True)[0]])
+        #arr.extend([ChannelNoise.update()[0]])
+        # technically with how i did the noise ingraining here, it is updated twice as quicky and is full independent stereo
+        #ChannelPulse.change_width(ChannelPulse.p_width + (.125/sr) % 1) # pwm is STUPIDLY expensive to generate when using interpolation
+        #print(f"pw {ChannelPulse.p_width}")
+        if not _ % sr:
+            print(f"second {1 + (_ // sr)} generated")
+        if not _ % (sr//8):
+            ChannelNoise.force_generate_new_noise_packets()
+            ChannelNoise2.force_generate_new_noise_packets()
     # ChannelCarrier = Channel(  # the carrier of osc sync
     #     type_ = "triangle",
     #     sample_rate = sr,
@@ -246,7 +335,7 @@ if __name__ == "__main__":  # main loop where i test stuff; currently its pw
     #     if not _ % sr:
     #         print(f"second {_ // sr} generated")
         #Channel.wavetable = [ (((_*64)>>24)&255)/255, (((_*64)>>16)&255)/255, (((_*64)>>8)&255)/255, (((_*64)>>0)&255)/255]
-    with FurWave.WaveWriter(channels=1,
+    with FurWave.WaveWriter(channels=2,
                     samplerate=sr,
                     bitdepth=32.,
                     data=arr,
