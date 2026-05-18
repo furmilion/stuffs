@@ -20,12 +20,23 @@ It has the following properties:
 Technically, FM and PM are already possible, but not in a convenient way.
 """
 
+# FURSOUND -- started on 05/09/26
+# crazy how in about a week i went from a blank
+# file to some fancy math that generates sounds
+#                                       - Furmilion
+
 0x686f7720646f6573207468697320657665620776f726b
 
 from funcs import clamp
 from math import tau, sin, cos, floor, ceil
 import FurWave  # custom wav writer; i made it because the builtin one didnt have support for chunks and now i use it because im just used to
 from random import random
+try:
+    import numpy as np
+    NUMPY = True
+except ImportError:
+    print("i guess we're doing some shit manually now")
+    NUMPY = False
 
 class Channel:
     def __init__(self,
@@ -49,7 +60,7 @@ class Channel:
         self.wt         = "wavetable"; self.triangle = "triangle"
 
         # coming: more types; replaced with the closest ones by sound
-        self.fm = self.sine
+        # self.fm = self.sine  # fm will likely instead become alive in own Operator class
         self.xor_triangle = self.pulse
         self.xor_sine = self.sine;   self.xor_sawtooth = self.sawtooth
 
@@ -59,7 +70,7 @@ class Channel:
         self.none = "none"
         self.h = "h"
         self.H = "H"
-        self.ZeroDivisionError = "ZeroDivisionError"
+        self.ZeroDivisionError = "ZeroDivisionError"  # i dare you use it.
 
         # interpolation types
         self.i_none = "none"
@@ -71,6 +82,17 @@ class Channel:
         self.wavetable = wavetable if wavetable else None # set channel wavetable if one is passed; will be overwritten if not wave type
         self.sample_rate = 44100 if not sample_rate or sample_rate < 1 else sample_rate # sample rate of the channel; also affects base sample playback freq
         
+        self.adsr = [.125, 1, .5, 2, 1.2]  # Attack, Decay, Sustain, Decay 2, Release
+        self.env_state = 0  # envelope state
+                            # 0: attack
+                            # 1: decay1
+                            # 2: sustained
+                            # 3: decay2
+                            # 4: released
+                            # 5: no sound
+        self.env_y = 0  # envelope vol multiplier
+        self.env_acc = ((1 / (sr * self.adsr[0])) * (1 - self.env_y)) if self.adsr[0] > 0 else 1  # rate accumulator
+        
         # special
         self.phase = self.init_phase = phase
                             # will be updated when the channel is asked to update
@@ -80,6 +102,7 @@ class Channel:
         self.volume = clamp(volume, 0, 1)
         self.i_type = interpolation
         self.length = abs(length) if length else None
+        self.skip_sound = False  # similar to None wave but is used when another wave is in use
         
         self._finish_setup_() # validate some stuff so it doesn't die
         
@@ -87,6 +110,7 @@ class Channel:
         self._freq = 0  # would be funny if this causes a div by 0 error somewhere ever
         
     def _finish_setup_(self):
+                    
         if isinstance(self.c_type, str):
             match self.c_type:
                 # virtually any wave aside from binary ones is a wavetable so you can get cool artefacts with low lengths
@@ -137,8 +161,8 @@ class Channel:
                     self.wavetable = [(round(random()) -.5) * 2 for _ in range(self.length * 2)]  # and we want controllable pitchs
                     self.length = 16  # fixed at length 16 to roughly be in pitch with other oscillators as they compensate for higher pitches
                 case self.noise:      # by higher phase step which in case of noise means higher frequency
-                    self.wavetable = [(random() -.5) * 2 for _ in range(self.length * 2)]
-                    self.length = 16
+                    self.wavetable = [(random() -.5) * 2 for _ in range(self.length * 2)]  # since it is stuck at 16, it might be unsuitable for
+                    self.length = 16  # unique timbres like classic atari basses so you might want to opt for wavetable
                 case _:
                     raise Exception("?SYNTAX  ERROR")
                     # raise ValueError("where wave")
@@ -159,9 +183,40 @@ class Channel:
     
     def update(self, supress_phase_update=False, supress_noise_update=False):
         out, phase_reset_flag = 0, False
+        
+        if self.c_type != self.none:
+            # envelope update logic
+            match self.env_state:  # i should optimize this somehow, recalculating a single value every second is expensive
+                case 0:  # but what if envelope decides to suddenly change on the fly?
+                    self.env_y += self.env_acc
+                    if self.env_y >= 1:
+                        self.env_y = 1
+                        self.env_state = 1
+                        self.env_acc = ((1 / (sr * self.adsr[1])) * self.env_y) if self.adsr[1] > 0 else 1
+                case 1:
+                    self.env_y -= self.env_acc
+                    if self.env_y <= self.adsr[2]:
+                        self.env_state = 2
+                case 2:
+                    if not self.adsr[3] < 0:
+                        self.env_state = 3
+                        self.env_acc = ((1 / (sr * self.adsr[3])) * self.env_y) if self.adsr[3] > 0 else 1
+                case 3:
+                    self.env_y -= self.env_acc
+                    if self.env_y <= 0:
+                        self.env_y = 0
+                        self.env_state = 5
+                        self.skip_sound = True
+                case 4:
+                    self.env_y -= self.env_acc
+                    if self.env_y <= 0:
+                        self.env_y = 0
+                        self.env_state = 5
+                        self.skip_sound = True
+                    
         # do a little funny trick: set the output to whatever position we land at right now, *then* increase phase.
         # this is done to make phase 0 the default phase instead of outputting next phase.
-        if self.c_type not in [self.none, self.noise_1bit, self.noise]:
+        if self.c_type not in [self.none, self.noise_1bit, self.noise] and not self.skip_sound:
             phase = self.phase * len(self.wavetable)
             idx = floor(phase) % len(self.wavetable)
             Fphase = floor(phase)
@@ -184,8 +239,8 @@ class Channel:
                             (self.wavetable[idx] - self.wavetable[(idx + 1) % len(self.wavetable)]) * (phase - Fphase)
                         )
                     )
-        elif self.c_type == self.none:  # if we have a special "none" wave, straight up ignore the sound logic and just update the phase
-            self.phase = (self.phase + (self._freq / self.sample_rate))
+        elif self.c_type == self.none or self.skip_sound:  # if we have a special "none" wave, straight up ignore the sound logic and just
+            self.phase = (self.phase + (self._freq / self.sample_rate))  # update the phase; also when skipping sound, obviously
             phase_reset_flag = self.phase > 1
             self.phase %= 1 
             return (0, 0, phase_reset_flag)
@@ -212,7 +267,7 @@ class Channel:
         #)
         lMult = 1 - abs(self.panning) if self.panning > 0 else 1
         rMult = 1 - abs(self.panning) if self.panning < 0 else 1
-        return (out * lMult * self.volume, out * rMult * self.volume, phase_reset_flag)
+        return (out * lMult * self.volume * self.env_y, out * rMult * self.volume * self.env_y, phase_reset_flag)
     
     def phase_reset(self):
         self.phase = self.init_phase
@@ -241,10 +296,123 @@ class Channel:
             self.wavetable = [(round(random()) -.5) * 2 for _ in range(self.length * 2)]
         elif self.c_type == self.noise:
             self.wavetable = [(random() -.5) * 2 for _ in range(self.length * 2)]
+    
+    def release_channel(self):  # release adsr
+        self.env_acc = (1 / (sr * self.adsr[4])) * self.env_y  # same as below but lower speed for lower volumes
+        self.env_state = 4
+        print("key off")
+    def cut_channel(self):      # what this flag does i pretty much told you already
+        self.env_state = 5      # but in envelope context it is cheaper to do this as
+        self.skip_sound = True  # if you change the wave, you'll have to manually change it back
+        print("key cut")
+    def press_channel(self, force_reset=True): # press adsr
+        if force_reset:  # reset current envelope multiplier
+            self.env_y = 0
+        self.env_acc = ((1 / (sr * self.adsr[0])) * (1 - self.env_y)) if self.adsr[0] > 0 else 1  # account for not fully decayed sound by lowering speed
+        self.env_state = 0
+        self.skip_sound = False
+        print("key on")
+    def set_attack(self, attack = 0):
+        """
+        Set attack time, in seconds
+        """
+        self.adsr[0] = attack
+    def set_decay1(self, decay = 1):
+        """
+        Set decay 1 time, in seconds
+        """
+        self.adsr[1] = decay
+    def set_sustain(self, level = 1):
+        """
+        Set sustain level, %
+        """
+        self.adsr[2] = level
+    def set_decay2(self, decay = .25):
+        """
+        Set decay 2 time, in seconds
+        """
+        self.adsr[3] = decay
+    def set_release(self, release = .125):
+        """
+        Set release time, in seconds
+        """
+        self.adsr[4] = release
+    
+    
+    def __toggle_envelope__(self):
+        if self.env_state < 6:
+            self.env_state = 5 * self.env_state
+            print("env pause")
+        else:
+            self.env_state //= 5
+            print("env resume")
+    def __force_advance_envelope_state__(self):
+        self.env_state = (self.env_state + 1) % 5
+        print(f"env state forced to {self.env_state}")
+    def __force_envelope_state__(self, state):
+        self.env_state = state % 5
+        print(f"env state set to {self.env_state}")
+    
+##############################
+##############################
+class ChannelGroup:
+    
+    def __init__(self,
+        detune: int | float = 0
+    ):
+        self.channels = []  # channels to walk through
+        self.detune = detune  # optional parameter that can be used to produce superwaves
+                              # detunes in 100th of a hertz
+        self.center_chan = 0
+        
+        # the settings of this class by default are quite limiting
+        # but you can access the channel array and therefore
+        # make advanced edits to contained channels if you need
+    
+    def add_channel(self,
+        type = "sawtooth",
+        sample_rate = 44100,
+        volume = .5,
+        length = 16,
+    ):
+        self.channels.append(Channel(type_=type,sample_rate=sample_rate,volume=volume,length=length))
+        self.center_chan = len(self.channels) // 2
+    
+    def set_base_freq(self, freq = 440):
+        if self.detune != 0:
+            for _, ch in enumerate(self.channels):
+                if _ < self.center_chan:
+                    ch._freq = freq - ((self.detune / 100) * (self.center_chan - _))
+                else:
+                    ch._freq = freq + ((self.detune / 100) * (_ - self.center_chan))
+        else:
+            for _ in self.channels:
+                _._freq = freq
+    
+    def update(self, supress_phase_update=False, supress_noise_update=False):
+         if NUMPY:
+             out = np.array([0, 0], np.float32)
+             for _ in self.channels:
+                out += _.update(supress_phase_update, supress_noise_update)[:2]
+             out /= len(self.channels)
+         else:
+             out = [0, 0]
+             for _ in self.channels:
+                 out.extend[_.update(supress_phase_update, supress_noise_update)[:2]]
+             for _ in range(len(out)//2):
+                 out[0] += out[_ * 2]/len(self.channels)
+                 out[1] += out[_ * 2 + 1]/len(self.channels)
+             out = out[:2]
+         return out
+     
+    def randomize_phase(self):
+        for _ in self.channels:
+            _.phase = random()
+##############################
+##############################
 
 
-
-if __name__ == "__main__":  # main loop where i test stuff; simultaneous channels
+if __name__ == "__main__":  # main loop where i test stuff; envelopes
     sr = 44100
     print("READY")
     ChannelPulse = Channel(
@@ -271,17 +439,17 @@ if __name__ == "__main__":  # main loop where i test stuff; simultaneous channel
         width = 0
     )
     ChannelNoise = Channel(
-        type_ = "n1b",
+        type_ = "n",
         sample_rate = sr,
-        interpolation = "linear",
+        interpolation = "none",
         length = 16,
         volume = .1,
         width = 0
     )
     ChannelNoise2 = Channel(
-        type_ = "n1b",
+        type_ = "n",
         sample_rate = sr,
-        interpolation = "linear",
+        interpolation = "none",
         length = 4,
         volume = .1,
         width = 0
@@ -289,11 +457,31 @@ if __name__ == "__main__":  # main loop where i test stuff; simultaneous channel
     arr = []
     ChannelNoise._freq = 64.0/2    # handpicked detune
     ChannelNoise2._freq = 65.077/2 # C-2
+    ChannelNoise.set_release()
+    ChannelNoise2.set_release()
+    ChannelNoise.set_attack(0); ChannelNoise.set_decay1(.6); ChannelNoise.set_sustain(0); ChannelNoise.set_decay2(-1); ChannelNoise2.set_release(0)
+    ChannelNoise2.set_attack(0);ChannelNoise2.set_decay1(.6);ChannelNoise2.set_sustain(0);ChannelNoise2.set_decay2(-1);ChannelNoise2.set_release(0)
+    
+    
+    
     
     ChannelPulse._freq = 65.077
     ChannelSquare._freq = 65.077
     ChannelTooth._freq = 174.5
-    for _ in range(sr*5):
+    
+    #Supersaw = ChannelGroup(detune=120)
+    #for _ in range(8):
+    #    Supersaw.add_channel(length=7) # adds 8 channels
+    #Supersaw.set_base_freq(65.077 * 8)
+    #Supersaw.randomize_phase()
+    
+    import time
+    start = time.perf_counter()
+    for _ in range(sr*10):
+        # this thing works at the peak of its performance and takes about 20 seconds to generate 20 seconds of audio on my phone
+        # takes about quarter the required time on my laptop
+        
+        #arr.extend([Supersaw.update()[0]])
         #arr.extend([(ChannelPulse.update()[0] + ChannelNoise.update()[0])/2,(ChannelTooth.update()[0] + ChannelNoise.update()[0])/2])  # 2 channels mapped to stereo
         #arr.extend([ChannelNoise.update()[0], ChannelNoise2.update()[0]])
         #arr.extend([ChannelNoise.update()[0], ChannelNoise2.update()[0]])
@@ -308,6 +496,33 @@ if __name__ == "__main__":  # main loop where i test stuff; simultaneous channel
         if not _ % (sr//8):
             ChannelNoise.force_generate_new_noise_packets()
             ChannelNoise2.force_generate_new_noise_packets()
+        if not _ % (sr//2):  # gate at roughly 120 beats
+            ChannelNoise.press_channel()
+            ChannelNoise2.press_channel()
+        #if _ == sr * 2:
+        #    ChannelNoise.press_channel(False)  # whats funny is that the skeleton for the adsr
+        #    ChannelNoise2.press_channel()      # was made in about 2 (!) minutes
+        #if _ == sr * 3:
+        #    ChannelNoise.release_channel()
+        #    ChannelNoise2.release_channel()
+        #if _ == sr * 3.5:
+        #    ChannelNoise.press_channel()
+        #    ChannelNoise2.press_channel()
+        #if _ == sr * 4:
+        #    ChannelNoise.cut_channel()
+        #    ChannelNoise2.cut_channel()
+        #if _ == sr * 4.5:
+        #    ChannelNoise.set_attack(.125)
+        #    ChannelNoise2.set_attack(0.125)
+        #    ChannelNoise.press_channel()
+        #    ChannelNoise2.press_channel()
+        #if _ == sr * 4.75:
+            #ChannelNoise.__force_envelope_state__(4)
+            #ChannelNoise2.__force_envelope_state__(4)
+        #    ChannelNoise.__force_advance_envelope_state__()
+        #    ChannelNoise2.__force_advance_envelope_state__()
+    elapsed = time.perf_counter() - start
+    print(f"{elapsed:.3f}/20s")
     # ChannelCarrier = Channel(  # the carrier of osc sync
     #     type_ = "triangle",
     #     sample_rate = sr,
