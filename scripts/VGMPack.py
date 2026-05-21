@@ -19,7 +19,7 @@ import gzip
 
 GZ = gzip
 
-VERSION = 1.34
+VERSION = 1.36
 
 random_messages = [  # random messages to insert at the end of file, every update there is a little bit more added
     "what the fuck", "this sucks", "please help me",
@@ -161,9 +161,8 @@ def pack_vgm(vgm: bytes = None, output_file: str = "array", cap: int = None):
     """
     the actual processor and packer
     """
-    arr = []         # VGM data
-    data = []        # sample and misc data
-    data_params = [[0, 0,] for _ in range(256)] # block starts and lengths
+    arr = []           # VGM data
+    datablock_arr = [] # sample and misc data
     if vgm is None:
         raise ValueError("You must provide at least some data to parse.")
     if cap is None:
@@ -216,7 +215,7 @@ def pack_vgm(vgm: bytes = None, output_file: str = "array", cap: int = None):
     gd3 = {}
     gd3["VER"] = struct.unpack('<I', vgm[metadata["GD3Offset"] + 4:metadata["GD3Offset"] + 8])[0]
     gd3["DAT"] = vgm[metadata["GD3Offset"] + 8:]
-    print(gd3['DAT'])
+    #print(gd3['DAT'])
     print(f"VGM Data Offset: {metadata['VGMDatOFS'], hex(metadata['VGMDatOFS'])}")
     print(f"GD3 Data Offset: {metadata['GD3Offset'], hex(metadata['GD3Offset'])}")
     print(
@@ -241,7 +240,7 @@ def pack_vgm(vgm: bytes = None, output_file: str = "array", cap: int = None):
     die = False
     block_id = 0  # to keep track of current data block id
     dump_mode = str(input("Block dump mode:\nd: always dump\ni: always ignore\nanything else: ask\n")).lower()  # either ignore all streams or dump all streams since the moment flag is set
-    dump_mode = dump_mode[0] if len(dump_mode) > 1 else "i"
+    dump_mode = dump_mode[0] if len(dump_mode) >= 1 else "i"
     print(f"dump mode: {dump_mode}")
     input("Press enter to begin...")
     cursor = metadata["VGMDatOFS"]
@@ -255,137 +254,137 @@ def pack_vgm(vgm: bytes = None, output_file: str = "array", cap: int = None):
             case 0x4F:  # game gear stereo
                 if metadata["TISNclock"]:
                     # print(f"writing Game Gear: {hex(vgm[cursor + 1])}")
-                    arr.append(hex(vgm[cursor]))
-                    arr.append(hex(vgm[cursor + 1]))
+                    arr.append(vgm[cursor])
+                    arr.append(vgm[cursor + 1])
                     cursor += 2
                 else:
                     cursor += 2
             case 0x50:  # sn7
                 if metadata["TISNclock"]:
                     # print(f"writing SN7: {hex(vgm[cursor + 1])}")
-                    arr.append(hex(vgm[cursor]))
-                    arr.append(hex(vgm[cursor + 1]))
+                    arr.append(vgm[cursor])
+                    arr.append(vgm[cursor + 1])
                     cursor += 2
                 else:
                     cursor += 2
             case 0x51:
                 if metadata["2413clock"]:
                     print(f"writing OPLL: {hex(vgm[cursor + 1])}/{hex(vgm[cursor + 2])}")
-                    arr.append(hex(vgm[cursor]))
-                    arr.append(hex(vgm[cursor + 1]))
-                    arr.append(hex(vgm[cursor + 2]))
+                    arr.append(vgm[cursor])
+                    arr.append(vgm[cursor + 1])
+                    arr.append(vgm[cursor + 2])
                     cursor += 3
                 else: cursor += 3
             case 0x52:
                 if metadata["2612clock"]:
                     # print(f"writing OPN2 port 1: {hex(vgm[cursor + 1])}/{hex(vgm[cursor + 2])}")
-                    arr.append(hex(vgm[cursor]))
-                    arr.append(hex(vgm[cursor + 1]))
-                    arr.append(hex(vgm[cursor + 2]))
+                    arr.append(vgm[cursor])
+                    arr.append(vgm[cursor + 1])
+                    arr.append(vgm[cursor + 2])
                     cursor += 3
                 else: cursor += 3
             case 0x53:
                 if metadata["2612clock"]:
                     # print(f"writing OPN2 port 2: {hex(vgm[cursor + 1])}/{hex(vgm[cursor + 2])}")
-                    arr.append(hex(vgm[cursor]))
-                    arr.append(hex(vgm[cursor + 1]))
-                    arr.append(hex(vgm[cursor + 2]))
+                    arr.append(vgm[cursor])
+                    arr.append(vgm[cursor + 1])
+                    arr.append(vgm[cursor + 2])
                     cursor += 3
                 else: cursor += 3
             case 0x54:
                 if metadata["2151clock"]:
                     # print(f"writing OPM: {hex(vgm[cursor + 1])}/{hex(vgm[cursor + 2])}")
-                    arr.append(hex(vgm[cursor]))
-                    arr.append(hex(vgm[cursor + 1]))
-                    arr.append(hex(vgm[cursor + 2]))
+                    arr.append(vgm[cursor])
+                    arr.append(vgm[cursor + 1])
+                    arr.append(vgm[cursor + 2])
                     cursor += 3
                 else: cursor += 3
             case 0x55:
                 if metadata["2203clock"]:
                     # print(f"writing OPN1: {hex(vgm[cursor + 1])}/{hex(vgm[cursor + 2])}")
-                    arr.append(hex(vgm[cursor]))
-                    arr.append(hex(vgm[cursor + 1]))
-                    arr.append(hex(vgm[cursor + 2]))
+                    arr.append(vgm[cursor])
+                    arr.append(vgm[cursor + 1])
+                    arr.append(vgm[cursor + 2])
                     cursor += 3
                 else: cursor += 3
             case 0x56:
                 if metadata["2608clock"]:
                     # print(f"writing OPNA port 1: {hex(vgm[cursor + 1])}/{hex(vgm[cursor + 2])}")
-                    arr.append(hex(vgm[cursor]))
-                    arr.append(hex(vgm[cursor + 1]))
-                    arr.append(hex(vgm[cursor + 2]))
+                    arr.append(vgm[cursor])
+                    arr.append(vgm[cursor + 1])
+                    arr.append(vgm[cursor + 2])
                     cursor += 3
                 else: cursor += 3
             case 0x57:
                 if metadata["2608clock"]:
                     # print(f"writing OPNA port 2: {hex(vgm[cursor + 1])}/{hex(vgm[cursor + 2])}")
-                    arr.append(hex(vgm[cursor]))
-                    arr.append(hex(vgm[cursor + 1]))
-                    arr.append(hex(vgm[cursor + 2]))
+                    arr.append(vgm[cursor])
+                    arr.append(vgm[cursor + 1])
+                    arr.append(vgm[cursor + 2])
                     cursor += 3
                 else: cursor += 3
             case 0x58:
                 if metadata["2610clock"]:
                     # print(f"writing OPNB port 2: {hex(vgm[cursor + 1])}/{hex(vgm[cursor + 2])}")
-                    arr.append(hex(vgm[cursor]))
-                    arr.append(hex(vgm[cursor + 1]))
-                    arr.append(hex(vgm[cursor + 2]))
+                    arr.append(vgm[cursor])
+                    arr.append(vgm[cursor + 1])
+                    arr.append(vgm[cursor + 2])
                     cursor += 3
                 else: cursor += 3
             case 0x59:
                 if metadata["2610clock"]:
                     # print(f"writing OPNB port 2: {hex(vgm[cursor + 1])}/{hex(vgm[cursor + 2])}")
-                    arr.append(hex(vgm[cursor]))
-                    arr.append(hex(vgm[cursor + 1]))
-                    arr.append(hex(vgm[cursor + 2]))
+                    arr.append(vgm[cursor])
+                    arr.append(vgm[cursor + 1])
+                    arr.append(vgm[cursor + 2])
                     cursor += 3
                 else: cursor += 3
             case 0x5A:
                 if metadata["3812clock"]:
                     # print(f"writing OPL2: {hex(vgm[cursor + 1])}/{hex(vgm[cursor + 2])}")
-                    arr.append(hex(vgm[cursor]))
-                    arr.append(hex(vgm[cursor + 1]))
-                    arr.append(hex(vgm[cursor + 2]))
+                    arr.append(vgm[cursor])
+                    arr.append(vgm[cursor + 1])
+                    arr.append(vgm[cursor + 2])
                     cursor += 3
                 else: cursor += 3
             case 0x5B:
                 if metadata["3526clock"]:
                     # print(f"writing OPL1: {hex(vgm[cursor + 1])}/{hex(vgm[cursor + 2])}")
-                    arr.append(hex(vgm[cursor]))
-                    arr.append(hex(vgm[cursor + 1]))
-                    arr.append(hex(vgm[cursor + 2]))
+                    arr.append(vgm[cursor])
+                    arr.append(vgm[cursor + 1])
+                    arr.append(vgm[cursor + 2])
                     cursor += 3
                 else: cursor += 3
             case 0x5C:
                 if metadata["8950clock"]:
                     # print(f"writing Y8950: {hex(vgm[cursor + 1])}/{hex(vgm[cursor + 2])}")
-                    arr.append(hex(vgm[cursor]))
-                    arr.append(hex(vgm[cursor + 1]))
-                    arr.append(hex(vgm[cursor + 2]))
+                    arr.append(vgm[cursor])
+                    arr.append(vgm[cursor + 1])
+                    arr.append(vgm[cursor + 2])
                     cursor += 3
                 else: cursor += 3
             case 0x5E:
                 if metadata["F262clock"]:
                     # print(f"writing OPL3 port 1: {hex(vgm[cursor + 1])}/{hex(vgm[cursor + 2])}")
-                    arr.append(hex(vgm[cursor]))
-                    arr.append(hex(vgm[cursor + 1]))
-                    arr.append(hex(vgm[cursor + 2]))
+                    arr.append(vgm[cursor])
+                    arr.append(vgm[cursor + 1])
+                    arr.append(vgm[cursor + 2])
                     cursor += 3
                 else: cursor += 3
             case 0x5F:
                 if metadata["F262clock"]:
                     # print(f"writing OPL3 port 2: {hex(vgm[cursor + 1])}/{hex(vgm[cursor + 2])}")
-                    arr.append(hex(vgm[cursor]))
-                    arr.append(hex(vgm[cursor + 1]))
-                    arr.append(hex(vgm[cursor + 2]))
+                    arr.append(vgm[cursor])
+                    arr.append(vgm[cursor + 1])
+                    arr.append(vgm[cursor + 2])
                     cursor += 3
                 else: cursor += 3
             case 0xA0:
                 if metadata["8910clock"]:
                     # print(f"writing AY-like: {hex(vgm[cursor + 1])}/{hex(vgm[cursor + 2])}")
-                    arr.append(hex(vgm[cursor]))
-                    arr.append(hex(vgm[cursor + 1]))
-                    arr.append(hex(vgm[cursor + 2]))
+                    arr.append(vgm[cursor])
+                    arr.append(vgm[cursor + 1])
+                    arr.append(vgm[cursor + 2])
                     cursor += 3
                 else:
                     cursor += 3
@@ -393,9 +392,9 @@ def pack_vgm(vgm: bytes = None, output_file: str = "array", cap: int = None):
             # non-chip commands
             case 0x61:
                 # print(f"delay: {((1000 / 44100) * ((vgm[cursor + 2] << 8) + vgm[cursor + 1])) * 1000} nanoseconds")
-                arr.append(hex(vgm[cursor]))
-                arr.append(hex(vgm[cursor + 1]))
-                arr.append(hex(vgm[cursor + 2]))
+                arr.append(vgm[cursor])
+                arr.append(vgm[cursor + 1])
+                arr.append(vgm[cursor + 2])
                 cursor += 3
             case               0x62 | 0x63 |\
                  0x70 | 0x71 | 0x72 | 0x73 | 0x74 | 0x75 | 0x76 | 0x77 |\
@@ -404,42 +403,45 @@ def pack_vgm(vgm: bytes = None, output_file: str = "array", cap: int = None):
                  0x88 | 0x89 | 0x8A | 0x8B | 0x8C | 0x8D | 0x8E | 0x8F :
                 # print(f"accessing delay {hex(vgm[cursor])}/{hex(vgm[cursor] - 0x62)}:", end='')
                 # print(f"{DELAYS[vgm[cursor] - 0x62]} nanosecs")
-                arr.append(hex(vgm[cursor]))
+                arr.append(vgm[cursor])
                 cursor += 1
             case 0x66: print("done"); die = True
             
             # streams
             case 0x90:
-                # very basic support
                 if not dump_mode in ["i", "d"]:
                     print(f"stream setup:                              \n"
                           f"ID:        {hex(vgm[cursor + 1])}          \n"
                           f"Chip Type: {stream_chip[vgm[cursor + 2]]}  \n"
                           f"register {hex(vgm[cursor + 3])}\n at port {hex(vgm[cursor + 4])}\n")
                     input("Press enter to continue...")
-                    arr.append(vgm[cursor])
-                    arr.append(vgm[cursor + 1])
+                    
+                arr.extend(vgm[cursor:cursor+5])
                 cursor += 5
+                
             case 0x91:
-                # very basic support
                 if not dump_mode in ["i", "d"]:
                     print(f"stream data:                                    \n"
                           f"ID: {hex(vgm[cursor + 1])}                      \n"
                           f"Data bank: {stream_block[vgm[cursor + 2]]}      \n"
                           f"step base: {hex(vgm[cursor + 3])}\n"
                           f"step size: {hex(vgm[cursor + 4])}\n")
-                    input("Press enter to continue...")       
+                    input("Press enter to continue...")
+                    
+                arr.extend(vgm[cursor:cursor+5])
                 cursor += 5
+                
             case 0x92:
-                # very basic support
                 if not dump_mode in ["i", "d"]:
                     print(f"stream frequency:                           \n"
                           f"ID: {hex(vgm[cursor + 1])}                  \n"
                           f"Frequency: {struct.unpack('<I', vgm[cursor + 2:cursor + 6])[0]}hz\n")
                     input("Press enter to continue...")
+                    
+                arr.extend(vgm[cursor:cursor+6])
                 cursor += 6
+                
             case 0x93:
-                # very basic support
                 if not dump_mode in ["i", "d"]:
                     datofs = struct.unpack('<I', vgm[cursor + 2:cursor + 6])[0] - 1
                     datlen = struct.unpack('<I', vgm[cursor + 7:cursor + 11])[0]
@@ -447,34 +449,42 @@ def pack_vgm(vgm: bytes = None, output_file: str = "array", cap: int = None):
                           f"ID:                {hex(vgm[cursor + 1])}                \n"
                           f"Data start offset: {datofs}      \n"
                           f"Mode:              {hex(vgm[cursor + 6])}\n"
-                          f"                   length mode: {["ignore", "amnt of cmds", "length in msecs", "until data end"][vgm[cursor + 6]&0b11]}\n"
+                          f"                   length mode: {['ignore', 'amnt of cmds', 'length in msecs', 'until data end'][vgm[cursor + 6]&0b11]}\n"
                           f"                   is reverse: {True if vgm[cursor + 6] & 0x10 else False}\n"
                           f"                   auto loop:  {True if vgm[cursor + 6] & 0x80 else False}\n"
                           f"Length:            {struct.unpack('<I', vgm[cursor + 7:cursor + 11])[0]}\n")
                     input("Press enter to continue...")
+                    
+                arr.extend(vgm[cursor:cursor+11])
                 cursor += 11
+                
             case 0x94:
-                # we dont support that, *yet*
                 if not dump_mode in ["i", "d"]:
                     print(f"end stream:\n"
                           f"ID: {hex(vgm[cursor + 1]) if vgm[cursor + 1] < 0xFF else 'all streams'}\n")
                     input("Press enter to continue...")
+                    
+                arr.extend(vgm[cursor:cursor+2])
                 cursor += 2
+                
             case 0x95:
-                # we dont support that, *yet*
                 if not dump_mode in ["i", "d"]:
-                    print(f"fast start stream:                             \n"
-                          f"ID:    {hex(vgm[cursor + 1])}                \n"
+                    print(f"fast start stream:                                   \n"
+                          f"ID:    {hex(vgm[cursor + 1])}                        \n"
                           f"Block: {hex(vgm[vgm[cursor + 3] | cursor + 2])}      \n"
                           f"Mode:  {hex(vgm[cursor + 4])}\n"
-                          f"       length mode: {["ignore", "amnt of cmds", "length in msecs", "until data end"]}\n"
+                          f"       length mode: {['ignore', 'amnt of cmds', 'length in msecs', 'until data end']}\n"
                           f"       auto loop: {True if vgm[cursor + 4] & 0x1  else False}\n"
                           f"       reverse:    {True if vgm[cursor + 4] & 0x10 else False}\n")
                     input("Press enter to continue...")
+                    
+                arr.extend(vgm[cursor:cursor + 5])
                 cursor += 5
             
             # data blocks
             case 0x67:  # omfg the meme
+                arr.extend([0x67, 0x66])
+                
                 if not dump_mode in ["i", "d"]:
                     if vgm[cursor + 1] != 0x66:
                         print("something ain't right")
@@ -482,51 +492,48 @@ def pack_vgm(vgm: bytes = None, output_file: str = "array", cap: int = None):
                           f"Type:   {stream_block[vgm[cursor + 2]]}\n"
                           f"Length: {struct.unpack('<I', vgm[cursor + 3:cursor + 7])[0]}")
                     if str(input("dump? [y/n]")).lower()[0] == "y":
-                        open(f"data_block_{block_id}_" f"{stream_block[vgm[cursor + 2]]}" "_" f"{hex(struct.unpack('<I', vgm[cursor + 3:cursor + 7])[0])}" ".raw", "wb").write(vgm[cursor + 8 - 1:cursor + 8 + struct.unpack('<I', vgm[cursor + 3:cursor + 7])[0] - 1])
+                        open(f"data_block_{block_id}_" f"{stream_block[vgm[cursor + 2]]}" "_" f"{hex(struct.unpack('<I', vgm[cursor + 3:cursor + 7])[0])}" ".raw", "wb").write(vgm[cursor + 7:cursor + 7 + struct.unpack('<I', vgm[cursor + 3:cursor + 7])[0]])
                     else:
                         print("skipped dumping")
+                    
                 elif dump_mode == "d":
-                    open(f"data_block_{block_id}_" f"{stream_block[vgm[cursor + 2]]}" "_" f"{hex(struct.unpack('<I', vgm[cursor + 3:cursor + 7])[0])}" ".raw", "wb").write(vgm[cursor + 8 - 1:cursor + 8 + struct.unpack('<I', vgm[cursor + 3:cursor + 7])[0] - 1])
+                    open(f"data_block_{block_id}_" f"{stream_block[vgm[cursor + 2]]}" "_" f"{hex(struct.unpack('<I', vgm[cursor + 3:cursor + 7])[0])}" ".raw", "wb").write(vgm[cursor + 7:cursor + 7 + struct.unpack('<I', vgm[cursor + 3:cursor + 7])[0]])
                 else:
                     pass
+                    
+                datablock_arr.extend(vgm[cursor:cursor + struct.unpack('<I', vgm[cursor + 3:cursor + 7])[0]])
                 cursor += 7 + struct.unpack('<I', vgm[cursor + 3:cursor + 7])[0]
                 block_id += 1
+                
             case 0xE0:
                 print(f"PCM seek location: {struct.unpack('<I', vgm[cursor + 1:cursor + 5])}")
                 cursor += 5
+                
         # print(f'current byte: {hex(current)} @ {hex(cursor)}')
+    # print(arr)
     print("creating array")
-    try:
-        array = open(f"./{output_file}.c", "x", encoding='utf8')
-    except FileExistsError:
-        array = open(f"./{output_file}.c", "w", encoding='utf8')
-    array.write(f"#define ARRAY_LENGTH {len(arr) + 1}\n"
-                f"#define ARRAY2_LENGTH {len(data) + 1}\n"
-                f"#define ARRAY3_LENGTH {len(data) + 1}\n"
+    array = open(f"./{output_file}.c", "w", encoding='utf8')
+    array.write(f"#define ARRAY_LENGTH {len(arr) + len(datablock_arr) + 2}\n"
                  "const uint8_t vgm[ARRAY_LENGTH] = {\n")
     print("procesing data")
-    for _, __ in enumerate(arr):
+    open(f"./{output_file}_VGM.raw", "wb").write(bytearray(arr))
+    open(f"./{output_file}_VGM.raw", "ab").write(bytearray(datablock_arr))
+   
+    for _, __ in enumerate(datablock_arr):
         if not (_ + 1) % 16:
             array.write(f"{__},\n")
         else:
             array.write(f"{__}, ")
-        # toArray += f"{__},\n" if not (_ % 16) else f"{__}, "
-    print("procesing data2")
-    array.write("const uint8_t data[ARRAY2_LENGTH] = {\n")
-    for _, __ in enumerate(data):
+    array.write(f"\n")
+    for _, __ in enumerate(arr):
         if not (_ + 1) % 16:
-            array.write("{%s},\n" % )
+            array.write(f"{hex(__)},\n")
         else:
-            array.write(f"{__}, ")
-    print("procesing data3")
-    array.write("const uint8_t data[ARRAY3_LENGTH][2] = {\n")
-    for _, __ in enumerate(data_params):
-        if not (_ + 1) % 16:
-            array.write("{%s, %s},\n" % (__[0], __[1]))
-        else:
-            array.write("{%s, %s}," % (__[0], __[1]))
+            array.write(f"{hex(__)}, ")
+    array.write(f"\n")
+    
     print("spicing things up...")
-    array.write("0x66\n};\n//" + f"{random_messages[random.randint(0, len(random_messages) - 1)]}")
+    array.write("\n};\n//" + f"{random_messages[random.randint(0, len(random_messages) - 1)]}")
     print("done!")
 
 VGM_FILES = list_files(['.vgm', '.vgz'])

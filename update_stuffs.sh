@@ -1,9 +1,0 @@
-git add midis
-git add modules
-git add tests
-# add only specific files
-git add scripts/h_suite
-git add scripts/funcs.py
-git add scripts/FurSound.py
-git add scripts/multipcm_decodedata.py
-git add update_stuffs.sh
