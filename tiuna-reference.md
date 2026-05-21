@@ -93,11 +93,11 @@ Those are the actions that `EExx` effects perform depending on the value.
 
 How the lines look depends on the pitches of the channels.
 
-| `EExx` Hi Nibble \ `EExx` Lo Nibble |          0           |          5           |          6           |          7           |          8           |               F                |
-|:-----------------------------------:|:--------------------:|:--------------------:|:--------------------:|:--------------------:|:--------------------:|:------------------------------:|
-|                  0                  |     Lines (thin)     |     Lines (wide)     |     Lines (thin)     |     Lines (wide)     |     Blank screen     |               <                |
-|                  1                  | Flash + lines (thin) | Flash + lines (wide) | Flash + lines (thin) | Flash + lines (wide) | Flash screen (blank) |               <                |
-|                  F                  |          ^           |          ^           |          ^           |          ^           |          ^           | Stop playback and show credits |
+| `EExx` Hi Nibble ><br>---------<br>`EExx` Lo Nibble V |          0           |          5           |          6           |          7           |          8           |               F                |
+|:-----------------------------------------------------:|:--------------------:|:--------------------:|:--------------------:|:--------------------:|:--------------------:|:------------------------------:|
+|                           0                           |     Lines (thin)     |     Lines (wide)     |     Lines (thin)     |     Lines (wide)     |     Blank screen     |               <                |
+|                           1                           | Flash + lines (thin) | Flash + lines (wide) | Flash + lines (thin) | Flash + lines (wide) | Flash screen (blank) |               <                |
+|                           F                           |          ^           |          ^           |          ^           |          ^           |          ^           | Stop playback and show credits |
 
 ## Links
 
