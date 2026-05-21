@@ -70,21 +70,51 @@ The text in credits looks approximately like this:
 |   1    | p | q | r | s | t | u | v | w | x | y | z | . | , | : | ; | / |
 |   2    | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 |   |   |   |   |   |   |
 |   3    |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |
-|   4    |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |
-|   5    |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |
-|   6    |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |
-|   7    |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |
-|   8    |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |
-|   9    |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |
-|   A    |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |
-|   B    |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |
-|   C    |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |
-|   D    |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |
-|   E    |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |
-|   F    |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |
 
 ```asm
-; currently none
+font_gfx
+    .text x"00000000000000" ; ' '
+    .text x"66667e66663c18" ; 'a'
+    .text x"7c66667c66667c" ; 'b'
+    .text x"3c66606060663c" ; 'c'
+    .text x"7c66666666667c" ; 'd'
+    .text x"7e60607e60607e" ; 'e'
+    .text x"6060607c60607e" ; 'f'
+    .text x"00000000000000" ; 'g'
+    .text x"00000000000000" ; 'h'
+    .text x"7e18181818187e" ; 'i'
+    .text x"00000000000000" ; 'j'
+    .text x"00000000000000" ; 'k'
+    .text x"00000000000000" ; 'l'
+    .text x"66667676767e66" ; 'm'
+    .text x"66666e6e767666" ; 'n'
+    .text x"3c66666666663c" ; 'o'
+    .text x"6060607c66667c" ; 'p'
+    .text x"00000000000000" ; 'q'
+    .text x"6666667c66667c" ; 'r'
+    .text x"7c06063c60603e" ; 's'
+    .text x"1818181818187e" ; 't'
+    .text x"00000000000000" ; 'u'
+    .text x"183c3c66666666" ; 'v'
+    .text x"00000000000000" ; 'w'
+    .text x"00000000000000" ; 'x'
+    .text x"00000000000000" ; 'y'
+    .text x"00000000000000" ; 'z'
+    .text x"00000000181800" ; '.'
+    .text x"00000000000000" ; ','
+    .text x"00000000000000" ; ':'
+    .text x"00000000000000" ; ';'
+    .text x"00000000000000" ; '/'
+    .text x"00000000000000" ; '0'
+    .text x"00000000000000" ; '1'
+    .text x"00000000000000" ; '2'
+    .text x"00000000000000" ; '3'
+    .text x"00000000000000" ; '4'
+    .text x"00000000000000" ; '5'
+    .text x"00000000000000" ; '6'
+    .text x"00000000000000" ; '7'
+    .text x"00000000000000" ; '8'
+    .text x"00000000000000" ; '9'
 ```
 
 ## Furnace `EExx` effect reference for TIunA
@@ -93,11 +123,12 @@ Those are the actions that `EExx` effects perform depending on the value.
 
 How the lines look depends on the pitches of the channels.
 
-| `EExx` Hi Nibble ><br>---------<br>`EExx` Lo Nibble V |          0           |          5           |          6           |          7           |          8           |               F                |
-|:-----------------------------------------------------:|:--------------------:|:--------------------:|:--------------------:|:--------------------:|:--------------------:|:------------------------------:|
-|                           0                           |     Lines (thin)     |     Lines (wide)     |     Lines (thin)     |     Lines (wide)     |     Blank screen     |               <                |
-|                           1                           | Flash + lines (thin) | Flash + lines (wide) | Flash + lines (thin) | Flash + lines (wide) | Flash screen (blank) |               <                |
-|                           F                           |          ^           |          ^           |          ^           |          ^           |          ^           | Stop playback and show credits |
+| `EExx` Hi Nibble ><br>---------<br>`EExx` Lo Nibble V |         0          |        1        |          5           |          6           |          7           |          8           |               F                |
+|:-----------------------------------------------------:|:------------------:|:---------------:|:--------------------:|:--------------------:|:--------------------:|:--------------------:|:------------------------------:|
+|                           0                           |        Line        | 2 lines (close) |     Lines (wide)     |     Lines (thin)     |     Lines (wide)     |     Blank screen     |               <                |
+|                           1                           |    Flash + line    |                 | Flash + lines (wide) | Flash + lines (thin) | Flash + lines (wide) | Flash screen (blank) |               <                |
+|                        **...**                        |         ^          |                 |          ^           |          ^           |          ^           |          ^           |               <                |
+|                           F                           |         ^          |                 |          ^           |          ^           |          ^           |          ^           | Stop playback and show credits |
 
 ## Links
 
