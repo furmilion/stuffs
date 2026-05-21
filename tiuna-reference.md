@@ -8,7 +8,6 @@ TIunA operates at approximately 5kHz rate.
 
 TIunA first appeared in "Twin" Atari 2600 music demo of AYCE (All You Can Execute)
 group.
-The code is available at [AYCEdemo/twin-tiuna](https://github.com/AYCEdemo/twin-tiuna).
 
 ### "Twin" song
 The song is originally made by Petriform for the "Familial Verses"
@@ -16,6 +15,7 @@ GB x VB album.
 A cover of this song appears in the "Twin" music demo, arranged by Abstract64.
 
 Currently, Natt Akuma and Abstract64 are both present in AYCE and Otomata Labs demogroups.
+
 
 ## TIunA ending GFX font reference
 
@@ -91,8 +91,32 @@ The text in credits looks approximately like this:
 
 Those are the actions that `EExx` effects perform depending on the value.
 
+How the lines look depends on the pitches of the channels.
+
 | `EExx` Hi Nibble \ `EExx` Lo Nibble |          0           |          5           |          6           |          7           |          8           |               F                |
 |:-----------------------------------:|:--------------------:|:--------------------:|:--------------------:|:--------------------:|:--------------------:|:------------------------------:|
-|                  0                  |     Lines (thin)     |     Lines (wide)     |     Lines (thin)     |     Lines (wide)     |     Blank screen     |          Blank screen          |
-|                  1                  | Flash + lines (thin) | Flash + lines (wide) | Flash + lines (thin) | Flash + lines (wide) | Flash screen (blank) |      Flash screen (blank)      |
-|                  F                  | Flash + lines (thin) | Flash + lines (wide) | Flash + lines (thin) | Flash + lines (wide) | Flash screen (blank) | Stop playback and show credits |
+|                  0                  |     Lines (thin)     |     Lines (wide)     |     Lines (thin)     |     Lines (wide)     |     Blank screen     |               <                |
+|                  1                  | Flash + lines (thin) | Flash + lines (wide) | Flash + lines (thin) | Flash + lines (wide) | Flash screen (blank) |               <                |
+|                  F                  |          ^           |          ^           |          ^           |          ^           |          ^           | Stop playback and show credits |
+
+## Links
+
+The code for the driver and the demo is available at [AYCEdemo/twin-tiuna](https://github.com/AYCEdemo/twin-tiuna).
+
+Abstract64's arrangement is available at https://www.youtube.com/watch?v=5xWEkZSFwKQ,
+however the visuals are XYscope rather than an emulator or hardware recording,
+though the intro splash warning of possible seizures due to rapid flashing
+is still present.
+
+The original track is available on [YouTube](https://www.youtube.com/watch?v=C0vqrmRgfM8)
+and [Bandcamp](https://petriform.bandcamp.com/album/familial-verses).
+
+Abstract64 is present on:
+- [YouTube](https://www.youtube.com/@64abstract)
+- [Twitter/X](https://x.com/@64abstract)
+- Discord (64abstract)
+
+Natt Akuma is present on:
+- [YouTube](https://www.youtube.com/@akumanatt)
+- [Twitter/X](https://x.com/@akumanatt)
+- Discord (akumanatt)
