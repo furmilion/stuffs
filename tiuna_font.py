@@ -57,8 +57,36 @@ def image_from_string(string: str = '.text x"00000000000000"'):
     return visual_output
 
 def string_from_image(image: str = ""):  # the name is a bit misleading as you still input a string, a single-line one
-    pass
+    pre = ""
+    arr = []
+    out = ""
+    for _ in image:
+        if _ == "░":
+            pre += "0"
+        elif _ == "█":
+            pre += "1"
+        else:
+            pre += _
+    for symbol in range(7):
+        for bit in range(8):
+            temp = 0
+            if pre[symbol * 8 + bit] == "1":
+                temp += 1 << (8 - bit)
+            arr.append(hex(temp)[2:])
+    arr.reverse()
+    for _ in arr:
+        out += _
+    print(image_from_string(out))
+    return f'.text x"{out}"'
 
 if __name__ == "__main__":
     for _ in tiuna_font:
         print(image_from_string(_))
+    print(string_from_image(
+        "░░████░░"
+        "░██░░██░"
+        "░██░░░░░"
+        "░██░███░"
+        "░██░░██░"
+        "░██░░██░"
+        "░░████░░"))
