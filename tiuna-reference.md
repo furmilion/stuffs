@@ -80,31 +80,31 @@ font_gfx
     .text x"7c66666666667c" ; 'd'
     .text x"7e60607e60607e" ; 'e'
     .text x"6060607c60607e" ; 'f'
-    .text x"00000000000000" ; 'g'
-    .text x"00000000000000" ; 'h'
+    .text x"3c66666e60663c" ; 'g'
+    .text x"6666667e666666" ; 'h'
     .text x"7e18181818187e" ; 'i'
-    .text x"00000000000000" ; 'j'
-    .text x"00000000000000" ; 'k'
-    .text x"00000000000000" ; 'l'
+    .text x"3c660606060606" ; 'j'
+    .text x"666e6c787c6e66" ; 'k'
+    .text x"7e606060606060" ; 'l'
     .text x"66667676767e66" ; 'm'
     .text x"66666e6e767666" ; 'n'
     .text x"3c66666666663c" ; 'o'
     .text x"6060607c66667c" ; 'p'
-    .text x"00000000000000" ; 'q'
+    .text x"3f6e666666663c" ; 'q'
     .text x"6666667c66667c" ; 'r'
     .text x"7c06063c60603e" ; 's'
     .text x"1818181818187e" ; 't'
-    .text x"00000000000000" ; 'u'
+    .text x"3c666666666666" ; 'u'
     .text x"183c3c66666666" ; 'v'
-    .text x"00000000000000" ; 'w'
-    .text x"00000000000000" ; 'x'
-    .text x"00000000000000" ; 'y'
-    .text x"00000000000000" ; 'z'
+    .text x"667e6e6e6e6666" ; 'w'
+    .text x"666672381c4e66" ; 'x'
+    .text x"1818183c7e6666" ; 'y'
+    .text x"7e60703c0e067e" ; 'z'
     .text x"00000000181800" ; '.'
-    .text x"00000000000000" ; ','
-    .text x"00000000000000" ; ':'
-    .text x"00000000000000" ; ';'
-    .text x"00000000000000" ; '/'
+    .text x"00000030181800" ; ','
+    .text x"00181800181800" ; ':'
+    .text x"30181800181800" ; ';'
+    .text x"603030180c0c06" ; '/'
     .text x"00000000000000" ; '0'
     .text x"00000000000000" ; '1'
     .text x"00000000000000" ; '2'
@@ -123,12 +123,14 @@ Those are the actions that `EExx` effects perform depending on the value.
 
 How the lines look depends on the pitches of the channels.
 
-| `EExx` Hi Nibble ><br>---------<br>`EExx` Lo Nibble V |         0          |        1        |          5           |          6           |          7           |          8           |               F                |
-|:-----------------------------------------------------:|:------------------:|:---------------:|:--------------------:|:--------------------:|:--------------------:|:--------------------:|:------------------------------:|
-|                           0                           |        Line        | 2 lines (close) |     Lines (wide)     |     Lines (thin)     |     Lines (wide)     |     Blank screen     |               <                |
-|                           1                           |    Flash + line    |                 | Flash + lines (wide) | Flash + lines (thin) | Flash + lines (wide) | Flash screen (blank) |               <                |
-|                        **...**                        |         ^          |                 |          ^           |          ^           |          ^           |          ^           |               <                |
-|                           F                           |         ^          |                 |          ^           |          ^           |          ^           |          ^           | Stop playback and show credits |
+Note that hi nibbles past `1` are always flashes and lo nibbles
+past 8 are always disable lines, unless stated otherwise.
+
+| `EExx` Hi Nibble ><br>---------<br>`EExx` Lo Nibble V |           0           |           1           |             2             |           3           |           4           |             5             |           6           |                  7                  |           8           |               F                |
+|:-----------------------------------------------------:|:---------------------:|:---------------------:|:-------------------------:|:---------------------:|:---------------------:|:-------------------------:|:---------------------:|:-----------------------------------:|:---------------------:|:------------------------------:|
+|                           0                           |         Line          |    2 lines (close)    |  2 lines (medium spaced)  |    3 lines (close)    |  2 lines (far apart)  | 1 line (double thickness) |  3 lines (far apart)  | Line (quadruple thickness + shadow) |    Lines disabled     |                                |
+|                           1                           | Flash varint of above | Flash varint of above |   Flash varint of above   | Flash varint of above | Flash varint of above |   Flash varint of above   | Flash varint of above |        Flash varint of above        | Flash varint of above |                                |
+|                           F                           |                       |                       |                           |                       |                       |                           |                       |                                     |                       | Stop playback and show credits |
 
 ## Links
 
