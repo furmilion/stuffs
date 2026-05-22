@@ -190,7 +190,7 @@ class Channel:
                     self.wavetable[i] *= maximizer
                 self.wavetable.extend(self.wavetable[::-1])
             elif self.c_type == WAVE_SAMPLE:
-                if not self.wavetable:
+                if not self.wavetable:  # todo: parameters (loop points etc)
                     raise ValueError("where wave")
                 self.length = len(self.wavetable)
             elif self.c_type == WAVE_TABLE:
@@ -288,7 +288,7 @@ class Channel:
                         # this comes with a slight change: pwm will no longer sound blocky on low lengths
                         out = -1 if phase < WAVE_LEN_H else 1
                     elif self.c_type == WAVE_PULSE: 
-                        out = -1 if phase < WAVE_LEN * 2 * self.p_width else 1 # i accidentally generated a square from 0 to 1 instead of -1 to 1 :wilted_rose:
+                        out = -1 if phase < WAVE_LEN * self.p_width else 1 # i accidentally generated a square from 0 to 1 instead of -1 to 1 :wilted_rose:
                     else: out = self.wavetable[idx]
                 case self.i_lin:
                     out = (
@@ -342,7 +342,8 @@ class Channel:
         self._finish_setup_()
 
     def change_width(self, width: float | int = .25):
-        self.p_width = abs(width)
+        self.p_width = abs(width) % 1
+
         match self.i_type:
             case self.i_none:
                 pass
@@ -533,31 +534,31 @@ if __name__ == "__main__":
     length = 6.4 * 2 #length
     print("READY")
     ChannelNoise1 = Channel(
-        type_ = "square",
+        type_ = "pulse",
         sample_rate = sr,
         interpolation = "none",
         length = 8,
         panning = 0,
         volume = .1 ,
-        width = 0
+        width = .5,
     )
     ChannelNoise2 = Channel(
-        type_ = "square",
+        type_ = "pulse",
         sample_rate = sr,
         interpolation = "none",
         length = 8,
         panning = .7,
         volume = .1,
-        width = 0
+        width = .375,
     )
     ChannelNoise3 = Channel(
-        type_ = "square",
+        type_ = "pulse",
         sample_rate = sr,
         interpolation = "none",
         panning = -.7,
         length = 8,
         volume = .1,
-        width = 0
+        width = .25,
     )
 
     ChannelNoise1.set_attack(.0); ChannelNoise1.set_decay1(.06);ChannelNoise1.set_sustain(.3);ChannelNoise1.set_decay2(.1);ChannelNoise1.set_release(0)
@@ -583,6 +584,16 @@ if __name__ == "__main__":
         "e-3", "b-3", "a-4", "b-4", "e-4", "b-4", "a-4", "d-5",
         "e-3", "a-3", "b-3", "g-4", "g-3", "b-3", "d-4", "a-4",
         "e-3", "b-3", "f#-4","a-4", "d-5", "f#-5","d-5", "e-5",
+
+        "e-3", "a-3", "b-3", "g-4", "g-3", "b-3", "d-4", "a-4",
+        "e-3", "b-3", "a-4", "b-4", "e-4", "b-4", "a-4", "d-5",
+        "e-3", "a-3", "b-3", "g-4", "g-3", "b-3", "d-4", "a-4",
+        "e-3", "b-3", "a-4", "b-4", "e-4", "d-5", "e-5", "b-4",
+
+        "a-3", "b-3", "e-4", "b-4", "a-3", "b-4", "a-4", "d-5",
+        "a-3", "e-5", "b-4", "a-4", "e-4", "g-5", "f#-5", "d-5",
+        "a-3", "d-4", "e-4", "a-4", "a-3", "b-4", "d-5", "e-5",
+        "e-4", "b-4", "a-4", "b-4", "e-4", "a-4", "f#-4", "g-4"
         
     ]
     notes = [f(k(_), master_tune) for _ in notes_pre]
@@ -608,27 +619,34 @@ if __name__ == "__main__":
         #arr.extend([ChannelNoise.update()[0], ChannelNoise2.update()[0]])
         #arr.extend([ChannelNoise.update()[0], ChannelNoise2.update()[0]])
         #arr.extend([ChannelNoise.update(suppress_noise_update=True)[0], ChannelSquare.update()[0]])
-        curSample  = ChannelNoise1.update(suppress_noise_update=True)[:2]
+        curSample += ChannelNoise1.update(suppress_noise_update=True)[:2]
         curSample += ChannelNoise2.update(suppress_noise_update=True)[:2]
         curSample += ChannelNoise3.update(suppress_noise_update=True)[:2]
         #curSample /= 1
         render.extend(curSample)
+        curSample -= curSample
         # technically with how i did the noise ingraining here, it is updated twice as quicky and is full independent stereo
         #ChannelPulse.change_width(ChannelPulse.p_width + (.125/sr) % 1) # pwm is STUPIDLY expensive to generate when using interpolation
         #print(f"pw {ChannelPulse.p_width}")
         #print("alive")
         if not _ % sr:
             print(f"second {1 + (_ // sr)} generated")
+        ChannelNoise1.change_width(ChannelNoise1.p_width + (.25 / sr))
+        ChannelNoise2.change_width(ChannelNoise2.p_width + (.15 / sr))
+        ChannelNoise3.change_width(ChannelNoise3.p_width + (.05 / sr))
         if not _ % (sr//10):
             #ChannelNoise.force_generate_new_noise_packets()
             #ChannelNoise2.force_generate_new_noise_packets()
         #if not _ % (sr//10):
             ChannelNoise1._freq = notes[seq]
             ChannelNoise1.volume = vols[seq % len(vols)] * 2
+
             ChannelNoise2._freq = notes[seq - 3] - (notes[seq]/128)
             ChannelNoise2.volume = vols[seq % len(vols)] * .5
+
             ChannelNoise3._freq = notes[seq - 6] + (notes[seq]/128)
             ChannelNoise3.volume = vols[seq % len(vols)] * .25
+
             if not gates[seq % len(gates)]:
                 pass
             else:
@@ -693,7 +711,7 @@ if __name__ == "__main__":
         #Channel.wavetable = [ (((_*64)>>24)&255)/255, (((_*64)>>16)&255)/255, (((_*64)>>8)&255)/255, (((_*64)>>0)&255)/255]
     with FurWave.WaveWriter(
                     channels=2,
-                    samplerate=sr*3,
+                    samplerate=sr,
                     bitdepth=32.,
                     data=render,
                     packed=True,
