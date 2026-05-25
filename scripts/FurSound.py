@@ -44,9 +44,9 @@ WAVE_NOISE    = 6
 WAVE_TABLE    = 7
 WAVE_TRIANGLE = 8
 WAVE_NONE     = 9
-WAVE_ZERODIV  = 10
-WAVE_h        = 11
-WAVE_H        = 12
+WAVE_ZERODIV  = 16
+WAVE_h        = 17
+WAVE_H        = 18
 
 WAVE_MAP = { # prepare for better wave system
 "square": WAVE_SQUARE,
@@ -65,11 +65,17 @@ WAVE_MAP = { # prepare for better wave system
 }
 
 INTERP_NONE = 0
-INTERP_LIN  = 1 # TODO: add gaussian?
+INTERP_LIN  = 1
+#INTERP_GAUSSIAN = 2  # TODO: gaussian?
+INTERP_RECTSINE = 2
+#INTERP_SINE = 3
 
 INTERP_MAP = {
 "none": INTERP_NONE,
-"linear": INTERP_LIN
+"linear": INTERP_LIN,
+#"gauss": INTERP_GAUSSIAN,
+"rectsine": INTERP_RECTSINE,
+#"sine": INTERP_SINE,
 }
 
 
@@ -120,8 +126,8 @@ class Channel:
         #self.ZeroDivisionError = "ZeroDivisionError"  # i dare you use it.
 
         # interpolation types
-        self.i_none = "none"
-        self.i_lin  = "linear"
+        #self.i_none = "none"
+        #self.i_lin  = "linear"
         
         # common
         self.c_type = WAVE_MAP.get(type_, WAVE_SQUARE)
@@ -145,10 +151,10 @@ class Channel:
                             # will be updated when the channel is asked to update
                             # used to calculate next phase. basically, points at where
                             # the playhead is in the wave
-        self.panning = clamp(panning, -1, 1) # channel panning. self-explanatory
-        self.volume = clamp(volume, 0, 1)
-        self.i_type = interpolation
-        self.length = abs(length) if length else 16
+        self.panning = np.float16(clamp(panning, -1, 1)) # channel panning. self-explanatory
+        self.__volume__ = np.float16(clamp(volume, 0, 1))
+        self.i_type = INTERP_MAP.get(interpolation, INTERP_NONE)
+        self.length = np.ushort(abs(length) if length else 16)
         self.skip_sound = False  # similar to None wave but is used when another wave is in use
         
         self._finish_setup_() # validate some stuff so it doesn't die
@@ -217,18 +223,9 @@ class Channel:
                 # обработка ошибок уровень метамфетамин
         else:
             raise ValueError("what is this magic data i dont understand it i need string")
+
+        self.wavetable = np.array(self.wavetable, np.float16)
         
-        if isinstance(self.i_type, str):
-            match self.i_type:
-                case self.i_none:
-                    pass
-                case self.i_lin:
-                    pass
-                case _:
-                    self.i_type = self.i_none
-        else:
-            raise ValueError("what is this magic data i dont understand it i need string")
-    
     def update(self, suppress_phase_update=False, suppress_noise_update=False):
         out, phase_reset_flag = 0, False
         
@@ -278,25 +275,33 @@ class Channel:
             #print(phase)
             idx = floor(phase) % WAVE_LEN
             Fphase = floor(phase)
-            Cphase = ceil(phase)
-            match self.i_type:
-                case self.i_none:
-                    if self.c_type == WAVE_SQUARE:
-                        #print(-1 if phase < WAVE_LEN_H else 1)
-                        # why do we need to use a wave when we use pulse or square
-                        # if its cheaper to generate it on the fly when without interpolation
-                        # this comes with a slight change: pwm will no longer sound blocky on low lengths
-                        out = -1 if phase < WAVE_LEN_H else 1
-                    elif self.c_type == WAVE_PULSE: 
-                        out = -1 if phase < WAVE_LEN * self.p_width else 1 # i accidentally generated a square from 0 to 1 instead of -1 to 1 :wilted_rose:
-                    else: out = self.wavetable[idx]
-                case self.i_lin:
-                    out = (
-                        self.wavetable[idx] - 
-                        (
-                            (self.wavetable[idx] - self.wavetable[(idx + 1) % WAVE_LEN]) * (phase - Fphase)
-                        )
+            #Cphase = ceil(phase)
+            if self.i_type == INTERP_NONE:
+                if self.c_type == WAVE_SQUARE:
+                    #print(-1 if phase < WAVE_LEN_H else 1)
+                    # why do we need to use a wave when we use pulse or square
+                    # if its cheaper to generate it on the fly when without interpolation
+                    # this comes with a slight change: pwm will no longer sound blocky on low lengths
+                    out = -1 if phase < WAVE_LEN_H else 1
+                elif self.c_type == WAVE_PULSE:
+                    out = -1 if phase < WAVE_LEN * self.p_width else 1 # i accidentally generated a square from 0 to 1 instead of -1 to 1 :wilted_rose:
+                else: out = self.wavetable[idx]
+            elif self.i_type == INTERP_LIN:
+                out = (
+                    self.wavetable[idx] -
+                    (
+                        (self.wavetable[idx] - self.wavetable[(idx + 1) % WAVE_LEN]) * (phase - Fphase)
                     )
+                )
+            elif self.i_type == INTERP_RECTSINE:
+                out = (
+                    self.wavetable[idx] -
+                    (
+                        (self.wavetable[idx] - self.wavetable[(idx + 1) % WAVE_LEN]) * sin((pi * (phase - Fphase)) / 2)
+                    )
+                )
+
+
         elif self.c_type == WAVE_NONE or self.skip_sound:  # if we have a special "none" wave, straight up ignore the sound logic and just
             self.phase = (self.phase + (self._freq / self.sample_rate))  # update the phase; also when skipping sound, obviously
             phase_reset_flag = self.phase > 1
@@ -325,7 +330,7 @@ class Channel:
         #)
         lMult = 1 - abs(self.panning) if self.panning > 0 else 1
         rMult = 1 - abs(self.panning) if self.panning < 0 else 1
-        return (out * lMult * self.volume * self.env_y, out * rMult * self.volume * self.env_y, phase_reset_flag)
+        return (out * lMult * self.__volume__ * self.env_y, out * rMult * self.__volume__ * self.env_y, phase_reset_flag)
     
     def phase_reset(self):
         self.phase = self.init_phase
@@ -344,11 +349,10 @@ class Channel:
     def change_width(self, width: float | int = .25):
         self.p_width = abs(width) % 1
 
-        match self.i_type:
-            case self.i_none:
-                pass
-            case _:
-                self.wavetable = [-1 if _ < (self.length * 2) * self.p_width else 1 for _ in range(self.length * 2)]
+        if self.i_type != INTERP_NONE and self.c_type == WAVE_PULSE:
+            self.wavetable = np.array([-1 if _ < (self.length * 2) * self.p_width else 1 for _ in range(self.length * 2)], np.float16)
+    def set_volume(self, volume: float = 1.):
+        self.__volume__ = np.float16(volume)
     
     def force_generate_new_noise_packets(self):
         if self.c_type == WAVE_NOISE1B:  # generate noise packets but as a function
@@ -447,10 +451,10 @@ class Channel:
                 
     def __toggle_envelope__(self):
         if self.env_state < 6:
-            self.env_state = 5 * self.env_state
+            self.env_state += 6
             #print("env pause")
         else:
-            self.env_state //= 5
+            self.env_state -= 6
             #print("env resume")
     def __force_advance_envelope_state__(self):
         self.__update_envelope__((self.env_state + 1) % 5)
@@ -534,37 +538,38 @@ if __name__ == "__main__":
     length = 6.4 * 2 #length
     print("READY")
     ChannelNoise1 = Channel(
-        type_ = "pulse",
+        type_ = "square",
         sample_rate = sr,
-        interpolation = "none",
-        length = 8,
+        interpolation = "sine",
+        length = 2,
         panning = 0,
-        volume = .1 ,
+        volume = .1 * 2,
         width = .5,
     )
     ChannelNoise2 = Channel(
-        type_ = "pulse",
+        type_ = "sawtooth",
         sample_rate = sr,
         interpolation = "none",
         length = 8,
         panning = .7,
-        volume = .1,
+        volume = .1 * .5,
         width = .375,
     )
     ChannelNoise3 = Channel(
-        type_ = "pulse",
+        type_ = "sawtooth",
         sample_rate = sr,
         interpolation = "none",
         panning = -.7,
         length = 8,
-        volume = .1,
+        volume = .1 * .25,
         width = .25,
     )
 
     ChannelNoise1.set_attack(.0); ChannelNoise1.set_decay1(.06);ChannelNoise1.set_sustain(.3);ChannelNoise1.set_decay2(.1);ChannelNoise1.set_release(0)
     ChannelNoise2.set_attack(1/16);ChannelNoise2.set_decay1(.06);ChannelNoise2.set_sustain(.3);ChannelNoise2.set_decay2(.1);ChannelNoise2.set_release(0)
     ChannelNoise3.set_attack(2/16);ChannelNoise3.set_decay1(.06);ChannelNoise3.set_sustain(.3);ChannelNoise3.set_decay2(.1);ChannelNoise3.set_release(0)
-    
+    ChannelNoise2.cut_channel()
+    ChannelNoise3.cut_channel()
     #Supersaw = ChannelGroup(detune=120)
     #for _ in range(8):
     #    Supersaw.add_channel(length=7) # adds 8 channels
@@ -639,20 +644,20 @@ if __name__ == "__main__":
             #ChannelNoise2.force_generate_new_noise_packets()
         #if not _ % (sr//10):
             ChannelNoise1._freq = notes[seq]
-            ChannelNoise1.volume = vols[seq % len(vols)] * 2
+            #ChannelNoise1.set_volume(vols[seq % len(vols)] * 2)
 
             ChannelNoise2._freq = notes[seq - 3] - (notes[seq]/128)
-            ChannelNoise2.volume = vols[seq % len(vols)] * .5
+            #ChannelNoise2.set_volume(vols[seq % len(vols)] * .5)
 
             ChannelNoise3._freq = notes[seq - 6] + (notes[seq]/128)
-            ChannelNoise3.volume = vols[seq % len(vols)] * .25
+            #ChannelNoise3.set_volume(vols[seq % len(vols)] * .25)
 
             if not gates[seq % len(gates)]:
                 pass
             else:
                 ChannelNoise1.press_channel(0)
-                ChannelNoise2.press_channel(0)
-                ChannelNoise3.press_channel(0)
+                #ChannelNoise2.press_channel(0)
+                #ChannelNoise3.press_channel(0)
             #print(note, notes[note])
             seq = (seq + 1) % len(notes)
 

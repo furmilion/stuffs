@@ -1,0 +1,29 @@
+Index: ../smash-hit-sgen-cover-project/README.md
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+># Smash Hit Sega Genesis Cover Project\r\n\r\n![logo.png](logo.png)\r\n\r\nThe Sega Genesis port of the entire soundtrack of Smash Hit.
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/../smash-hit-sgen-cover-project/README.md b/../smash-hit-sgen-cover-project/README.md
+--- a/../smash-hit-sgen-cover-project/README.md	(revision 986e629a3a43241f7d4b40e45c40e2c99aff6b7a)
++++ b/../smash-hit-sgen-cover-project/README.md	(date 1774725794579)
+@@ -2,4 +2,16 @@
+ 
+ ![logo.png](logo.png)
+ 
+-The Sega Genesis port of the entire soundtrack of Smash Hit.
+\ No newline at end of file
++The Sega Genesis port of the entire soundtrack of Smash Hit.
++
++## How it's done?
++
++Mostly by ear.
++
++## Who by?
++
++Original music for Smash Hit is made by Douglas Holmquist.
++
++Project initiated by г-н Сатурн.
++
++Covers by [Furmilion](https://github.com/furmilion) (that's me!) and [г-н Сатурн](https://github.com/MrSaturnBoing).
