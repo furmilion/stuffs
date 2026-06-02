@@ -564,7 +564,7 @@ class MultiPCMSampleExtractor:
                     case 15:
                         return decays[63]
                     case _:
-                        return (attacks[clamp(param1 + param2, 0, 63)] / 44100) * self.rate \
+                        return (decays[clamp(param1 + param2, 0, 63)] / 44100) * self.rate \
                                 if self.rate != 44100 else attacks[clamp(param1 + param2, 0, 63)]
             case _:
                 return "Placeholder"

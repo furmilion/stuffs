@@ -8,20 +8,20 @@ so all data is stored in big endian format, or at least should be.
 
 ## Head
 
-|     Offset     | Length | Data | Description                                 |     
-| -------------: | -----: | :--: | :------------------------------------------ |  
-|              0 |      4 | FSUT | Signature                                   |     
-|              4 |      1 |      | Amount of channels                          |     
-|              5 |      1 |      | Speed (ticks per row)                       |     
-|              6 |      1 |      | Tick rate (driver updates/s), integer value |     
-|              7 |      1 |      | Speed 2                                     |
-|              8 |      4 |      | Integer sample rate                         |
-|              C |      1 |      | Name length (up to 255 symbols)             |     
-|              D |      ? |      | Name                                        |     
-|          D + ? |      1 |      | Author length                               |     
-|          E + ? |      ? |      | Author                                      |     
-|      E + ? + ? |      ? |      | Channel definition × Channels               |     
-| 12 + ? + ? + ? |      ? |      | Orders (up to 256)                          |     
+|                  Offset |  Length | Data | Description                                 |     
+|------------------------:|--------:| :--: |:--------------------------------------------|  
+|                       0 |       4 | FSUT | Signature                                   |     
+|                       4 |       1 |      | Amount of channels                          |     
+|                       5 |       1 |      | Speed (ticks per row)                       |     
+|                       6 |       1 |      | Tick rate (driver updates/s), integer value |     
+|                       7 |       1 |      | Speed 2                                     |
+|                       8 |       4 |      | Integer sample rate                         |
+|                       C |       1 |      | Name length (up to 255 symbols) $N_LEN$     |     
+|                       D | $N_LEN$ |      | Name                                        |     
+|             D + $N_LEN$ |       1 |      | Author length $A_LEN$                       |     
+|             E + $N_LEN$ | $A_LEN$ |      | Author                                      |     
+|   E + $N_LEN$ + $A_LEN$ |       ? |      | Channel definition × Channels               |     
+|          12 + ? + ? + ? |       ? |      | Orders (up to 256)                          |     
 
 
 ## Channels

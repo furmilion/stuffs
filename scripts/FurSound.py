@@ -68,14 +68,14 @@ INTERP_NONE = 0
 INTERP_LIN  = 1
 #INTERP_GAUSSIAN = 2  # TODO: gaussian?
 INTERP_RECTSINE = 2
-#INTERP_SINE = 3
+INTERP_SINE = 3
 
 INTERP_MAP = {
 "none": INTERP_NONE,
 "linear": INTERP_LIN,
 #"gauss": INTERP_GAUSSIAN,
 "rectsine": INTERP_RECTSINE,
-#"sine": INTERP_SINE,
+"sine": INTERP_SINE,
 }
 
 
@@ -300,6 +300,13 @@ class Channel:
                         (self.wavetable[idx] - self.wavetable[(idx + 1) % WAVE_LEN]) * sin((pi * (phase - Fphase)) / 2)
                     )
                 )
+            elif self.i_type == INTERP_SINE:
+                out = (
+                    self.wavetable[idx] -
+                    (
+                        (self.wavetable[idx] - self.wavetable[(idx + 1) % WAVE_LEN]) * (sin((pi * ((phase - Fphase) * 2 - 1)) / 2) / 2 + .5)
+                    )
+                )
 
 
         elif self.c_type == WAVE_NONE or self.skip_sound:  # if we have a special "none" wave, straight up ignore the sound logic and just
@@ -368,9 +375,11 @@ class Channel:
         self.env_state = 5      # but in envelope context it is cheaper to do this as
         self.skip_sound = True  # if you change the wave, you'll have to manually change it back
         #print("key cut")
-    def press_channel(self, force_reset=True): # press adsr
+    def press_channel(self, force_reset=True, phase_reset=False): # press adsr
         if force_reset:  # reset current envelope multiplier
             self.env_y = 0
+        if phase_reset:
+            self.phase_reset()
         self.env_acc = ((1 / (self.sample_rate * self.adsr[0])) * (1 - self.env_y)) if self.adsr[0] > 0 else 1  # account for not fully decayed sound by lowering speed
         self.env_state = 0
         self.skip_sound = False
@@ -516,7 +525,7 @@ def freq_from_key(key = 60, tune = 440): # for some tests
     return (2 ** ((-57 + key) / 12)) * tune
 
 def key_from_note(note = "c-5"):
-    dat = list(note.lower().split("-"))  # TODO: suppoet negatine octaves
+    dat = list(note.lower().split("-"))  # TODO: suppoet negative octaves
     dat[1] = int(dat[1])
     notes = {"c": 0, "c#": 1,
              "d": 2, "d#": 3,
@@ -547,34 +556,27 @@ if __name__ == "__main__":
         width = .5,
     )
     ChannelNoise2 = Channel(
-        type_ = "sawtooth",
+        type_ = "square",
         sample_rate = sr,
-        interpolation = "none",
-        length = 8,
+        interpolation = "sine",
+        length = 2,
         panning = .7,
-        volume = .1 * .5,
+        volume = .05 * .5,
         width = .375,
     )
     ChannelNoise3 = Channel(
-        type_ = "sawtooth",
+        type_ = "square",
         sample_rate = sr,
-        interpolation = "none",
+        interpolation = "sine",
         panning = -.7,
-        length = 8,
-        volume = .1 * .25,
+        length = 2,
+        volume = .025 * .25,
         width = .25,
     )
 
-    ChannelNoise1.set_attack(.0); ChannelNoise1.set_decay1(.06);ChannelNoise1.set_sustain(.3);ChannelNoise1.set_decay2(.1);ChannelNoise1.set_release(0)
-    ChannelNoise2.set_attack(1/16);ChannelNoise2.set_decay1(.06);ChannelNoise2.set_sustain(.3);ChannelNoise2.set_decay2(.1);ChannelNoise2.set_release(0)
-    ChannelNoise3.set_attack(2/16);ChannelNoise3.set_decay1(.06);ChannelNoise3.set_sustain(.3);ChannelNoise3.set_decay2(.1);ChannelNoise3.set_release(0)
-    ChannelNoise2.cut_channel()
-    ChannelNoise3.cut_channel()
-    #Supersaw = ChannelGroup(detune=120)
-    #for _ in range(8):
-    #    Supersaw.add_channel(length=7) # adds 8 channels
-    #Supersaw.set_base_freq(65.077 * 8)
-    #Supersaw.randomize_phase()
+    ChannelNoise1.set_attack(1/64); ChannelNoise1.set_decay1(.06);ChannelNoise1.set_sustain(.3);ChannelNoise1.set_decay2(.1);ChannelNoise1.set_release(0)
+    ChannelNoise2.set_attack(4/64);ChannelNoise2.set_decay1(.06);ChannelNoise2.set_sustain(.3);ChannelNoise2.set_decay2(.1);ChannelNoise2.set_release(0)
+    ChannelNoise3.set_attack(8/64);ChannelNoise3.set_decay1(.06);ChannelNoise3.set_sustain(.3);ChannelNoise3.set_decay2(.1);ChannelNoise3.set_release(0)
     f = freq_from_key
     k = key_from_note
     
@@ -618,27 +620,17 @@ if __name__ == "__main__":
         # could also be because i have python 3.11 on my phone rather than 3.14
         # which supposedly has optimizations and is generally faster
         # takes about quarter to a third the required time on my laptop
-        
-        #arr.extend([Supersaw.update()[0]])
-        #arr.extend([(ChannelPulse.update()[0] + ChannelNoise.update()[0])/2,(ChannelTooth.update()[0] + ChannelNoise.update()[0])/2])  # 2 channels mapped to stereo
-        #arr.extend([ChannelNoise.update()[0], ChannelNoise2.update()[0]])
-        #arr.extend([ChannelNoise.update()[0], ChannelNoise2.update()[0]])
-        #arr.extend([ChannelNoise.update(suppress_noise_update=True)[0], ChannelSquare.update()[0]])
         curSample += ChannelNoise1.update(suppress_noise_update=True)[:2]
         curSample += ChannelNoise2.update(suppress_noise_update=True)[:2]
         curSample += ChannelNoise3.update(suppress_noise_update=True)[:2]
         #curSample /= 1
         render.extend(curSample)
         curSample -= curSample
-        # technically with how i did the noise ingraining here, it is updated twice as quicky and is full independent stereo
-        #ChannelPulse.change_width(ChannelPulse.p_width + (.125/sr) % 1) # pwm is STUPIDLY expensive to generate when using interpolation
-        #print(f"pw {ChannelPulse.p_width}")
-        #print("alive")
         if not _ % sr:
             print(f"second {1 + (_ // sr)} generated")
-        ChannelNoise1.change_width(ChannelNoise1.p_width + (.25 / sr))
-        ChannelNoise2.change_width(ChannelNoise2.p_width + (.15 / sr))
-        ChannelNoise3.change_width(ChannelNoise3.p_width + (.05 / sr))
+        #ChannelNoise1.change_width(ChannelNoise1.p_width + (.25 / sr))
+        #ChannelNoise2.change_width(ChannelNoise2.p_width + (.15 / sr))
+        #ChannelNoise3.change_width(ChannelNoise3.p_width + (.05 / sr))
         if not _ % (sr//10):
             #ChannelNoise.force_generate_new_noise_packets()
             #ChannelNoise2.force_generate_new_noise_packets()
@@ -655,65 +647,12 @@ if __name__ == "__main__":
             if not gates[seq % len(gates)]:
                 pass
             else:
-                ChannelNoise1.press_channel(0)
-                #ChannelNoise2.press_channel(0)
-                #ChannelNoise3.press_channel(0)
-            #print(note, notes[note])
+                ChannelNoise1.press_channel(0, 0)
+                ChannelNoise2.press_channel(0, 0)
+                ChannelNoise3.press_channel(0, 0)
             seq = (seq + 1) % len(notes)
-
-        #ChannelNoise.volume = .25 + (.75 * ((1 / (sr // 2)) * (_ % (sr // 2))))
-        #ChannelNoise2.volume = .25 + (.75 * ((1 / (sr // 2)) * (_ % (sr // 2))))
-        #if _ == sr * 2:
-        #    ChannelNoise.press_channel(False)  # whats funny is that the skeleton for the adsr
-        #    ChannelNoise2.press_channel()      # was made in about 2 (!) minutes
-        #if _ == sr * 3:
-        #    ChannelNoise.release_channel()
-        #    ChannelNoise2.release_channel()
-        #if _ == sr * 3.5:
-        #    ChannelNoise.press_channel()
-        #    ChannelNoise2.press_channel()
-        #if _ == sr * 4:
-        #    ChannelNoise.cut_channel()
-        #    ChannelNoise2.cut_channel()
-        #if _ == sr * 4.5:
-        #    ChannelNoise.set_attack(.125)
-        #    ChannelNoise2.set_attack(0.125)
-        #    ChannelNoise.press_channel()
-        #    ChannelNoise2.press_channel()
-        #if _ == sr * 4.75:
-            #ChannelNoise.__force_envelope_state__(4)
-            #ChannelNoise2.__force_envelope_state__(4)
-        #    ChannelNoise.__force_advance_envelope_state__()
-        #    ChannelNoise2.__force_advance_envelope_state__()
     elapsed = time.perf_counter() - start
     print(f"{elapsed:.3f}/{length}s")
-    # ChannelCarrier = Channel(  # the carrier of osc sync
-    #     type_ = "triangle",
-    #     sample_rate = sr,
-    #     interpolation = "linear",
-    #     length = 16,
-    #     panning = -1,
-    #     volume = .4,
-    #     )
-    # panIncrement = 2/(sr*5)
-    # ChannelCarrier._freq = 196.28*8
-    # ChannelModulator = Channel(  # the actual sound against which the phase will be reset
-    #     type_ = "none",
-    #     sample_rate = sr,
-    #     interpolation = "none",
-    #     length = 32,
-    #     )
-    # ChannelModulator._freq = 132
-    # arr = []
-    # for _ in range(sr*5):
-    #     arr.extend(ChannelCarrier.update()[0:2])
-    #     ChannelCarrier._freq -= 0.007 # slowly lower the carrier frequency over time
-    #     ChannelCarrier.panning += panIncrement #
-    #     if ChannelModulator.update()[2]:
-    #         ChannelCarrier.phase_reset()
-    #     if not _ % sr:
-    #         print(f"second {_ // sr} generated")
-        #Channel.wavetable = [ (((_*64)>>24)&255)/255, (((_*64)>>16)&255)/255, (((_*64)>>8)&255)/255, (((_*64)>>0)&255)/255]
     with FurWave.WaveWriter(
                     channels=2,
                     samplerate=sr,
