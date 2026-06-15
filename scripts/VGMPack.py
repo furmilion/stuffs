@@ -200,6 +200,31 @@ def pack_vgm(vgm: bytes = None, output_file: str = "array", cap: int = None):
         metadata["F262clock"] = struct.unpack('<I', vgm[0x5C:0x60])[0]  # opl3
         metadata["F278clock"] = struct.unpack('<I', vgm[0x60:0x64])[0]  # opl4
         metadata["8910clock"] = struct.unpack('<I', vgm[0x74:0x78])[0]
+        
+        # misc
+        metadata["SPCMclock"] = struct.unpack('<I', vgm[0x38:0x3C])[0]  # segapcm
+        metadata["RF_1clock"] = struct.unpack('<I', vgm[0x40:0x44])[0]  # rf5c68
+        metadata["F271clock"] = struct.unpack('<I', vgm[0x64:0x68])[0]  # opx
+        metadata["Z280clock"] = struct.unpack('<I', vgm[0x68:0x6C])[0]  # ymz280
+        metadata["RF_2clock"] = struct.unpack('<I', vgm[0x6C:0x70])[0]  # rf5c164
+        metadata["PWM_clock"] = struct.unpack('<I', vgm[0x70:0x74])[0]  # generic pwm dac
+        metadata["DMG_clock"] = struct.unpack('<I', vgm[0x80:0x84])[0]  # gb dmg
+        metadata["2A03clock"] = struct.unpack('<I', vgm[0x84:0x88])[0]  # nes apu
+        metadata["W258clock"] = struct.unpack('<I', vgm[0x88:0x8C])[0]  # yamaha ymw258f 'MultiPCM' GEW8
+        metadata["muPDclock"] = struct.unpack('<I', vgm[0x8C:0x90])[0]  # NEC muPD7759
+        metadata["6258clock"] = struct.unpack('<I', vgm[0x90:0x94])[0]  # oki msm
+        metadata["6258clock"] = struct.unpack('<I', vgm[0x90:0x94])[0]  # oki msm
+        metadata["0549clock"] = struct.unpack('<I', vgm[0x9C:0xA0])[0]  # konami k051649
+        metadata["0539clock"] = struct.unpack('<I', vgm[0xA0:0xA4])[0]  # konami k054539
+        metadata["TG16clock"] = struct.unpack('<I', vgm[0xA4:0xA8])[0]  # hudson c6280
+        metadata["C140clock"] = struct.unpack('<I', vgm[0xA8:0xAC])[0]  # namco c140
+        metadata["0560clock"] = struct.unpack('<I', vgm[0xAC:0xB0])[0]  # konami k053260 
+        metadata["POK_clock"] = struct.unpack('<I', vgm[0xB0:0xB4])[0]  # atari pokey
+        metadata["QSNDclock"] = struct.unpack('<I', vgm[0xB4:0xB8])[0]  # capcom qsound
+        metadata["F292clock"] = struct.unpack('<I', vgm[0xB8:0xBC])[0]  # scsp
+        metadata["WSWNclock"] = struct.unpack('<I', vgm[0xC0:0xC4])[0]  # wonderswan
+        metadata["VSU_clock"] = struct.unpack('<I', vgm[0xC0:0xC4])[0]  # vsu-vue clock
+        metadata["SAA_clock"] = struct.unpack('<I', vgm[0xC4:0xC8])[0]  # philips saa1099
         print("yeaa baeeby we got extra chips")
     else:
         metadata["VGMDatOFS"] = 0x40
@@ -220,19 +245,19 @@ def pack_vgm(vgm: bytes = None, output_file: str = "array", cap: int = None):
     print(f"GD3 Data Offset: {metadata['GD3Offset'], hex(metadata['GD3Offset'])}")
     print(
         f"Essential data:\n"
-        f"TI SN7 present:      {bool(metadata['TISNclock'])} | {metadata['TISNclock']}hz                                                         \n"
-        f"YM2413 present:      {bool(metadata['2413clock'])} | {metadata['2413clock']}hz                                                         \n"
-        f"YM2612 present:      {bool(metadata['2612clock'])} | {metadata['2612clock'] & 0x7fffffff}hz | Is YM3438:  {metadata['2612clock'] >> 31}\n"
-        f"YM2151 present:      {bool(metadata['2151clock'])} | {metadata['2151clock'] & 0x7fffffff}hz | Is YM2164:  {metadata['2151clock'] >> 31}\n"
-        f"YM2203 present:      {bool(metadata['2203clock'])} | {metadata['2203clock']}hz                                                         \n"
-        f"YM2608 present:      {bool(metadata['2608clock'])} | {metadata['2608clock']}hz                                                         \n"
-        f"YM2610 present:      {bool(metadata['2610clock'])} | {metadata['2610clock'] & 0x7fffffff}hz | Is YM2610B: {metadata['2610clock'] >> 31}\n"
+        f"TI SN76489  present: {bool(metadata['TISNclock'])} | {metadata['TISNclock']}hz                                                         \n"
+        f"YM2413 OPLL present: {bool(metadata['2413clock'])} | {metadata['2413clock']}hz                                                         \n"
+        f"YM2612 OPN2 present: {bool(metadata['2612clock'])} | {metadata['2612clock'] & 0x7fffffff}hz | Is YM3438  OPN2C: {metadata['2612clock'] >> 31}\n"
+        f"YM2151 OPM  present: {bool(metadata['2151clock'])} | {metadata['2151clock'] & 0x7fffffff}hz | Is YM2164  OPP:   {metadata['2151clock'] >> 31}\n"
+        f"YM2203 OPN  present: {bool(metadata['2203clock'])} | {metadata['2203clock']}hz                                                         \n"
+        f"YM2608 OPNA present: {bool(metadata['2608clock'])} | {metadata['2608clock']}hz                                                         \n"
+        f"YM2610 OPNB present: {bool(metadata['2610clock'])} | {metadata['2610clock'] & 0x7fffffff}hz | Is YM2610B OPNB2: {metadata['2610clock'] >> 31}\n"
         f"YM3812 OPL2 present: {bool(metadata['3812clock'])} | {metadata['3812clock']}hz                                                         \n"
         f"YM3526 OPL1 present: {bool(metadata['3526clock'])} | {metadata['3526clock']}hz                                                         \n"
-        f"Y8950 present:       {bool(metadata['8950clock'])} | {metadata['8950clock']}hz                                                         \n"
-        f"YMF262 present:      {bool(metadata['F262clock'])} | {metadata['F262clock']}hz                                                         \n"
-        f"YMF278 present:      {bool(metadata['F278clock'])} | {metadata['F278clock']}hz                                                         \n"
-        f"AY-3-8910 present:   {bool(metadata['8910clock'])} | {metadata['8910clock']}hz                                                         \n"
+        f"Y8950       present: {bool(metadata['8950clock'])} | {metadata['8950clock']}hz                                                         \n"
+        f"YMF262 OPL3 present: {bool(metadata['F262clock'])} | {metadata['F262clock']}hz                                                         \n"
+        f"YMF278 OPL4 present: {bool(metadata['F278clock'])} | {metadata['F278clock']}hz                                                         \n"
+        f"AY-3-8910   present: {bool(metadata['8910clock'])} | {metadata['8910clock']}hz                                                         \n"
         )
     print(f"File length: {len(vgm)}")
     print(f"Without GD3: {len(vgm[:metadata['GD3Offset']])}")
