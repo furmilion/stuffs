@@ -24,8 +24,8 @@ class MultiPCMSampleExtractorLegacy:
     """
     NOTE: THIS A LEGACY CLASS!!!! USE THE NEW MultiPCMSampleExtractor() CLASS INSTEAD!!!
     """
-    def __init__(self, out_loc, log_name, bank, bank2=None, bankswitchtype=0):
-        self.addresses = {
+    def __init__(me, out_loc, log_name, bank, bank2=None, bankswitchtype=0):
+        me.addresses = {
                      "mpr-16491": "m1",  # Daytona USA -- Sample ROM
                      "mpr-16492": "m1",  # Daytona USA -- SFX ROM
                      "daytona_sampleroms": "m1",
@@ -37,7 +37,7 @@ class MultiPCMSampleExtractorLegacy:
                      "outrunners_sampleroms": "m2"
                     }
 
-        self.hashes = {
+        me.hashes = {
                   # MD5 File Hashes for File Detection
                   # I probably will disregard the former two.
                   "00fafc26797c95f104bee47b5784929d": "m1Daytona USA Sample ROM",
@@ -49,7 +49,7 @@ class MultiPCMSampleExtractorLegacy:
                   "bb2262db75e5c1bdf982c95cf0ff278f": "m2OutRunners Sample ROM",
         }
 
-        self.garbage_indexes = {
+        me.garbage_indexes = {
                            # Garbage sample indexes
 
                            # Daytona USA -- Sample ROM
@@ -74,9 +74,9 @@ class MultiPCMSampleExtractorLegacy:
         #               3994523, 3999388, 4003012, 4041263, 4060202, 4069197, 4079608,
         #               4087180, 4090924, 4102861, 4125797, 4151011, 4169490,
         #               ]
-        self.extract_samples(out_loc, log_name, bank, bank2, bankswitchtype)
+        me.extract_samples(out_loc, log_name, bank, bank2, bankswitchtype)
 
-    def main_loop(self, raw, bank, idx_uint32_t=1, sample_id=1, it_data_len=0,
+    def main_loop(me, raw, bank, idx_uint32_t=1, sample_id=1, it_data_len=0,
                   out_loc="", log_name="", bankswitchtype=0, datatype="m", bank_name=""):
         """
         Main loop of legacy extractor.
@@ -90,7 +90,7 @@ class MultiPCMSampleExtractorLegacy:
         # data_start_append = 0
         if not it_data_len:
             print("lmao what")
-        try: garbage = self.garbage_indexes[bank_name]
+        try: garbage = me.garbage_indexes[bank_name]
         except KeyError: garbage = []
         # The only part of code that is here from MAME
         while addr < it_data_len:
@@ -198,7 +198,7 @@ class MultiPCMSampleExtractorLegacy:
             sample_id += 1
         return None
 
-    def extract_samples(self, out_loc, log_name, bank, bank2=None, bankswitchtype=0) -> None:
+    def extract_samples(me, out_loc, log_name, bank, bank2=None, bankswitchtype=0) -> None:
         """
         Legacy extractor setup function.
         """
@@ -235,12 +235,12 @@ class MultiPCMSampleExtractorLegacy:
 
 
         print(f"File MD5: {ret_hash(raw, 'md5')}")
-        if ret_hash(raw, "md5") in self.hashes:
-            print(f"This is most likely to be {self.hashes[str(ret_hash(raw, 'md5'))][2:]}, will use automatic options:\n"
-                  f"[datatype=\"{self.hashes[str(ret_hash(raw, 'md5'))][0]}\", "
-                  f"bankswitchtype={self.hashes[str(ret_hash(raw, 'md5'))][1]}]")
-            bankswitchtype=int(self.hashes[str(ret_hash(raw, 'md5'))][1])
-            bank__name = self.hashes[str(ret_hash(raw, 'md5'))][2:]
+        if ret_hash(raw, "md5") in me.hashes:
+            print(f"This is most likely to be {me.hashes[str(ret_hash(raw, 'md5'))][2:]}, will use automatic options:\n"
+                  f"[datatype=\"{me.hashes[str(ret_hash(raw, 'md5'))][0]}\", "
+                  f"bankswitchtype={me.hashes[str(ret_hash(raw, 'md5'))][1]}]")
+            bankswitchtype=int(me.hashes[str(ret_hash(raw, 'md5'))][1])
+            bank__name = me.hashes[str(ret_hash(raw, 'md5'))][2:]
         else:
             print("Cannot determine ROM")
             bank__name = ""
@@ -266,7 +266,7 @@ class MultiPCMSampleExtractorLegacy:
             #     log.close()
             pass
         else:
-            self.main_loop(raw,bank,idx_uint32_t, sample_id, it_data_len, out_loc, log_name, bankswitchtype, bank, bank__name)
+            me.main_loop(raw,bank,idx_uint32_t, sample_id, it_data_len, out_loc, log_name, bankswitchtype, bank, bank__name)
 
         with open(f"./samples/{log_name}_log.txt", "a") as log:
             log.write(f'----++++===## SUMMARY ##===++++----\n\n'
@@ -279,7 +279,7 @@ class MultiPCMSampleExtractor:
     """
     New extractor, now as a class instead of random ass functions.
     """
-    def __init__(self,
+    def __init__(me,
                  out_loc:         str = "samples",  # the output folder. always placed inside "./samples" one.
                  log_name:        str = "log",        # the name of the log within the "./samples" folder.
                  bank1:           str = None,         # path to bank 1, for stitching. when None, uses bank2.
@@ -298,46 +298,46 @@ class MultiPCMSampleExtractor:
                  chans: int = 28,                     # channels. 24 for OPL4, 28 for MPCM, GEW7
                  only_log: bool | int = False,        # whether to only log instruments instead of also dumping their samples
                  ):
-        self.out_loc = out_loc
-        self.log_name = log_name
-        self.bank1 = bank1
-        self.bank2 = bank2
-        self.bankswitch_type = bankswitch_type
-        self.chip_type = chip_type.lower()
-        self.only_log = only_log
-        match self.chip_type:
+        me.out_loc = out_loc
+        me.log_name = log_name
+        me.bank1 = bank1
+        me.bank2 = bank2
+        me.bankswitch_type = bankswitch_type
+        me.chip_type = chip_type.lower()
+        me.only_log = only_log
+        match me.chip_type:
             case "multipcm":
-                self.formats = {
+                me.formats = {
                     0: 8,          # 0b00
                     1: 12,         # 0b01
                     2: -1,         #
                     3: -1,         #
                 }
-                self.rate = 35955
+                me.rate = 35955
                 # OpenMSX(?) OPL4 PCM Emulation says that 0b01 if the "Prohibited" of MultiPCM.
                 # the question is, is that it? or is that the OPL4 way?
             case "opl4":
-                self.formats = {
+                me.formats = {
                     0: 8,   # 0b00
                     1: 12,  # 0b01
                     2: 16,  # 0b10
                     3: 16,  # 0b11
                 }
-                self.rate = 44100 # OPL4: 
+                me.rate = 44100 # OPL4: 
             case _:
-                self.formats = {
+                me.formats = {
                     0: 8,   # 0b00
                     1: 12,  # 0b01
                     2: 16,  # 0b10
                     3: 16,  # 0b11
                 }
-                self.rate = clock_rate / (divider * chans)
-        self.debug = debug
+                me.rate = clock_rate / (divider * chans)
+        me.debug = debug
         match (bank1, bank2):
             case (None, _):
                 print('Bank 2 not none')
                 try:
-                    self.bank = open(bank2, 'rb').read()
+                    me.bank = open(bank2, 'rb').read()
                     if test_file(f"./samples/{out_loc}"):
                         pass
                     else:
@@ -349,10 +349,10 @@ class MultiPCMSampleExtractor:
                     return
             case (_, None):
                 print('Bank 1 not none')
-                self.bank = open(bank1, 'rb').read()
+                me.bank = open(bank1, 'rb').read()
                 try:
-                    self.bank = open(bank1, 'rb').read()
-                    # print(f"? {self.bank}") # debug
+                    me.bank = open(bank1, 'rb').read()
+                    # print(f"? {me.bank}") # debug
                     if test_file(f"./samples/{out_loc}"):
                         pass
                     else:
@@ -365,7 +365,7 @@ class MultiPCMSampleExtractor:
             case (_, _):
                 print('Stitching')
                 try:
-                    self.bank = open(bank1, 'rb').read() + open(bank2, 'rb').read()
+                    me.bank = open(bank1, 'rb').read() + open(bank2, 'rb').read()
                     if test_file(f"./samples/{out_loc}"):
                         pass
                     else:
@@ -374,22 +374,22 @@ class MultiPCMSampleExtractor:
                     print('File does not exist.')
                     return
             case (None, None):
-                self.bank = b''
+                me.bank = b''
                 print('Nothing to extract from')
                 return
             case _:
-                self.bank = b''
+                me.bank = b''
                 return
-        self.instrument_table = self.bank[
-                                get_sample_data(self.bank[:12])[1]:
-                                get_sample_data(self.bank[:12])[1] + get_sample_data(self.bank[:12])[3]
+        me.instrument_table = me.bank[
+                                get_sample_data(me.bank[:12])[1]:
+                                get_sample_data(me.bank[:12])[1] + get_sample_data(me.bank[:12])[3]
                                 ]
         try:
-            self.log = open(f'./samples/{log_name}.txt', 'x')
+            me.log = open(f'./samples/{log_name}.txt', 'x')
         except FileExistsError:
-            self.log = open(f'./samples/{log_name}.txt', 'w')
+            me.log = open(f'./samples/{log_name}.txt', 'w')
 
-        self.known_roms_legacy = {  # md5 hashes of full roms, not usable for ones stitched from vgms
+        me.known_roms_legacy = {  # md5 hashes of full roms, not usable for ones stitched from vgms
             '6ccd6376e416a56f92b21368fd14d9df': "0Virtua Cop Sample ROM",
             '6e1d01e270bad869ab8c1869481033de': "1Virtua Cop SFX ROM",
             '00fafc26797c95f104bee47b5784929d': "2Daytona USA Sample ROM",
@@ -399,7 +399,7 @@ class MultiPCMSampleExtractor:
             'ad8d254e9d2637b5824a2b44504bd023': "6Virtua Racing Sample ROM 1",
             '48c472241ad7c280f930a9c59b216274': "7Virtua Racing Sample ROM 2",
         }
-        self.known_roms = {  # md5 hashes of rom instrument tables
+        me.known_roms = {  # md5 hashes of rom instrument tables
             'bfc869e4e6009bbbbde9857e0d4602ab': "0_Virtua Cop Sample ROM",
             'dd165c69654084f0dfaaf01b4806a8a9': "1_Virtua Cop SFX ROM",
             'b0996ee23be61a1db77d5bbb82791316': "2_Daytona USA Sample ROM",
@@ -411,18 +411,18 @@ class MultiPCMSampleExtractor:
             '865b509bae66b74e02728387f6b7b6fc': "8_Desert Tank Sample ROM",
             '0c5c205b45495038ba428c647011cda2': "9_Desert Tank SFX ROM",
         }
-        if hash := ret_hash(self.bank[
-            get_sample_data(self.bank)[1]:
-            get_sample_data(self.bank)[1] + get_sample_data(self.bank)[3]]
+        if hash := ret_hash(me.bank[
+            get_sample_data(me.bank)[1]:
+            get_sample_data(me.bank)[1] + get_sample_data(me.bank)[3]]
         ):
             print(f"Hash: {hash}\n"
                   "Detected ROM: ", end='')
-            if hash in self.known_roms:
-                match int(self.known_roms[hash].split("_")[0]):
-                    case 0: self.set_rom_params(82, [], [])
-                    case 1: self.set_rom_params(207, [range(111, 158), range(158, 207)], [])
+            if hash in me.known_roms:
+                match int(me.known_roms[hash].split("_")[0]):
+                    case 0: me.set_rom_params(82, [], [])
+                    case 1: me.set_rom_params(207, [range(111, 158), range(158, 207)], [])
                     case 2:
-                        self.set_rom_params(198, [range(93, 138), range(138, 65535)],
+                        me.set_rom_params(198, [range(93, 138), range(138, 65535)],
                                            [139,
                                             142, 145,
                                             150, 151, 152, 153, 154, 156, 159,
@@ -431,51 +431,51 @@ class MultiPCMSampleExtractor:
                                             200, 201, 202, 203, 204, 205, 206, 207, 208, 209,
                                             210, 211, 212, 213]
                                            )
-                    case 3: self.set_rom_params(185, [range(87, 139), range(139, 65535)], [])
-                    case 4: self.set_rom_params(); self.chip_type = "opl4" # untested
-                    case 5: self.set_rom_params() # untested
-                    case 6: self.set_rom_params(bad_samples=[14]) # untested
-                    case 7: self.set_rom_params() # untested
-                    case 8: self.set_rom_params(251, [range(127, 189), range(189, 65536)], [range(53, 63), 100, range(101, 127), range(157, 189)])
-                    case 9: self.set_rom_params(206, [range(127, 175), range(175, 65536)], [range(54, 63), 100, range(118, 127), range(172, 175)])
-                    case _: self.set_rom_params() # any other rom
+                    case 3: me.set_rom_params(185, [range(87, 139), range(139, 65535)], [])
+                    case 4: me.set_rom_params(); me.chip_type = "opl4" # untested
+                    case 5: me.set_rom_params() # untested
+                    case 6: me.set_rom_params(bad_samples=[14]) # untested
+                    case 7: me.set_rom_params() # untested
+                    case 8: me.set_rom_params(251, [range(127, 189), range(189, 65536)], [range(53, 63), 100, range(101, 127), range(157, 189)])
+                    case 9: me.set_rom_params(206, [range(127, 175), range(175, 65536)], [range(54, 63), 100, range(118, 127), range(172, 175)])
+                    case _: me.set_rom_params() # any other rom
 
-                print(self.known_roms[hash].split("_")[1] if hash in self.known_roms else "Unidentified ROM")
-                self.log.write(f"ROM hash: {hash}\n"
-                               f"Detected ROM: {self.known_roms[hash].split('_')[1] if hash in self.known_roms else 'Unidentified ROM'}\n")
+                print(me.known_roms[hash].split("_")[1] if hash in me.known_roms else "Unidentified ROM")
+                me.log.write(f"ROM hash: {hash}\n"
+                               f"Detected ROM: {me.known_roms[hash].split('_')[1] if hash in me.known_roms else 'Unidentified ROM'}\n")
             else:
-                self.set_rom_params()
-                self.log.write(f"ROM hash: {hash}\n"
-                               f"Detected ROM: {self.known_roms[hash].split('_')[1] if hash in self.known_roms else 'Unidentified ROM'}\n")
+                me.set_rom_params()
+                me.log.write(f"ROM hash: {hash}\n"
+                               f"Detected ROM: {me.known_roms[hash].split('_')[1] if hash in me.known_roms else 'Unidentified ROM'}\n")
                 print("Unidentified ROM")
         s(2)  # wait 2 secs
-        self.extract()
+        me.extract()
 
-    def set_rom_params(self, samples=None, switch_ranges=None, bad_samples=None):
-        self.samples = samples if samples else len(self.instrument_table) // 12
-        self.switch_ranges = switch_ranges if switch_ranges else []
-        self.bad_samples = []
+    def set_rom_params(me, samples=None, switch_ranges=None, bad_samples=None):
+        me.samples = samples if samples else len(me.instrument_table) // 12
+        me.switch_ranges = switch_ranges if switch_ranges else []
+        me.bad_samples = []
         if bad_samples:
             for val in bad_samples:  # populate the list with ranges also.
                 if isinstance(val, (range, list, tuple)):
-                    self.bad_samples.extend(list(val))
+                    me.bad_samples.extend(list(val))
                 elif isinstance(val, int):
-                    self.bad_samples.append(val)
+                    me.bad_samples.append(val)
                 else:
                     log(f"Uh oh, an unsupported value type! {type(val)}")
                     pass
 
-    def check_ranges(self, iter: int = 0) -> int:
+    def check_ranges(me, iter: int = 0) -> int:
         """
         purpose: checking for bankswitch ranges and returning 1048576 << bank, else 0
         """
-        for i in range(len(self.switch_ranges)):
-            if iter in self.switch_ranges[i]:
+        for i in range(len(me.switch_ranges)):
+            if iter in me.switch_ranges[i]:
                 return 1048576 << i
         return 0
 
     def calculate_params(
-            self,
+            me,
             type: str = "none",
             param1: int = 0,
             param2: int = 0,
@@ -538,14 +538,14 @@ class MultiPCMSampleExtractor:
         ]
         match type.lower():
             case "vib":
-                return (vib_strengths[param1] / 44100) * self.rate \
-                        if self.rate != 44100 else vib_strengths[param1]
+                return (vib_strengths[param1] / 44100) * me.rate \
+                        if me.rate != 44100 else vib_strengths[param1]
             case "am":
-                return (am_strengths[param1] / 44100) * self.rate \
-                        if self.rate != 44100 else am_strengths[param1]
+                return (am_strengths[param1] / 44100) * me.rate \
+                        if me.rate != 44100 else am_strengths[param1]
             case "lfo":
-                return (lfo_speeds[param1] / 44100) * self.rate \
-                        if self.rate != 44100 else lfo_speeds[param1]
+                return (lfo_speeds[param1] / 44100) * me.rate \
+                        if me.rate != 44100 else lfo_speeds[param1]
             case "sus":
                 return sustains[param1]
             case "atk":
@@ -555,8 +555,8 @@ class MultiPCMSampleExtractor:
                     case 15:
                         return attacks[63]
                     case _:
-                        return (attacks[clamp(param1 + param2, 0, 63)] / 44100) * self.rate \
-                                if self.rate != 44100 else attacks[clamp(param1 + param2, 0, 63)]
+                        return (attacks[clamp(param1 + param2, 0, 63)] / 44100) * me.rate \
+                                if me.rate != 44100 else attacks[clamp(param1 + param2, 0, 63)]
             case "dec":
                 match param1:
                     case 0:
@@ -564,31 +564,31 @@ class MultiPCMSampleExtractor:
                     case 15:
                         return decays[63]
                     case _:
-                        return (decays[clamp(param1 + param2, 0, 63)] / 44100) * self.rate \
-                                if self.rate != 44100 else attacks[clamp(param1 + param2, 0, 63)]
+                        return (decays[clamp(param1 + param2, 0, 63)] / 44100) * me.rate \
+                                if me.rate != 44100 else attacks[clamp(param1 + param2, 0, 63)]
             case _:
                 return "Placeholder"
 
-    def actually_save_samples(self, iter: int = 0, NUMPY: bool = False, only_log: bool | int = False) -> None:
+    def actually_save_samples(me, iter: int = 0, NUMPY: bool = False, only_log: bool | int = False) -> None:
         """
         This function takes in a sample index, fetches the data from instrument table and then fetches the sample itself from the data.
         """
-        if iter in self.bad_samples:
+        if iter in me.bad_samples:
             print(f"Sample {iter} is garbage, skipping")
-            self.log.write(
+            me.log.write(
                 f'##############################################\n'
                 f'Instrument {iter} skipped\n'
                 f'\n'
             )
             return None
-        current_instrument = list(get_sample_data(self.bank[(iter * 12) + 12:(iter * 12) + 24], self.chip_type))
-        current_instrument[0] += self.check_ranges(iter)
-        if self.debug:
+        current_instrument = list(get_sample_data(me.bank[(iter * 12) + 12:(iter * 12) + 24], me.chip_type))
+        current_instrument[0] += me.check_ranges(iter)
+        if me.debug:
             print(f"Current Instrument: {iter}\n"
                   f"Sample start:          {current_instrument[0]}\n"
                   f"Sample length:         {current_instrument[3]}\n"
                   f"Sample loop start:     {current_instrument[2]}\n"
-                  f"Sample format:         {current_instrument[1]}, {self.formats[current_instrument[1]] if current_instrument[1] in self.formats else 'Invalid'}\n"
+                  f"Sample format:         {current_instrument[1]}, {me.formats[current_instrument[1]] if current_instrument[1] in me.formats else 'Invalid'}\n"
                   f"AD1D2SR:               {current_instrument[4]}/{current_instrument[5]}/{current_instrument[6]}/{current_instrument[7]}/{current_instrument[8]}\n"
                   f'Rate scaling:          {current_instrument[9]}\n'
                   f'Vibrato & AM strength: {current_instrument[10]}/{current_instrument[11]}\n'
@@ -596,17 +596,17 @@ class MultiPCMSampleExtractor:
                   f'\n'
                   )
             input()
-        data = list(self.bank[current_instrument[0]:current_instrument[0] + current_instrument[3]])
+        data = list(me.bank[current_instrument[0]:current_instrument[0] + current_instrument[3]])
         if len(data) == 0 or int(min(data)) == int(max(data)):
             print("Sample empty, skipping")
-            self.log.write(
+            me.log.write(
                 f'##############################################\n'
                 f'Instrument {iter} is empty\n'
                 f'\n'
             )
             return
         if only_log: return
-        match (self.formats[current_instrument[1]] if current_instrument[1] in self.formats else "invalid"):  # pcm format
+        match (me.formats[current_instrument[1]] if current_instrument[1] in me.formats else "invalid"):  # pcm format
             case 8:
                 if NUMPY:
                     data_ready = (np.array(data, np.uint8) + 128) & 255
@@ -621,17 +621,17 @@ class MultiPCMSampleExtractor:
                                     loop_types=[0],
                                     loop_starts=[current_instrument[2]],
                                     loop_ends=[current_instrument[3] - 1])
-                    Wave.write_file(f"./samples/{self.out_loc}/sample_{iter}.wav")
+                    Wave.write_file(f"./samples/{me.out_loc}/sample_{iter}.wav")
                 # save_riff(
                 #     data=data_ready,
                 #     rate=44100,
                 #     bdep=8,
-                #     location=f'./samples/{self.out_loc}/sample_{iter}.wav',
+                #     location=f'./samples/{me.out_loc}/sample_{iter}.wav',
                 #     loop_start=current_instrument[2],
                 # )
             case 12:
                 # comment text
-                data_raw = self.bank[current_instrument[0]:current_instrument[0] + current_instrument[3]]
+                data_raw = me.bank[current_instrument[0]:current_instrument[0] + current_instrument[3]]
                 print("12 bit sample detected, skipping for now.")
             case 16:
                 with WaveWriter(
@@ -646,61 +646,61 @@ class MultiPCMSampleExtractor:
                         loop_starts=[current_instrument[2]],
                         loop_ends=[current_instrument[3] - 1]
                         )
-                    Wave.write_file(f"./samples/{self.out_loc}/sample_{iter}.wav")
+                    Wave.write_file(f"./samples/{me.out_loc}/sample_{iter}.wav")
                 # save_riff(
-                #     data=self.bank[current_instrument[1]:current_instrument[1] + current_instrument[3]],
+                #     data=me.bank[current_instrument[1]:current_instrument[1] + current_instrument[3]],
                 #     rate=44100,
                 #     bdep=16,
-                #     location=f'./samples/{self.out_loc}/sample_{iter}.wav'
+                #     location=f'./samples/{me.out_loc}/sample_{iter}.wav'
                 # )
 
         # have to precalculate those since cant do inplace
-        atk = round(self.calculate_params("atk", current_instrument[4], current_instrument[9]), 4) \
-            if type(self.calculate_params("atk", current_instrument[4], current_instrument[9])) in [int, float] \
-            else self.calculate_params("atk", current_instrument[4], current_instrument[9])
-        d1r = round(self.calculate_params("dec", current_instrument[5], current_instrument[9]), 4) \
-            if type(self.calculate_params("dec", current_instrument[5], current_instrument[9])) in [int, float] \
-            else self.calculate_params("dec", current_instrument[5], current_instrument[9])
-        d2r = round(self.calculate_params("dec", current_instrument[6], current_instrument[9]), 4) \
-            if type(self.calculate_params("dec", current_instrument[6], current_instrument[9])) in [int, float] \
-            else self.calculate_params("dec", current_instrument[6], current_instrument[9])
-        rel = round(self.calculate_params("dec", current_instrument[8], current_instrument[9]), 4) \
-            if type(self.calculate_params("dec", current_instrument[8], current_instrument[9])) in [int, float] \
-            else self.calculate_params("dec", current_instrument[8], current_instrument[9])
+        atk = round(me.calculate_params("atk", current_instrument[4], current_instrument[9]), 4) \
+            if type(me.calculate_params("atk", current_instrument[4], current_instrument[9])) in [int, float] \
+            else me.calculate_params("atk", current_instrument[4], current_instrument[9])
+        d1r = round(me.calculate_params("dec", current_instrument[5], current_instrument[9]), 4) \
+            if type(me.calculate_params("dec", current_instrument[5], current_instrument[9])) in [int, float] \
+            else me.calculate_params("dec", current_instrument[5], current_instrument[9])
+        d2r = round(me.calculate_params("dec", current_instrument[6], current_instrument[9]), 4) \
+            if type(me.calculate_params("dec", current_instrument[6], current_instrument[9])) in [int, float] \
+            else me.calculate_params("dec", current_instrument[6], current_instrument[9])
+        rel = round(me.calculate_params("dec", current_instrument[8], current_instrument[9]), 4) \
+            if type(me.calculate_params("dec", current_instrument[8], current_instrument[9])) in [int, float] \
+            else me.calculate_params("dec", current_instrument[8], current_instrument[9])
 
-        self.log.write(
+        me.log.write(
             f'##############################################\n'
             f'Instrument {iter}\n'
             f'\n'
             f'Start address in bank: {current_instrument[0]}\n'
             f'Sample length:         {current_instrument[3]}\n'
             f'Sample loop start:     {current_instrument[2]}\n'
-            f'Sample format:         {self.formats[current_instrument[1]] if current_instrument[1] in self.formats else "Invalid"}-bit\n'
+            f'Sample format:         {me.formats[current_instrument[1]] if current_instrument[1] in me.formats else "Invalid"}-bit\n'
             f'INSTRUMENT SETTINGS:\n'
             f'Attack Rate:           {current_instrument[4]} | {atk}ms\n'
             f'Decay 1 Rate:          {current_instrument[5]} | {d1r}ms\n'
             f'Decay 2 Rate:          {current_instrument[6]} | {d2r}ms\n'
-            f'Sustain Level:         {current_instrument[7]} | {self.calculate_params("sus", current_instrument[7])}dB\n'   # ∞
+            f'Sustain Level:         {current_instrument[7]} | {me.calculate_params("sus", current_instrument[7])}dB\n'   # ∞
             f'Release Rate:          {current_instrument[8]} | {rel}ms\n'
             f'Rate correction:       {current_instrument[9]}\n'
-            f'Vibrato strength:      {current_instrument[10]} | {self.calculate_params("vib", current_instrument[10])} cents\n'
-            f'AM strength:           {current_instrument[11]} | {self.calculate_params("am", current_instrument[11])}dB\n'
-            f'LFO Speed:             {current_instrument[12]} | {round(self.calculate_params("lfo", current_instrument[12]), 4)}Hz\n'
+            f'Vibrato strength:      {current_instrument[10]} | {me.calculate_params("vib", current_instrument[10])} cents\n'
+            f'AM strength:           {current_instrument[11]} | {me.calculate_params("am", current_instrument[11])}dB\n'
+            f'LFO Speed:             {current_instrument[12]} | {round(me.calculate_params("lfo", current_instrument[12]), 4)}Hz\n'
             f'\n'
         )
         return None
 
-    def extract(self) -> None:  # optimized version
+    def extract(me) -> None:  # optimized version
         """
         The function that continuously calls the extractor itself and passes it the iteration.
         """
         # kill me please
-        self.log.write(
+        me.log.write(
             f'!!NOTE!! Rates take rate correction into account.\n\n'
         )
-        for _ in range(self.samples):
+        for _ in range(me.samples):
             print(f"Current sample: {_}")
-            self.actually_save_samples(_, NUMPY, self.only_log)
+            me.actually_save_samples(_, NUMPY, me.only_log)
         return None
 
 if __name__ == "__main__":
@@ -717,3 +717,5 @@ if __name__ == "__main__":
         bank1=f"{path}/roms/desert_samplerom.raw",
         debug=False
         )
+
+# ps да, мне платят за количество строк

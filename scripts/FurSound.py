@@ -547,29 +547,29 @@ if __name__ == "__main__":
     length = 6.4 * 2 #length
     print("READY")
     ChannelNoise1 = Channel(
-        type_ = "square",
+        type_ = "triangle",
         sample_rate = sr,
         interpolation = "sine",
-        length = 2,
+        length = 4,
         panning = 0,
         volume = .1 * 2,
         width = .5,
     )
     ChannelNoise2 = Channel(
-        type_ = "square",
+        type_ = "triangle",
         sample_rate = sr,
         interpolation = "sine",
-        length = 2,
+        length = 5,
         panning = .7,
         volume = .05 * .5,
         width = .375,
     )
     ChannelNoise3 = Channel(
-        type_ = "square",
+        type_ = "triangle",
         sample_rate = sr,
         interpolation = "sine",
         panning = -.7,
-        length = 2,
+        length = 6,
         volume = .025 * .25,
         width = .25,
     )
