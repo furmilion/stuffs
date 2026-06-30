@@ -44,6 +44,11 @@ WAVE_NOISE    = 6
 WAVE_TABLE    = 7
 WAVE_TRIANGLE = 8
 WAVE_NONE     = 9
+WAVE_HALFSINE = 10  # OPL
+WAVE_ABSSINE  = 11  # OPL
+WAVE_QRTSINE  = 12  # OPL
+WAVE_EVENSINE = 13  # OPL
+WAVE_EABSSINE = 14  # OPL
 WAVE_ZERODIV  = 16
 WAVE_h        = 17
 WAVE_H        = 18
@@ -59,6 +64,11 @@ WAVE_MAP = { # prepare for better wave system
 "wavetable": WAVE_TABLE,
 "triangle": WAVE_TRIANGLE,
 "none": WAVE_NONE,
+"half_sine": WAVE_HALFSINE,
+"abs_sine": WAVE_ABSSINE,
+"quarter_sine": WAVE_QRTSINE,
+"even_sine": WAVE_EVENSINE,
+"even_abs_sine": WAVE_EABSSINE,
 "ZeroDivisionError": WAVE_ZERODIV,
 "h": WAVE_h,
 "H": WAVE_H,
@@ -173,6 +183,13 @@ class Channel:
                 self.wavetable = [-1 if _ < (self.length * 2) * self.p_width else 1 for _ in range(self.length * 2)]
             elif self.c_type == WAVE_SINE:
                 self.wavetable = [sin(pi / self.length * _) for _ in range(self.length * 2)]
+            elif self.c_type == WAVE_ABSSINE:
+                self.wavetable = [abs(sin(pi / self.length * _)) for _ in range(self.length * 2)]
+            elif self.c_type == WAVE_EVENSINE:
+                self.wavetable = [sin(pi / self.length * _ * 2) if _ < self.length else 0 for _ in range(self.length * 2)]
+            elif self.c_type == WAVE_EABSSINE:
+                self.wavetable = [abs(sin(pi / self.length * _ * 2)) if _ < self.length else 0 for _ in range(self.length * 2)]
+            
             elif self.c_type == WAVE_SAWTOOTH:
                 self.wavetable = [(_ / self.length * 2) * 2 - 1 for _ in range(self.length * 2)]
                 # normalization here and in tri wave is because with low length it simply does not go high enough to reach 1
@@ -608,7 +625,8 @@ class FMChannel:
         op_volumes = [0, 1],
         op_waves =   ["sine", "sine"],
         op_tables =  [[0], [0]],
-        op_fb_mults =  [4, 0],
+        op_fb_mults =  [.2, 0],
+        op_mod_in_mults = [0, 1],
         sample_rate = 44100,
         ):
         itisi.operators = [OperatorChannel(panning=panning,
@@ -626,6 +644,7 @@ class FMChannel:
         itisi.modulation_buffer = np.array([0 for _ in range(operators)], np.float16)
         
         itisi.op_fb_mults = op_fb_mults
+        itisi.op_mod_in_mults = op_mod_in_mults
         itisi.master_volume = volume
         itisi._base_freq = 0
         # TODO: more
@@ -637,18 +656,23 @@ class FMChannel:
         #    output_divisor += 1 if itisi.op_outputs[_] > 0 else 0 # TODO: i actually might not use this and just let the channel output values greater than 1. Your problem.
         
         sample_buffer = np.array([0,0], np.float32)
-        feedback_buffer = itisi.feedback_buffer
-        modulation_buffer = itisi.modulation_buffer
+        feedback_buffer = itisi.feedback_buffer.copy()
+        modulation_buffer = itisi.modulation_buffer.copy()
         #print(feedback_buffer)
         itisi.feedback_buffer -= itisi.feedback_buffer
         itisi.modulation_buffer -= itisi.modulation_buffer
         
         for op, op_obj in enumerate(itisi.operators):
             op_obj._freq = (itisi._base_freq * itisi.op_mults[op]) if itisi.op_mults[op] > 0 else (itisi._base_freq ** itisi.op_mults[op]) # if this raises an IndexError, it's *your* problem.
-            output_buffer = op_obj.update(modulation=(feedback_buffer[op] * itisi.op_fb_mults[op]) + modulation_buffer[op])  # definetly your fault here becuse you *have* to do something shady to get it to spit an IndexError.
+            output_buffer = op_obj.update(modulation=(feedback_buffer[op] * itisi.op_fb_mults[op]) + (modulation_buffer[op] * itisi.op_mod_in_mults[op]))  # definetly your fault here becuse you *have* to do something shady to get it to spit an IndexError.
             # print(
             # f"op                 {op}                  \n"
             # f"phase              {op_obj.phase}        \n"
+            # f"fb_buf             {feedback_buffer   }        \n"
+            # f"fb_buf_op          {feedback_buffer[op]}        \n"
+            # f"fb_mul_op          {itisi.op_fb_mults[op]}        \n"
+            # f"fb_buf_op_post     {feedback_buffer[op] * itisi.op_fb_mults[op]}        \n"
+            # f"mod_buf_op         {modulation_buffer[op]}        \n"
             # f"lastout            {op_obj.last_output}  \n"
             # f"outbuf             {output_buffer}       \n"
             # f"opouts             {itisi.op_outputs}       \n"
@@ -764,8 +788,8 @@ if __name__ == "__main__":
     # and call it a day lol
     
     sr = 30000 # literally everything depends on the sample rate, including bpm since its all in a for loop
-    #length = (64 * .1) * 2 #length
-    length = (8 * .1) * 2 #length
+    length = (64 * .1) * 2 #length
+    #length = (4 * .1) * 2 #length
     print("READY")
     ChannelNoise1 = Channel(
         type_ = "triangle",
@@ -813,11 +837,12 @@ if __name__ == "__main__":
                       [1, 1],
                       [0, 0],
                       ],
-        op_mults =   [2, 1],
-        op_volumes = [.2, 1],
-        op_outputs = [1, 0],
-        op_fb_mults = [16, 0],
-        op_waves =   ["sine", "sine"],
+        op_mults =   [1, 1],
+        op_volumes = [.25, 1],#[.2, 1],
+        op_outputs = [0, 1],
+        op_fb_mults = [0, 0],
+        op_mod_in_mults = [0, 1],
+        op_waves =   ["abs_sine", "sine"],
         op_tables =  [[0], [0]],
     )
     
@@ -829,10 +854,10 @@ if __name__ == "__main__":
 
     ChannelFeedback.set_attack(1/256);ChannelFeedback.set_decay1(.06);ChannelFeedback.set_sustain(.3);ChannelFeedback.set_decay2(.1);ChannelFeedback.set_release(0)
     
-    ChannelFM.set_attack(1/256,1/256,)
-    ChannelFM.set_decay1(.06,.06,)
-    ChannelFM.set_sustain(.3,.3,)
-    ChannelFM.set_decay2(.1,.1,)
+    ChannelFM.set_attack(0,0)
+    ChannelFM.set_decay1(.05,.2)
+    ChannelFM.set_sustain(.4,0)
+    ChannelFM.set_decay2(.08,0)
     ChannelFM.set_release(0,0,)
     
     f = freq_from_key
@@ -914,7 +939,7 @@ if __name__ == "__main__":
                 pass
             else:
                 #ChannelFeedback.press_channel(0, 0)
-                ChannelFM.press_channel(0, 0)
+                ChannelFM.press_channel(1, 1)
                 #ChannelNoise1.press_channel(0, 0)
                 #ChannelNoise2.press_channel(0, 0)
                 #ChannelNoise3.press_channel(0, 0)
