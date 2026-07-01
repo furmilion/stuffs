@@ -32,31 +32,82 @@ rate for longer wavetables
 # поэтому из всего говнокода она наиговнокоднейшая 
 
 0x686f7720646f6573207468697320657665620776f726b
+def opl_approximate_curve_1(value: float = 127):
+    """approximates yamaha's fm volume curve using a badass formula"""
+    return ((value**10)/127)/(127**9)
+def opl_approximate_curve_2(value: float = 127, table_resolution=127):
+    """same as above except more accurate"""
+    return 1/(10**(((table_resolution - value)*.75)/20))
 
+def freq_from_key(key = 60, tune = 440): # for some tests
+    if isinstance(key, int):
+        return (2 ** ((-57 + key) / 12)) * tune
+    else:
+        return key
 
-WAVE_SQUARE   = 0
-WAVE_PULSE    = 1
-WAVE_SINE     = 2
-WAVE_SAWTOOTH = 3
-WAVE_SAMPLE   = 4
-WAVE_NOISE1B  = 5
-WAVE_NOISE    = 6
-WAVE_TABLE    = 7
-WAVE_TRIANGLE = 8
-WAVE_NONE     = 9
-WAVE_HALFSINE = 10  # OPL
-WAVE_ABSSINE  = 11  # OPL
-WAVE_QRTSINE  = 12  # OPL
-WAVE_EVENSINE = 13  # OPL
-WAVE_EABSSINE = 14  # OPL
-WAVE_ZERODIV  = 16
-WAVE_h        = 17
-WAVE_H        = 18
+def key_from_note(note = "c-5"):
+    #print(note)
+    if note[2].isnumeric():
+        dat = [note[:2].lower(), note[2]]
+        dat[1] = int(dat[1])
+    else:
+        dat = [note[:3].lower()]
+    #print(dat)
+    notes = {"c-": 0, "c#": 1,
+             "d-": 2, "d#": 3,
+             "e-": 4,
+             "f-": 5, "f#": 6,
+             "g-": 7, "g#": 8,
+             "a-": 9, "a#": 10,
+             "b-": 11, 
+             "c_": 0, "c+": 1,
+             "d_": 2, "d+": 3,
+             "e_": 4,
+             "f_": 5, "f+": 6,
+             "g_": 7, "g+": 8,
+             "a_": 9, "a+": 10,
+             "b_": 11,
+             
+             "rel": "rel",
+             "cut": "cut",
+             "...": "...",
+             }
+    if notes[dat[0]] in [notes["rel"], notes["cut"], notes["..."],]:
+        return notes[dat[0]]
+    if dat[0] in notes and list(notes.keys()).index(dat[0]) > 12:
+        return (-12 * dat[1]) + notes.get(dat[0], 0)
+    return (12 * dat[1]) + notes.get(dat[0], 0)
+
+WAVE_SQUARE      = 0  # OPL #6
+WAVE_PULSE       = 1
+WAVE_SINE        = 2  # OPL #0
+WAVE_SAWTOOTH    = 3
+WAVE_SAMPLE      = 4
+WAVE_NOISE1B     = 5
+WAVE_NOISE       = 6
+WAVE_TABLE       = 7
+WAVE_TRIANGLE    = 8
+WAVE_NONE        = 9
+WAVE_HALFSINE    = 10  # OPL #1
+WAVE_ABSSINE     = 11  # OPL #2
+WAVE_QRTSINE     = 12  # OPL #3
+WAVE_EVENSINE    = 13  # OPL #4
+WAVE_EABSSINE    = 14  # OPL #5
+WAVE_ACCUMULATOR = 15  # OPL #7
+WAVE_ZERODIV     = 16
+WAVE_h           = 17
+WAVE_H           = 18
 
 WAVE_MAP = { # prepare for better wave system
+"sine": WAVE_SINE,
+"half_sine": WAVE_HALFSINE,
+"abs_sine": WAVE_ABSSINE,
+"quarter_sine": WAVE_QRTSINE,
+"even_sine": WAVE_EVENSINE,
+"even_abs_sine": WAVE_EABSSINE,
 "square": WAVE_SQUARE,
 "pulse": WAVE_PULSE,
-"sine": WAVE_SINE,
+"opl_accumulator": WAVE_ACCUMULATOR, "log_sawtooth": WAVE_ACCUMULATOR,
 "sawtooth": WAVE_SAWTOOTH,
 "sample": WAVE_SAMPLE,
 "n1b": WAVE_NOISE1B,
@@ -64,11 +115,6 @@ WAVE_MAP = { # prepare for better wave system
 "wavetable": WAVE_TABLE,
 "triangle": WAVE_TRIANGLE,
 "none": WAVE_NONE,
-"half_sine": WAVE_HALFSINE,
-"abs_sine": WAVE_ABSSINE,
-"quarter_sine": WAVE_QRTSINE,
-"even_sine": WAVE_EVENSINE,
-"even_abs_sine": WAVE_EABSSINE,
 "ZeroDivisionError": WAVE_ZERODIV,
 "h": WAVE_h,
 "H": WAVE_H,
@@ -93,7 +139,7 @@ INTERP_MAP = {
 def clamp(val=0, mn=0, mx=9):
     return min(mx, max(mn, val))
 
-from math import pi, tau, sin, floor, ceil
+from math import pi, tau, sin, floor, ceil, e as math_e
 import FurWave  # custom wav writer; i made it because the builtin one didnt have support for chunks and now i use it because im just used to
 from random import random
 try:
@@ -105,7 +151,7 @@ class Channel:
     def __init__(self,
     type_:         str         = "square", # the default wave upon class spawn
     width:         float | int = .25,    # pulse width for the pulse wave
-    length:        int         = 256,  # the length of the preset waves
+    length:        int         = 512,  # the length of the preset waves
     wavetable:     list[int]   = None, # wavetable
     sample_rate:   int         = 44100, # default sample rate...
     phase:         float | int = 0, # ...phase...
@@ -177,41 +223,43 @@ class Channel:
         if isinstance(self.c_type, int):
             # virtually any wave aside from binary ones is a wavetable so you can get cool artefacts with low lengths
             # i have about no idea how to do that in realtime
-            if self.c_type == WAVE_SQUARE:
+            if self.c_type == WAVE_SQUARE:        # 6
                 self.wavetable = [-1 if _ < self.length else 1 for _ in range(self.length * 2)] # the most basic waveform
             elif self.c_type == WAVE_PULSE:
                 self.wavetable = [-1 if _ < (self.length * 2) * self.p_width else 1 for _ in range(self.length * 2)]
-            elif self.c_type == WAVE_SINE:
-                self.wavetable = [sin(pi / self.length * _) for _ in range(self.length * 2)]
-            elif self.c_type == WAVE_ABSSINE:
-                self.wavetable = [abs(sin(pi / self.length * _)) for _ in range(self.length * 2)]
-            elif self.c_type == WAVE_EVENSINE:
-                self.wavetable = [sin(pi / self.length * _ * 2) if _ < self.length else 0 for _ in range(self.length * 2)]
-            elif self.c_type == WAVE_EABSSINE:
-                self.wavetable = [abs(sin(pi / self.length * _ * 2)) if _ < self.length else 0 for _ in range(self.length * 2)]
             
+            elif self.c_type == WAVE_SINE:        # 0
+                self.wavetable = [sin(pi / self.length * _) for _ in range(self.length * 2)]
+            elif self.c_type == WAVE_HALFSINE:    # 1
+                self.wavetable = [abs(sin(pi / self.length * _)) if not _//self.length else 0 for _ in range(self.length * 2)]
+            elif self.c_type == WAVE_ABSSINE:     # 2
+                self.wavetable = [abs(sin(pi / self.length * _)) for _ in range(self.length * 2)]
+            elif self.c_type == WAVE_QRTSINE:     # 3
+                self.wavetable = [abs(sin(pi / self.length * _)) if not (_%self.length)//(self.length//2) else 0 for _ in range(self.length * 2)]
+            elif self.c_type == WAVE_EVENSINE:    # 4
+                self.wavetable = [sin(pi / self.length * _ * 2) if _ < self.length else 0 for _ in range(self.length * 2)]
+            elif self.c_type == WAVE_EABSSINE:    # 5
+                self.wavetable = [abs(sin(pi / self.length * _ * 2)) if _ < self.length else 0 for _ in range(self.length * 2)]     
+            elif self.c_type == WAVE_ACCUMULATOR:  # 7
+                self.wavetable = np.array([(_ / self.length * 2) - 1 for _ in range(self.length * 2)], np.float16)
+                self.wavetable += (1-max(self.wavetable))/2
+                self.wavetable *= -(1/max(self.wavetable))
+                self.wavetable **= 9
+                
             elif self.c_type == WAVE_SAWTOOTH:
-                self.wavetable = [(_ / self.length * 2) * 2 - 1 for _ in range(self.length * 2)]
+                self.wavetable = np.array([(_ / self.length * 2) * 2 - 1 for _ in range(self.length * 2)], np.float16)
                 # normalization here and in tri wave is because with low length it simply does not go high enough to reach 1
-                centerer = (1-max(self.wavetable))/2
-                for i in range(len(self.wavetable)):
-                    self.wavetable[i] += centerer
-                maximizer = 1/max(self.wavetable)
-                for i in range(len(self.wavetable)):
-                    self.wavetable[i] *= maximizer
+                self.wavetable += (1-max(self.wavetable))/2
+                self.wavetable *= 1/max(self.wavetable)
             elif self.c_type == WAVE_TRIANGLE:
                 # unfortunately it was too troublesome for me to get triangle working properly
                 # so instead i opted for a saw generator extended by itself reversed
                 # which also made all waves 2 times longer since now length isnt just length of the
                 # entire wave but only of one slope
-                self.wavetable = [(_ / self.length) * 2 - 1 for _ in range(self.length)]
-                centerer = (1-max(self.wavetable))/2
-                for i in range(len(self.wavetable)):
-                    self.wavetable[i] += centerer
-                maximizer = 1/max(self.wavetable)
-                for i in range(len(self.wavetable)):
-                    self.wavetable[i] *= maximizer
-                self.wavetable.extend(self.wavetable[::-1])
+                self.wavetable = np.array([(_ / self.length) * 2 - 1 for _ in range(self.length)], np.float16)
+                self.wavetable += (1-max(self.wavetable))/2
+                self.wavetable *= 1/max(self.wavetable)
+                #self.wavetable.extend(self.wavetable[::-1])
             elif self.c_type == WAVE_SAMPLE:
                 if not self.wavetable:  # todo: parameters (loop points etc)
                     raise ValueError("where wave")
@@ -488,13 +536,11 @@ class Channel:
     def __force_envelope_state__(self, state):
         self.__update_envelope__(state % 5)
         #print(f"env state set to {self.env_state}")
-    
-
 class OperatorChannel(Channel):
     def __init__(self,
     type_:         str         = "square", # the default wave upon class spawn
     width:         float | int = .25,    # pulse width for the pulse wave
-    length:        int         = 256,  # the length of the preset waves
+    length:        int         = 512,  # the length of the preset waves
     wavetable:     list[int]   = None, # wavetable
     sample_rate:   int         = 44100, # default sample rate...
     phase:         float | int = 0, # ...phase...
@@ -608,7 +654,6 @@ class OperatorChannel(Channel):
                 out * self.__volume__ * self.env_y,  # raw unpanned output
                 phase_reset_flag
         )
-
 class FMChannel:
     
     def __init__(
@@ -628,6 +673,8 @@ class FMChannel:
         op_fb_mults =  [.2, 0],
         op_mod_in_mults = [0, 1],
         sample_rate = 44100,
+        tune = 440,
+        coarse_tune = 0,
         ):
         itisi.operators = [OperatorChannel(panning=panning,
                                            volume=         op_volumes[_ % len(op_volumes)],
@@ -646,6 +693,8 @@ class FMChannel:
         itisi.op_fb_mults = op_fb_mults
         itisi.op_mod_in_mults = op_mod_in_mults
         itisi.master_volume = volume
+        itisi.channel_tune = tune
+        itisi.channel_coarse_tune = coarse_tune
         itisi._base_freq = 0
         # TODO: more
     
@@ -663,8 +712,9 @@ class FMChannel:
         itisi.modulation_buffer -= itisi.modulation_buffer
         
         for op, op_obj in enumerate(itisi.operators):
+            op_feedback = (op_obj.last_output if itisi.op_matrix[op][op] else 0) * itisi.op_fb_mults[op]
             op_obj._freq = (itisi._base_freq * itisi.op_mults[op]) if itisi.op_mults[op] > 0 else (itisi._base_freq ** itisi.op_mults[op]) # if this raises an IndexError, it's *your* problem.
-            output_buffer = op_obj.update(modulation=(feedback_buffer[op] * itisi.op_fb_mults[op]) + (modulation_buffer[op] * itisi.op_mod_in_mults[op]))  # definetly your fault here becuse you *have* to do something shady to get it to spit an IndexError.
+            output_buffer = op_obj.update(modulation=op_feedback + (modulation_buffer[op] * itisi.op_mod_in_mults[op]))  # definetly your fault here becuse you *have* to do something shady to get it to spit an IndexError.
             # print(
             # f"op                 {op}                  \n"
             # f"phase              {op_obj.phase}        \n"
@@ -686,10 +736,28 @@ class FMChannel:
             # f"sampbuf            {sample_buffer}       \n"
             # )
             for carrier in range(itisi.op_count):
-                itisi.feedback_buffer[carrier]   += output_buffer[2] if itisi.op_matrix[op][carrier] else 0
-                itisi.modulation_buffer[carrier] += output_buffer[2] if itisi.op_matrix[op][carrier] else 0
+                #itisi.feedback_buffer[op]        += output_buffer[2] if itisi.op_matrix[op][op] else 0
+                # print(
+                # f"OP_MTX      {itisi.op_matrix}\n"
+                # f"OP_UPD      {op}\n"
+                # f"OP_MOD      {carrier}\n"
+                # f"OP_SELFMOD  {op == carrier}\n"
+                # f"DO_MODULATE {itisi.op_matrix[op][carrier] if not op == carrier else False}\n"
+                # )
+                itisi.modulation_buffer[carrier] += output_buffer[2] if itisi.op_matrix[op][carrier] and not op == carrier else 0
         return sample_buffer * itisi.master_volume #(sample_buffer / output_divisor)
         
+    def parse_key(itisi, key): 
+        if key == "cut":
+            itisi.cut_channel()
+        elif key == "rel":
+            itisi.release_channel()
+        elif key == "...":
+            pass
+        else:
+            itisi._base_freq = freq_from_key(key + itisi.channel_coarse_tune, itisi.channel_tune)
+            itisi.press_channel(1, 1)
+
     def press_channel(itisi, force_reset=False, phase_reset=False): # TODO: individul operator envelope toggles
         for operator in itisi.operators:
             operator.press_channel(force_reset, phase_reset)
@@ -699,6 +767,7 @@ class FMChannel:
     def cut_channel(itisi,):
         for operator in itisi.operators:
             operator.cut_channel()
+
     def set_attack(itisi,*attacks):
         for aid, attack in enumerate(attacks):
             itisi.operators[aid % itisi.op_count].set_attack(attack)
@@ -765,32 +834,17 @@ class ChannelGroup:
 ##############################
 ##############################
 
-def freq_from_key(key = 60, tune = 440): # for some tests
-    return (2 ** ((-57 + key) / 12)) * tune
-
-def key_from_note(note = "c-5"):
-    dat = list(note.lower().split("-"))  # TODO: suppoet negative octaves
-    dat[1] = int(dat[1])
-    notes = {"c": 0, "c#": 1,
-             "d": 2, "d#": 3,
-             "e": 4,
-             "f": 5, "f#": 6,
-             "g": 7, "g#": 8,
-             "a": 9, "a#": 10,
-             "b": 11, }
-    return (12 * dat[1]) + notes.get(dat[0], 0)
-
-
 if __name__ == "__main__":
-    # main loop where i test stuff; advanced stuff
-    # i really thought i had to do everything manually and
-    # now i realized i can just slam shit into an array
-    # and call it a day lol
-    
+    # 
+    f = freq_from_key
+    k = key_from_note
+    o = opl_approximate_curve_2
     sr = 30000 # literally everything depends on the sample rate, including bpm since its all in a for loop
     length = (64 * .1) * 2 #length
     #length = (4 * .1) * 2 #length
     print("READY")
+    master_tune = 450
+    
     ChannelNoise1 = Channel(
         type_ = "triangle",
         sample_rate = sr,
@@ -819,15 +873,16 @@ if __name__ == "__main__":
         width = .25,
     )
     ChannelFeedback = OperatorChannel(
-        type_ = "sine",
+        type_ = "opl_accumulator",
         sample_rate = sr,
         interpolation = "sine", #"rectsine", #"linear",
         panning = 0,
-        length = 2,
+        length = 256,
         volume = 1,
         width = .25,
     )
-    ChannelFM = FMChannel(
+    SquarePluck = FMChannel(
+        tune = master_tune,
         sample_rate = sr,
         volume = 1,
         panning = 0,
@@ -835,35 +890,82 @@ if __name__ == "__main__":
         operators = 2,
         op_matrix =  [
                       [1, 1],
-                      [0, 0],
+                      [0, 1],
                       ],
         op_mults =   [1, 1],
         op_volumes = [.25, 1],#[.2, 1],
-        op_outputs = [0, 1],
+        op_outputs = [0, 2],
         op_fb_mults = [0, 0],
         op_mod_in_mults = [0, 1],
         op_waves =   ["abs_sine", "sine"],
         op_tables =  [[0], [0]],
     )
+    PadLeft = FMChannel(
+        tune = master_tune,
+        coarse_tune = 1,
+        sample_rate = sr,
+        volume = 1,
+        panning = -1,
+        #type_ = "sine",
+        operators = 2,
+        op_matrix =  [
+                      [1, 1],
+                      [0, 0],
+                      ],
+        op_mults =   [15, .5],  # = [15, .5]
+        op_volumes = [o(63-4,63), 1],#[.2, 1],
+        op_outputs = [0, 2],
+        op_fb_mults = [0.03, 0],
+        op_mod_in_mults = [0, 1],
+        op_waves =   ["sine", "even_sine"],
+        op_tables =  [[0], [0]],
+    )
+    PadRight = FMChannel(
+        tune = 440,
+        coarse_tune = 4,
+        sample_rate = sr,
+        volume = 1,
+        panning = 1,
+        #type_ = "sine",
+        operators = 2,
+        op_matrix =  [
+                      [1, 1],
+                      [0, 0],
+                      ],
+        op_mults =   [13, .5],  # = [13, .5]
+        op_volumes = [o(63-4,63), 1],#[.2, 1],
+        op_outputs = [0, 2],
+        op_fb_mults = [0.03, 0],
+        op_mod_in_mults = [0, 1],
+        op_waves =   ["sine", "even_sine"],
+        op_tables =  [[0], [0]],
+    )
     
-    feedbackMult = .2 # .2
+    feedbackMult = .1 # .2
     
     ChannelNoise1.set_attack(1/64);ChannelNoise1.set_decay1(.06);ChannelNoise1.set_sustain(.3);ChannelNoise1.set_decay2(.1);ChannelNoise1.set_release(0)
     ChannelNoise2.set_attack(1/16);ChannelNoise2.set_decay1(.06);ChannelNoise2.set_sustain(.3);ChannelNoise2.set_decay2(.1);ChannelNoise2.set_release(0)
     ChannelNoise3.set_attack(1/8); ChannelNoise3.set_decay1(.06);ChannelNoise3.set_sustain(.3);ChannelNoise3.set_decay2(.1);ChannelNoise3.set_release(0)
 
-    ChannelFeedback.set_attack(1/256);ChannelFeedback.set_decay1(.06);ChannelFeedback.set_sustain(.3);ChannelFeedback.set_decay2(.1);ChannelFeedback.set_release(0)
+    ChannelFeedback.set_attack(0);ChannelFeedback.set_decay1(.06);ChannelFeedback.set_sustain(.3);ChannelFeedback.set_decay2(.1);ChannelFeedback.set_release(0)
     
-    ChannelFM.set_attack(0,0)
-    ChannelFM.set_decay1(.05,.2)
-    ChannelFM.set_sustain(.4,0)
-    ChannelFM.set_decay2(.08,0)
-    ChannelFM.set_release(0,0,)
+    SquarePluck.set_attack(0,0)
+    SquarePluck.set_decay1(.05,.2)
+    SquarePluck.set_sustain(o(63-24,63),0)
+    SquarePluck.set_decay2(.08,0)
+    SquarePluck.set_release(0,0,)
     
-    f = freq_from_key
-    k = key_from_note
+    PadLeft.set_attack(0,1/128)
+    PadLeft.set_decay1(-1,-1)
+    PadLeft.set_sustain(-1,-1)
+    PadLeft.set_decay2(-1,-1)
+    PadLeft.set_release(0,1/128)
+    PadRight.set_attack(0,1/128)
+    PadRight.set_decay1(-1,-1)
+    PadRight.set_sustain(-1,-1)
+    PadRight.set_decay2(-1,-1)
+    PadRight.set_release(0,1/128)
     
-    master_tune = 450
     notes_pre = [
         "e-3", "a-3", "b-3", "g-4", "g-3", "b-3", "d-4", "a-4",
         "e-3", "b-3", "a-4", "b-4", "e-4", "b-4", "a-4", "d-5",
@@ -873,7 +975,7 @@ if __name__ == "__main__":
         "e-3", "a-3", "b-3", "g-4", "g-3", "b-3", "d-4", "a-4",
         "e-3", "b-3", "a-4", "b-4", "e-4", "b-4", "a-4", "d-5",
         "e-3", "a-3", "b-3", "g-4", "g-3", "b-3", "d-4", "a-4",
-        "e-3", "b-3", "f#-4","a-4", "d-5", "f#-5","d-5", "e-5",
+        "e-3", "b-3", "f#4", "a-4", "d-5", "f#5", "d-5", "e-5",
 
         "e-3", "a-3", "b-3", "g-4", "g-3", "b-3", "d-4", "a-4",
         "e-3", "b-3", "a-4", "b-4", "e-4", "b-4", "a-4", "d-5",
@@ -881,12 +983,34 @@ if __name__ == "__main__":
         "e-3", "b-3", "a-4", "b-4", "e-4", "d-5", "e-5", "b-4",
 
         "a-3", "b-3", "e-4", "b-4", "a-3", "b-4", "a-4", "d-5",
-        "a-3", "e-5", "b-4", "a-4", "e-4", "g-5", "f#-5", "d-5",
+        "a-3", "e-5", "b-4", "a-4", "e-4", "g-5", "f#5", "d-5",
         "a-3", "d-4", "e-4", "a-4", "a-3", "b-4", "d-5", "e-5",
-        "e-4", "b-4", "a-4", "b-4", "e-4", "a-4", "f#-4", "g-4"
-        
+        "e-4", "b-4", "a-4", "b-4", "e-4", "a-4", "f#4", "g-4" 
     ]
-    notes = [f(k(_), master_tune) for _ in notes_pre]
+    notes_pads_pre = [
+        "e_2", "...", "...", "...", "...", "...", "...", "...",
+        "...", "...", "...", "...", "...", "...", "...", "...",
+        "...", "...", "...", "...", "...", "...", "...", "...",
+        "...", "...", "...", "...", "...", "...", "...", "...",
+        
+        "...", "...", "...", "...", "...", "...", "...", "...",
+        "...", "...", "...", "...", "...", "...", "...", "...",
+        "...", "...", "...", "...", "...", "...", "...", "...",
+        "...", "...", "...", "...", "...", "...", "...", "...",
+        
+        "...", "...", "...", "...", "...", "...", "...", "...",
+        "...", "...", "...", "...", "...", "...", "...", "...",
+        "...", "...", "...", "...", "...", "...", "...", "...",
+        "...", "...", "...", "...", "...", "...", "...", "...",
+        
+        "a_3", "...", "...", "...", "...", "...", "...", "...",
+        "...", "...", "...", "...", "...", "...", "...", "...",
+        "...", "...", "...", "...", "...", "...", "...", "...",
+        "...", "...", "...", "...", "...", "...", "...", "...",
+    ]
+    
+    notes = [k(_) for _ in notes_pre]
+    notes_pads = [k(_) for _ in notes_pads_pre]
     
     gates = [ 1,]
     vols =  [ .1,]
@@ -909,10 +1033,9 @@ if __name__ == "__main__":
         #curSample += ChannelNoise3.update(suppress_noise_update=True)[:2]
         #SampleBuffer = np.array(ChannelFeedback.update(suppress_noise_update=True, modulation=SampleBuffer[2] * feedbackMult)[:3], np.float32)
         #curSample /= 1
-        curSample += ChannelFM.update()
+        #curSample += ChannelFeedback.update(suppress_noise_update=True, modulation=ChannelFeedback.last_output * feedbackMult)[:2]
         #render.extend(curSample)
-        render.extend([curSample[0]])
-        #render.extend(SampleBuffer[0:2])
+        #render.extend(SampleBuffer[    :2])
         #render.extend([SampleBuffer[0]])
         curSample -= curSample
         if not _ % sr:
@@ -924,7 +1047,10 @@ if __name__ == "__main__":
             #ChannelNoise.force_generate_new_noise_packets()
             #ChannelNoise2.force_generate_new_noise_packets()
         if not _ % (sr//10):
-            ChannelFM._base_freq = notes[seq]
+            
+            SquarePluck.parse_key(notes[seq])
+            PadLeft.parse_key(notes_pads[seq])
+            PadRight.parse_key(notes_pads[seq])
             #ChannelFeedback._freq = notes[seq]
             #ChannelNoise1._freq = notes[seq]
             #ChannelNoise1.set_volume(vols[seq % len(vols)] * 2)
@@ -935,19 +1061,25 @@ if __name__ == "__main__":
             #ChannelNoise3._freq = notes[seq - 6] + (notes[seq]/128)
             #ChannelNoise3.set_volume(vols[seq % len(vols)] * .25)
 
-            if not gates[seq % len(gates)]:
-                pass
-            else:
-                #ChannelFeedback.press_channel(0, 0)
-                ChannelFM.press_channel(1, 1)
+            #if not gates[seq % len(gates)]:
+            #    pass
+            #else:
+                #ChannelFeedback.press_channel(1, 1)
+                #SquarePluck.press_channel(1, 1)
                 #ChannelNoise1.press_channel(0, 0)
                 #ChannelNoise2.press_channel(0, 0)
                 #ChannelNoise3.press_channel(0, 0)
             seq = (seq + 1) % len(notes)
+        curSample += SquarePluck.update()
+        curSample += PadLeft.update()
+        curSample += PadRight.update()
+        curSample /= 4
+        #render.extend([curSample[0]])
+        render.extend(curSample)
     elapsed = time.perf_counter() - start
     print(f"{elapsed:.3f}/{length}s")
     with FurWave.WaveWriter(
-                    channels=1,
+                    channels=2,
                     samplerate=sr,
                     bitdepth=32.,
                     data=render,

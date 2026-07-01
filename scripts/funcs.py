@@ -332,29 +332,29 @@ def get_sample_data(raw, chip_type="m"):
             return (
                 (((raw[0x0000] & 0x3F) << 16) |  # 0. start address; there is one free bit as the address space is
                  (raw[0x0001] << 8) |            #                 ; still 22 bits.
-                 (raw[0x0002])),
-
-                ((raw[0x0000] >> 6) & 1),  # 1. data format (0: 8bit, 1: 12bit)
-
-                ((raw[0x0003] << 8) |  # 2. loop start
-                 (raw[0x0004]) + 1),
-
-                (0x10000 - (
-                        (raw[0x0005] << 8) |  # 3. sample length in samples, caps at 65535
-                        (raw[0x0006]))),
-
-                ((raw[0x0008] >> 4) & 0x0F),  # 4. instrument attack rate
-                (raw[0x0008] & 0x0F),  # 5. instrument decay 1 rate
-
-                (raw[0x0009] & 0x0F),  # 6. instrument decay 2 rate
-                ((raw[0x0009] >> 4) & 0x0F),  # 7. instrument decay level
-
-                (raw[0x000A] & 0x0F),  # 8. instrument release rate
-                ((raw[0x000A] >> 4) & 0x0F),  # 9. instrument rate envelope correction
-
-                (raw[0x0007] & 0b111),  # 10. vibrato strength
-                (raw[0x000B] & 0b111),  # 11. amplitude modulation strength
-                ((raw[0x0007] >> 3) & 0b111),  # 12. lfo speed
+                 (raw[0x0002])),                 #
+                                                 #
+                ((raw[0x0000] >> 6) & 1),        # 1. data format (0: 8bit, 1: 12bit)
+                                                 #
+                ((raw[0x0003] << 8) |            # 2. loop start
+                 (raw[0x0004]) + 1),             #
+                                                 #
+                (0x10000 - (                     #
+                        (raw[0x0005] << 8) |     # 3. sample length in samples, caps at 65535
+                        (raw[0x0006]))),         #
+                                                 #
+                ((raw[0x0008] >> 4) & 0x0F),     # 4. instrument attack rate
+                (raw[0x0008] & 0x0F),            # 5. instrument decay 1 rate
+                                                 #
+                (raw[0x0009] & 0x0F),            # 6. instrument decay 2 rate
+                ((raw[0x0009] >> 4) & 0x0F),     # 7. instrument decay level
+                                                 #
+                (raw[0x000A] & 0x0F),            # 8. instrument release rate
+                ((raw[0x000A] >> 4) & 0x0F),     # 9. instrument rate envelope correction
+                                                 #
+                (raw[0x0007] & 0b111),           # 10. vibrato strength
+                (raw[0x000B] & 0b111),           # 11. amplitude modulation strength
+                ((raw[0x0007] >> 3) & 0b111),    # 12. lfo speed
             )
         case "7" :  # GEW7 (YMW270-F)
             return (
