@@ -3,22 +3,79 @@ FurSound
 This is my custom sound engine.
 The concept is as simple as it gets: iterate over a wave form at sample rate.
 
-Currently, only a single core thing has been partially implemented: a Channel.
-
+There is a concept of a "channel".
 A channel is the sound producing unit of the engine.
-It has the following properties:
+
+The following types of channels are available:
+    
+# Channel
+The base channel class.
+Has the following properties:
+    - Volume
+    - Panpot
+    - Coarse tune
+    - A-4 tune
+    - Sample rate, which I bet is self-explanatory.
+    - Interpolation type
     - Waveform (i.e. square, wavetable etc.)
     - Pulse width for pulse wave
     - Wavetable for wavetable and sample waves
-    - Sample rate, which also controls root frequency of a sample
-    - Panpot
-    - Volume
     - ADSD2R
-    - FM: (completely unimplemented right now)
-        Per-operator ADSR
-        Per-operator frequency control
-        Operator matrix
-Technically, FM and PM are already possible, but not in a convenient way.
+## OperatorChannel
+Inherits Channel's properties,
+with the addition of a single parameter
+to the update() function
+### CHANGES
+    - update() now takes an additional argument: modulation input
+    - update() now outputs an additional value: raw sample value
+    - update() now outputs phase reset flag at 4th position, with raw sample value taking the 3rd place
+    - new class attribute last_output: holds the last raw sample value of the update() function, useful for feedback
+
+# FMChannel
+The FM channel class.
+Does not inherit the base class
+and instead has its own properties
+due to the fact that it is a collection
+of OperatorChannels, and thus having
+no envelope by itself.
+Has the following properties:
+    - Volume
+    - Panpot
+    - Coarse tune
+    - A-4 tune
+    - Sample rate
+    - Amount of operators (static)
+    - Operator connection matrix (not corrected at init time, so be careful not to fuck it up)
+    - Operator base frequency multipliers
+    - Operator direct output volumess
+    - Operator modulation volumes
+    - Operator feedback multipliers
+    - Operator modulation input multipliers
+    - Operator waveforms
+    - (TODO) Operator default waveform lengths
+
+TODO:
+# SampleChannel
+Inherits most of the Channel's properties
+Has the following properties:
+    - Volume
+    - Panpot
+    - Coarse tune
+    - A-4 tune
+    - Wavetable for sample waves
+    - Sample rate
+    - Sample A-4 tune
+    - Sample loop type (none, forward, backward, bi)
+    - Sample loop start point
+    - Sample loop end point
+### CHANGES
+    - phase now represents current sample position in range(0, len(sample))
+    - sample is automatically truncated to the loop end point, if a loop type is not 'none'
+    - Frequency is calculated as a ratio of requested frequency to A-4 tune and then multiplied by sample tune
+    - update() no longer checks the waveform type as it always is supposed to be sample
+    - update() sends phase reset flag upon crossing the loop end point
+
+
 
 I might implement a toggle that disables higher playback
 rate for longer wavetables
@@ -78,25 +135,25 @@ def key_from_note(note = "c-5"):
         return (-12 * dat[1]) + notes.get(dat[0], 0)
     return (12 * dat[1]) + notes.get(dat[0], 0)
 
-WAVE_SQUARE      = 0  # OPL #6
-WAVE_PULSE       = 1
-WAVE_SINE        = 2  # OPL #0
-WAVE_SAWTOOTH    = 3
-WAVE_SAMPLE      = 4
-WAVE_NOISE1B     = 5
-WAVE_NOISE       = 6
-WAVE_TABLE       = 7
-WAVE_TRIANGLE    = 8
-WAVE_NONE        = 9
+WAVE_SQUARE      = 0   # OPL #6
+WAVE_PULSE       = 1   #
+WAVE_SINE        = 2   # OPL #0
+WAVE_SAWTOOTH    = 3   #
+WAVE_SAMPLE      = 4   # TODO
+WAVE_NOISE1B     = 5   #
+WAVE_NOISE       = 6   #
+WAVE_TABLE       = 7   #
+WAVE_TRIANGLE    = 8   #
+WAVE_NONE        = 9   #
 WAVE_HALFSINE    = 10  # OPL #1
 WAVE_ABSSINE     = 11  # OPL #2
 WAVE_QRTSINE     = 12  # OPL #3
 WAVE_EVENSINE    = 13  # OPL #4
 WAVE_EABSSINE    = 14  # OPL #5
 WAVE_ACCUMULATOR = 15  # OPL #7
-WAVE_ZERODIV     = 16
-WAVE_h           = 17
-WAVE_H           = 18
+#WAVE_ZERODIV     = 16
+#WAVE_h           = 17
+#WAVE_H           = 18
 
 WAVE_MAP = { # prepare for better wave system
 "sine": WAVE_SINE,
@@ -115,9 +172,9 @@ WAVE_MAP = { # prepare for better wave system
 "wavetable": WAVE_TABLE,
 "triangle": WAVE_TRIANGLE,
 "none": WAVE_NONE,
-"ZeroDivisionError": WAVE_ZERODIV,
-"h": WAVE_h,
-"H": WAVE_H,
+#"ZeroDivisionError": WAVE_ZERODIV,
+#"h": WAVE_h,
+#"H": WAVE_H,
 }
 
 INTERP_NONE = 0
@@ -157,33 +214,10 @@ class Channel:
     phase:         float | int = 0, # ...phase...
     panning:       float | int = 0, #...pan...
     volume:        float | int = 1, #...and volume.
-    interpolation: str         = "none"
+    interpolation: str         = "none",
+    tune = 440,
+    coarse_tune = 0,
     ):
-        # constants
-
-        # wave types
-        #self.square     = "square";    self.pulse    = "pulse"
-        #self.sine       = "sine";      self.sawtooth = "sawtooth"
-        #self.sample     = "pcm"
-        #self.noise_1bit = "n1b";       self.noise    = "n"
-        #self.wt         = "wavetable"; self.triangle = "triangle"
-
-        # coming: more types; replaced with the closest ones by sound
-        # self.fm = self.sine  # fm will likely instead become alive in own Operator class
-        #self.xor_triangle = self.pulse
-        #self.xor_sine = self.sine;   self.xor_sawtooth = self.sawtooth
-
-        # special
-        #self.test = self.square
-        #self.unimplemented = self.sine
-        #self.none = "none"
-        #self.h = "h"
-        #self.H = "H"
-        #self.ZeroDivisionError = "ZeroDivisionError"  # i dare you use it.
-
-        # interpolation types
-        #self.i_none = "none"
-        #self.i_lin  = "linear"
         
         # common
         self.c_type = WAVE_MAP.get(type_, WAVE_SQUARE)
@@ -432,6 +466,17 @@ class Channel:
         elif self.c_type == WAVE_NOISE:
             self.wavetable = [(random() -.5) * 2 for _ in range(self.length * 2)]
     
+    def parse_key(self, key): 
+        if key == "cut":
+            self.cut_channel()
+        elif key == "rel":
+            self.release_channel()
+        elif key == "...":
+            pass
+        else:
+            self._freq = freq_from_key(key + self.channel_coarse_tune, self.channel_tune)
+            self.press_channel(1, 1)
+
     def release_channel(self):  # release adsr
         self.env_acc = (1 / (self.sample_rate * self.adsr[4])) * self.env_y  # same as below but lower speed for lower volumes
         self.env_state = 4
@@ -531,11 +576,11 @@ class Channel:
             self.env_state -= 6
             #print("env resume")
     def __force_advance_envelope_state__(self):
-        self.__update_envelope__((self.env_state + 1) % 5)
         #print(f"env state forced to {self.env_state}")
+        self.__update_envelope__((self.env_state + 1) % 5)
     def __force_envelope_state__(self, state):
-        self.__update_envelope__(state % 5)
         #print(f"env state set to {self.env_state}")
+        self.__update_envelope__(state % 5)
 class OperatorChannel(Channel):
     def __init__(self,
     type_:         str         = "square", # the default wave upon class spawn
@@ -661,10 +706,8 @@ class FMChannel:
         operators =  2,
         volume =     1,
         panning =    0,
-        op_matrix =  [
-                      [1, 1],
-                      [0, 1],
-                      ],
+        op_matrix =  [[1, 1],
+                      [0, 1],],
         op_mults =   [1, 1],
         op_outputs = [0, 1],
         op_volumes = [0, 1],
@@ -686,8 +729,7 @@ class FMChannel:
         itisi.op_count = operators
         itisi.op_matrix = op_matrix
         itisi.op_mults = op_mults
-        itisi.op_outputs = op_outputs  # probably gonna be used for final volume output to decide how much to attenuate it
-        itisi.feedback_buffer   = np.array([0 for _ in range(operators)], np.float16)
+        itisi.op_outputs = op_outputs
         itisi.modulation_buffer = np.array([0 for _ in range(operators)], np.float16)
         
         itisi.op_fb_mults = op_fb_mults
@@ -698,23 +740,21 @@ class FMChannel:
         itisi._base_freq = 0
         # TODO: more
     
-    def update(itisi,):  # this is gonna be very slow, you know the reason.
-        
-        #output_divisor = 0
-        #for _ in range(itisi.op_count):
-        #    output_divisor += 1 if itisi.op_outputs[_] > 0 else 0 # TODO: i actually might not use this and just let the channel output values greater than 1. Your problem.
-        
+    def update(itisi,):  # this is gonna be very slow, you know the reason. 
         sample_buffer = np.array([0,0], np.float32)
-        feedback_buffer = itisi.feedback_buffer.copy()
         modulation_buffer = itisi.modulation_buffer.copy()
-        #print(feedback_buffer)
-        itisi.feedback_buffer -= itisi.feedback_buffer
         itisi.modulation_buffer -= itisi.modulation_buffer
         
         for op, op_obj in enumerate(itisi.operators):
             op_feedback = (op_obj.last_output if itisi.op_matrix[op][op] else 0) * itisi.op_fb_mults[op]
             op_obj._freq = (itisi._base_freq * itisi.op_mults[op]) if itisi.op_mults[op] > 0 else (itisi._base_freq ** itisi.op_mults[op]) # if this raises an IndexError, it's *your* problem.
-            output_buffer = op_obj.update(modulation=op_feedback + (modulation_buffer[op] * itisi.op_mod_in_mults[op]))  # definetly your fault here becuse you *have* to do something shady to get it to spit an IndexError.
+            output_buffer = op_obj.update(modulation=op_feedback + (modulation_buffer[op] * itisi.op_mod_in_mults[op]))
+            # ^^^^
+            # definetly your fault here becuse you *have* to do something shady to get it to spit an IndexError.
+            # channel operator count is *not* dynamic, go figure
+            # you are free to juggle the matrix but not the amount of the operators. this aint SCSP.
+            # even SCSP can be considered just as a single 32-op channel, just with independent operator frequencies
+            
             # print(
             # f"op                 {op}                  \n"
             # f"phase              {op_obj.phase}        \n"
@@ -731,7 +771,7 @@ class FMChannel:
             # f"sampbuf_expect_att {sample_buffer + (np.array(output_buffer[:2], np.float32) * itisi.op_outputs[op])}       \n",
             # end=""
             # )
-            sample_buffer += (np.array(output_buffer[:2], np.float32) * itisi.op_outputs[op]) # channel operator count is *not* dynamic
+            sample_buffer += (np.array(output_buffer[:2], np.float32) * itisi.op_outputs[op])
             # print(
             # f"sampbuf            {sample_buffer}       \n"
             # )
@@ -745,7 +785,7 @@ class FMChannel:
                 # f"DO_MODULATE {itisi.op_matrix[op][carrier] if not op == carrier else False}\n"
                 # )
                 itisi.modulation_buffer[carrier] += output_buffer[2] if itisi.op_matrix[op][carrier] and not op == carrier else 0
-        return sample_buffer * itisi.master_volume #(sample_buffer / output_divisor)
+        return sample_buffer * itisi.master_volume
         
     def parse_key(itisi, key): 
         if key == "cut":
@@ -758,7 +798,7 @@ class FMChannel:
             itisi._base_freq = freq_from_key(key + itisi.channel_coarse_tune, itisi.channel_tune)
             itisi.press_channel(1, 1)
 
-    def press_channel(itisi, force_reset=False, phase_reset=False): # TODO: individul operator envelope toggles
+    def press_channel(itisi, force_reset=False, phase_reset=False): # TODO: individul operator envelope toggles for if you want to control them OPN-ExtCh3-style
         for operator in itisi.operators:
             operator.press_channel(force_reset, phase_reset)
     def release_channel(itisi,):
@@ -783,57 +823,21 @@ class FMChannel:
     def set_release(itisi,*releases):
         for rid, release in enumerate(releases):
             itisi.operators[rid % itisi.op_count].set_release(release)
-    
-
-##############################
-##############################
-class ChannelGroup:
-    
+class SampleChannel(Channel):
     def __init__(self,
-        detune: int | float = 0
-    ):
-        self.channels = []  # channels to walk through
-        self.detune = detune  # optional parameter that can be used to produce superwaves
-                              # detunes in 100th of a hertz
-        self.center_chan = 0
+        sample:        list[int]   = [0],      # sample
+        sample_rate:   int         = 44100,    # channel sample rate
+        sample_tune:   int         = 28129,    # a-4 of sample
+        sample_loop:   str         = "forward" # loop type
+        loop_start:    int         = -1        #
+        loop_end:      int         = -1        #
         
-        # the settings of this class by default are quite limiting
-        # but you can access the channel array and therefore
-        # make advanced edits to contained channels if you need
-    
-    def add_channel(self,
-        type_ = "sawtooth",
-        sample_rate = 44100,
-        volume = .5,
-        length = 16,
+        panning:       float | int = 0,
+        volume:        float | int = 1,
+        interpolation: str         = "none",
+        tune = 440,
+        coarse_tune = 0,
     ):
-        self.channels.append(Channel(type_=type,sample_rate=sample_rate,volume=volume,length=length))
-        self.center_chan = len(self.channels) // 2
-    
-    def set_base_freq(self, freq = 440):
-        if self.detune != 0:
-            for _, ch in enumerate(self.channels):
-                if _ < self.center_chan:
-                    ch._freq = freq - ((self.detune / 100) * (self.center_chan - _))
-                else:
-                    ch._freq = freq + ((self.detune / 100) * (_ - self.center_chan))
-        else:
-            for _ in self.channels:
-                _._freq = freq
-    
-    def update(self, suppress_phase_update=False, suppress_noise_update=False):
-         out = np.array([0, 0], np.float32)
-         for _ in self.channels:
-             out += _.update(suppress_phase_update, suppress_noise_update)[:2]
-         out /= len(self.channels)
-         return out
-     
-    def randomize_phase(self):
-        for _ in self.channels:
-            _.phase = random()
-##############################
-##############################
-
 if __name__ == "__main__":
     # 
     f = freq_from_key
@@ -844,34 +848,7 @@ if __name__ == "__main__":
     #length = (4 * .1) * 2 #length
     print("READY")
     master_tune = 450
-    
-    ChannelNoise1 = Channel(
-        type_ = "triangle",
-        sample_rate = sr,
-        interpolation = "sine",
-        length = 4,
-        panning = 0,
-        volume = .1 * 2,
-        width = .5,
-    )
-    ChannelNoise2 = Channel(
-        type_ = "triangle",
-        sample_rate = sr,
-        interpolation = "sine",
-        length = 5,
-        panning = .7,
-        volume = .05 * .5,
-        width = .375,
-    )
-    ChannelNoise3 = Channel(
-        type_ = "triangle",
-        sample_rate = sr,
-        interpolation = "sine",
-        panning = -.7,
-        length = 6,
-        volume = .025 * .25,
-        width = .25,
-    )
+
     ChannelFeedback = OperatorChannel(
         type_ = "opl_accumulator",
         sample_rate = sr,
@@ -1023,58 +1000,19 @@ if __name__ == "__main__":
     import time
     start = time.perf_counter()
     for _ in range(floor(sr*length)):
-        # this thing works at the peak of its performance and takes
-        # about 10 seconds to generate 10 seconds of audio on my phone
-        # could also be because i have python 3.11 on my phone rather than 3.14
-        # which supposedly has optimizations and is generally faster
-        # takes about quarter to a third the required time on my laptop
-        #curSample += ChannelNoise1.update(suppress_noise_update=True)[:2]
-        #curSample += ChannelNoise2.update(suppress_noise_update=True)[:2]
-        #curSample += ChannelNoise3.update(suppress_noise_update=True)[:2]
-        #SampleBuffer = np.array(ChannelFeedback.update(suppress_noise_update=True, modulation=SampleBuffer[2] * feedbackMult)[:3], np.float32)
-        #curSample /= 1
-        #curSample += ChannelFeedback.update(suppress_noise_update=True, modulation=ChannelFeedback.last_output * feedbackMult)[:2]
-        #render.extend(curSample)
-        #render.extend(SampleBuffer[    :2])
-        #render.extend([SampleBuffer[0]])
         curSample -= curSample
         if not _ % sr:
             print(f"second {1 + (_ // sr)} generated")
-        #ChannelNoise1.change_width(ChannelNoise1.p_width + (.25 / sr))
-        #ChannelNoise2.change_width(ChannelNoise2.p_width + (.15 / sr))
-        #ChannelNoise3.change_width(ChannelNoise3.p_width + (.05 / sr))
-        #if not _ % (sr//10):
-            #ChannelNoise.force_generate_new_noise_packets()
-            #ChannelNoise2.force_generate_new_noise_packets()
         if not _ % (sr//10):
             
             SquarePluck.parse_key(notes[seq])
             PadLeft.parse_key(notes_pads[seq])
             PadRight.parse_key(notes_pads[seq])
-            #ChannelFeedback._freq = notes[seq]
-            #ChannelNoise1._freq = notes[seq]
-            #ChannelNoise1.set_volume(vols[seq % len(vols)] * 2)
-
-            #ChannelNoise2._freq = notes[seq - 3] - (notes[seq]/128)
-            #ChannelNoise2.set_volume(vols[seq % len(vols)] * .5)
-
-            #ChannelNoise3._freq = notes[seq - 6] + (notes[seq]/128)
-            #ChannelNoise3.set_volume(vols[seq % len(vols)] * .25)
-
-            #if not gates[seq % len(gates)]:
-            #    pass
-            #else:
-                #ChannelFeedback.press_channel(1, 1)
-                #SquarePluck.press_channel(1, 1)
-                #ChannelNoise1.press_channel(0, 0)
-                #ChannelNoise2.press_channel(0, 0)
-                #ChannelNoise3.press_channel(0, 0)
             seq = (seq + 1) % len(notes)
         curSample += SquarePluck.update()
         curSample += PadLeft.update()
         curSample += PadRight.update()
         curSample /= 4
-        #render.extend([curSample[0]])
         render.extend(curSample)
     elapsed = time.perf_counter() - start
     print(f"{elapsed:.3f}/{length}s")
