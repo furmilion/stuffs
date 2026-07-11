@@ -1165,7 +1165,7 @@ if __name__ == "__main__":
     
     seq = 0
     
-    render = []
+    render = [0 for _ in range(floor(sr*length) * 2)]
     curSample = np.array([0,0], np.float32)  # current sample
     #SampleBuffer = np.array([0,0,0], np.float32)  # current sample
 
@@ -1194,7 +1194,8 @@ if __name__ == "__main__":
         #print(f"curSample {curSample}")
         
         curSample /= 2
-        render.extend(curSample)
+        render[_ * 2] += curSample[0]
+        render[_ * 2 + 1] += curSample[1]
     elapsed = time.perf_counter() - start
     print(f"{elapsed:.3f}/{length}s")
     with FurWave.WaveWriter(
