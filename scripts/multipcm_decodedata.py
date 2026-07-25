@@ -14,6 +14,12 @@ except ImportError:
 
 from funcs import *    # various utils used by this file that should probably also be able to be used on their own
 
+CHIP_SETTINGS = {
+    "opl4": (33868800, 32, 24),
+    "gew7": (8000000, 8, 28),
+    "mpcm": (9878400, 8, 28),
+    "mu5":  (9400000, 8, 28),
+}
 
 class MultiPCMSampleExtractorLegacy:
     # thanks to that uhhh boykisser pfp guy i forgor their name
@@ -292,11 +298,12 @@ class MultiPCMSampleExtractor:
                  clock_rate: int = 8053975,           # chip rate.
                                                       # should really not be filled out
                                                       # unless the rate is different
-                                                      # 33868800 for OPL4, 9878400 for MPCM, 8000000 for GEW7
+                                                      # 33868800 for OPL4, 9878400 for MPCM, 8000000 for GEW7, ~9400000 for MU5
                                                       # (to result in 44100hz)
                  divider: int = 8,                    # clock divider. 32 is the one for OPL4, 8 for MPCM, GEW7
                  chans: int = 28,                     # channels. 24 for OPL4, 28 for MPCM, GEW7
                  only_log: bool | int = False,        # whether to only log instruments instead of also dumping their samples
+                 chip_settings = None,
                  ):
         me.out_loc = out_loc
         me.log_name = log_name
@@ -314,7 +321,7 @@ class MultiPCMSampleExtractor:
                     3: -1,         #
                 }
                 me.rate = 35955
-                # OpenMSX(?) OPL4 PCM Emulation says that 0b01 if the "Prohibited" of MultiPCM.
+                # OpenMSX(?) OPL4 PCM Emulation says that 0b01 is the "Prohibited" of MultiPCM.
                 # the question is, is that it? or is that the OPL4 way?
             case "opl4":
                 me.formats = {
@@ -331,7 +338,7 @@ class MultiPCMSampleExtractor:
                     2: 16,  # 0b10
                     3: 16,  # 0b11
                 }
-                me.rate = clock_rate / (divider * chans)
+                me.rate = chip_settings[0] / (chip_settings[1] * chip_settings[2]) if chip_settings and len(chip_settings) == 3 else clock_rate / (divider * chans) 
         me.debug = debug
         match (bank1, bank2):
             case (None, _):
@@ -410,6 +417,7 @@ class MultiPCMSampleExtractor:
             'f5367cb72a6f8a81933cf6f27dd793fb': "7_Virtua Racing Sample ROM 2",
             '865b509bae66b74e02728387f6b7b6fc': "8_Desert Tank Sample ROM",
             '0c5c205b45495038ba428c647011cda2': "9_Desert Tank SFX ROM",
+            'fd2878a379f8368386c3b82eab04f32e': "100_Yamaha MU5 Wave ROM",
         }
         if hash := ret_hash(me.bank[
             get_sample_data(me.bank)[1]:
@@ -438,6 +446,13 @@ class MultiPCMSampleExtractor:
                     case 7: me.set_rom_params() # untested
                     case 8: me.set_rom_params(251, [range(127, 189), range(189, 65536)], [range(53, 63), 100, range(101, 127), range(157, 189)])
                     case 9: me.set_rom_params(206, [range(127, 175), range(175, 65536)], [range(54, 63), 100, range(118, 127), range(172, 175)])
+                    case 100: me.set_rom_params(512, [],
+                                               [488, 489,
+                                                490, 491, 492, 493, 494, 495, 496, 497, 498,
+                                                500, 502,
+                                                510, 511
+                                               ]
+                                               )
                     case _: me.set_rom_params() # any other rom
 
                 print(me.known_roms[hash].split("_")[1] if hash in me.known_roms else "Unidentified ROM")
@@ -587,6 +602,7 @@ class MultiPCMSampleExtractor:
             print(f"Current Instrument: {iter}\n"
                   f"Sample start:          {current_instrument[0]}\n"
                   f"Sample length:         {current_instrument[3]}\n"
+                  f'Sample bytelength:     {(current_instrument[3] * 3 / 2) if me.formats.get(current_instrument[1], -1) == 12 else (current_instrument[3] * 2) if me.formats.get(current_instrument[1], -1) == 16 else current_instrument[3]}\n'
                   f"Sample loop start:     {current_instrument[2]}\n"
                   f"Sample format:         {current_instrument[1]}, {me.formats[current_instrument[1]] if current_instrument[1] in me.formats else 'Invalid'}\n"
                   f"AD1D2SR:               {current_instrument[4]}/{current_instrument[5]}/{current_instrument[6]}/{current_instrument[7]}/{current_instrument[8]}\n"
@@ -595,6 +611,7 @@ class MultiPCMSampleExtractor:
                   f'LFO Speed:             {current_instrument[12]}\n'
                   f'\n'
                   )
+            print(f"length in-place calculation: {ceil((current_instrument[3]*3)/2)}")
             input()
         data = list(me.bank[current_instrument[0]:current_instrument[0] + current_instrument[3]])
         if len(data) == 0 or int(min(data)) == int(max(data)):
@@ -619,9 +636,9 @@ class MultiPCMSampleExtractor:
                                 ) as Wave:
                     Wave.set_smpl_chunk(sample_loop_count=1,
                                     loop_types=[0],
-                                    loop_starts=[current_instrument[2]],
+                                    loop_starts=[current_instrument[2] - 1],
                                     loop_ends=[current_instrument[3] - 1])
-                    Wave.write_file(f"./samples/{me.out_loc}/sample_{iter}.wav")
+                    Wave.write_file(f"./samples/{me.out_loc}/sample_{iter}_8bit.wav")
                 # save_riff(
                 #     data=data_ready,
                 #     rate=44100,
@@ -631,22 +648,37 @@ class MultiPCMSampleExtractor:
                 # )
             case 12:
                 # comment text
-                data_raw = me.bank[current_instrument[0]:current_instrument[0] + current_instrument[3]]
-                print("12 bit sample detected, skipping for now.")
+                print("converting 12 bit...")
+                data12 = convert_12_to_16(me.bank[current_instrument[0]:ceil((current_instrument[0] + (current_instrument[3]*3)/2))])
+                with WaveWriter(
+                        channels=1,
+                        samplerate=44100,
+                        bitdepth=16,
+                        data=data12
+                        ) as Wave:
+                    Wave.set_smpl_chunk(
+                        sample_loop_count=1,
+                        loop_types=[0],
+                        loop_starts=[current_instrument[2] - 1],
+                        loop_ends=[len(data12) - 1]
+                        )
+                    Wave.write_file(f"./samples/{me.out_loc}/sample_{iter}_12bit.wav")
+                print("done")
+                #print("12 bit sample detected, skipping for now.")
             case 16:
                 with WaveWriter(
                         channels=1,
                         samplerate=44100,
-                        bitdepth=8,
+                        bitdepth=16,
                         data=data
                         ) as Wave:
                     Wave.set_smpl_chunk(
                         sample_loop_count=1,
                         loop_types=[0],
-                        loop_starts=[current_instrument[2]],
+                        loop_starts=[current_instrument[2] - 1],
                         loop_ends=[current_instrument[3] - 1]
                         )
-                    Wave.write_file(f"./samples/{me.out_loc}/sample_{iter}.wav")
+                    Wave.write_file(f"./samples/{me.out_loc}/sample_{iter}_16bit.wav")
                 # save_riff(
                 #     data=me.bank[current_instrument[1]:current_instrument[1] + current_instrument[3]],
                 #     rate=44100,
@@ -674,8 +706,9 @@ class MultiPCMSampleExtractor:
             f'\n'
             f'Start address in bank: {current_instrument[0]}\n'
             f'Sample length:         {current_instrument[3]}\n'
+            f'Sample bytelength:     {(current_instrument[3] * 3 / 2) if me.formats.get(current_instrument[1], -1) == 12 else (current_instrument[3] * 2) if me.formats.get(current_instrument[1], -1) == 16 else current_instrument[3]}\n'
             f'Sample loop start:     {current_instrument[2]}\n'
-            f'Sample format:         {me.formats[current_instrument[1]] if current_instrument[1] in me.formats else "Invalid"}-bit\n'
+            f'Sample format:         {me.formats.get(current_instrument[1], "Invalid")}-bit ({current_instrument[1]})\n'
             f'INSTRUMENT SETTINGS:\n'
             f'Attack Rate:           {current_instrument[4]} | {atk}ms\n'
             f'Decay 1 Rate:          {current_instrument[5]} | {d1r}ms\n'
@@ -712,10 +745,11 @@ if __name__ == "__main__":
         path = "."
     print(f"{path}/roms/desert_samplerom.raw")
     MultiPCMSampleExtractor(
-        out_loc="desert_tank_samples",
-        log_name="desert_tank_sample_log",
-        bank1=f"{path}/roms/desert_samplerom.raw",
-        debug=False
+        out_loc="mu5_test",
+        log_name="mu5_test_log",
+        chip_settings = CHIP_SETTINGS["mu5"],
+        bank1=r"E:\D Drive (HDD)\- THE ULTIMATE STUFF COLLECTION -\MAME\roms\mu5\yamaha_mu5_waverom_xp50280-801.bin",
+        debug=0
         )
 
 # ps да, мне платят за количество строк

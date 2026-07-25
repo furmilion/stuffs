@@ -341,42 +341,32 @@ class Channel:
         out, phase_reset_flag = 0, False
         
         WAVE_LEN = self.length * 2
-        #if WAVE_LEN != len(self.wavetable):
-        #    WAVE_LEN = len(self.wavetable)
-        #    self.length = WAVE_LEN
-            # костыль костылём, но будет работатт хоть как-то
-        #print("what")
         if self.c_type != WAVE_NONE:
-            # envelope update logic
-            #print(f"acc {self.env_acc}\n"
-            #      f"sta {self.env_state}\n"
-            #      f"env {self.env_y}"
-            #      )
             match self.env_state:
                 case 0:
                     self.env_y += self.env_acc
                     if self.env_y >= 1:
                         #print("advance")
                         self.env_y = 1
-                        self.__update_envelope__(1)
+                        self.__update_envelope_stage__(1)
                 case 1:
                     self.env_y -= self.env_acc
                     if self.env_y <= self.adsr[2]:
                         #print("advance")
-                        self.__update_envelope__(2)
+                        self.__update_envelope_stage__(2)
                 case 2:
                     if not self.adsr[3] < 0:
                         #print("advance")
-                        self.__update_envelope__(3)
+                        self.__update_envelope_stage__(3)
                 case 3:
                     self.env_y -= self.env_acc
                     if self.env_y <= 0:
                         #print("advance")
-                        self.__update_envelope__(5)
+                        self.__update_envelope_stage__(5)
                 case 4:
                     self.env_y -= self.env_acc
                     if self.env_y <= 0:
-                        self.__update_envelope__(5)
+                        self.__update_envelope_stage__(5)
                     
         # do a little funny trick: set the output to whatever position we land at right now, *then* increase phase.
         # this is done to make phase 0 the default phase instead of outputting next phase.
@@ -502,34 +492,34 @@ class Channel:
         Set attack time, in seconds
         """
         self.adsr[0] = attack
-        self.__update_envelope__(self.env_state)
+        self.__update_envelope_stage__(self.env_state)
     def set_decay1(self, decay = 1.):
         """
         Set decay 1 time, in seconds
         """
         self.adsr[1] = decay
-        self.__update_envelope__(self.env_state)
+        self.__update_envelope_stage__(self.env_state)
     def set_sustain(self, level = 1.):
         """
         Set sustain level, %
         """
         self.adsr[2] = level
-        self.__update_envelope__(self.env_state)
+        self.__update_envelope_stage__(self.env_state)
     def set_decay2(self, decay = .25):
         """
         Set decay 2 time, in seconds
         """
         self.adsr[3] = decay
-        self.__update_envelope__(self.env_state)
+        self.__update_envelope_stage__(self.env_state)
     def set_release(self, release = .125):
         """
         Set release time, in seconds
         """
         self.adsr[4] = release
-        self.__update_envelope__(self.env_state)
-    def __update_envelope__(self, state = 5):
+        self.__update_envelope_stage__(self.env_state)
+    def __update_envelope_stage__(self, state = 5):
         """
-        __update_envelope__ help
+        __update_envelope_stage__ help
         """
         #print(f"envelope updated: {state}")
         match state:
@@ -548,7 +538,7 @@ class Channel:
                     self.env_acc = 1
             case 2:
                 if self.adsr[3] > 0:
-                    self.__update_envelope__(3)
+                    self.__update_envelope_stage__(3)
                 else:
                     self.env_y = self.adsr[2]
             case 3:
@@ -577,10 +567,10 @@ class Channel:
             self.env_state -= 6
     def __force_advance_envelope_state__(self):
         #print(f"env state forced to {self.env_state}")
-        self.__update_envelope__((self.env_state + 1) % 5)
+        self.__update_envelope_stage__((self.env_state + 1) % 5)
     def __force_envelope_state__(self, state):
         #print(f"env state set to {self.env_state}")
-        self.__update_envelope__(state % 5)
+        self.__update_envelope_stage__(state % 5)
 
 class OperatorChannel(Channel):
     def __init__(self,
@@ -610,25 +600,25 @@ class OperatorChannel(Channel):
                     if self.env_y >= 1:
                         # print("advance")
                         self.env_y = 1
-                        self.__update_envelope__(1)
+                        self.__update_envelope_stage__(1)
                 case 1:
                     self.env_y -= self.env_acc
                     if self.env_y <= self.adsr[2]:
                         # print("advance")
-                        self.__update_envelope__(2)
+                        self.__update_envelope_stage__(2)
                 case 2:
                     if not self.adsr[3] < 0:
                         # print("advance")
-                        self.__update_envelope__(3)
+                        self.__update_envelope_stage__(3)
                 case 3:
                     self.env_y -= self.env_acc
                     if self.env_y <= 0:
                         # print("advance")
-                        self.__update_envelope__(5)
+                        self.__update_envelope_stage__(5)
                 case 4:
                     self.env_y -= self.env_acc
                     if self.env_y <= 0:
-                        self.__update_envelope__(5)
+                        self.__update_envelope_stage__(5)
 
         if self.c_type not in [WAVE_NONE, WAVE_NOISE1B, WAVE_NOISE] and not self.skip_sound:
             phase = ((self.phase + modulation) % 1) * WAVE_LEN
@@ -891,25 +881,25 @@ class SampleChannel(Channel):
                 if self.env_y >= 1:
                     #print("advance")
                     self.env_y = 1
-                    self.__update_envelope__(1)
+                    self.__update_envelope_stage__(1)
             case 1:
                 self.env_y -= self.env_acc
                 if self.env_y <= self.adsr[2]:
                     #print("advance")
-                    self.__update_envelope__(2)
+                    self.__update_envelope_stage__(2)
             case 2:
                 if not self.adsr[3] < 0:
                     #print("advance")
-                    self.__update_envelope__(3)
+                    self.__update_envelope_stage__(3)
             case 3:
                 self.env_y -= self.env_acc
                 if self.env_y <= 0:
                     #print("advance")
-                    self.__update_envelope__(5)
+                    self.__update_envelope_stage__(5)
             case 4:
                 self.env_y -= self.env_acc
                 if self.env_y <= 0:
-                    self.__update_envelope__(5)
+                    self.__update_envelope_stage__(5)
 
         if self.i_type == INTERP_NONE:
             out = self.wavetable[idx]

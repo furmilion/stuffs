@@ -17,6 +17,9 @@ from os import mkdir, remove as rm, name as osName
 posix = osName == "posix"
 nt = osName == "nt"
 
+def pain(*args):  # i typoed print once
+    print(*args)
+
 def types(*variables):
     return [type(_()) for _ in variables]
 import builtins as bi  # bi <3
@@ -198,11 +201,6 @@ def check_bytes(in_file, val):
         f.close()
         return start_from + 5
 
-
-def pcm12_to_16(data: bytes = None):
-    if not data:
-        return [0, 0] # TODO: check how furnace does this
-
 class PtrManager:
     """
     Why did i make this? nobody knows.
@@ -283,6 +281,21 @@ def write_ins(instype=28, samples=None, name="Instrument"):
     data = ["FINS", 0xE6, instype, "NA", len(name) + 1, name, 0x00,
             "MA", ]
 
+def convert_12_to_16(data12: list[int] | bytes = None):
+    if not data12: return [0, 0]
+    data16 = [0 for _ in range((len(data12) * 2) // 3)]
+    #pain(f"data16 array len {len(data16)}")
+    #pain(f"data12 in array len {len(data12)}")
+    i, j = 0, 0
+    while i < len(data16):
+        data16[i + 0] = (data12[j + 0] << 8) | (data12[j + 1] & 0xf0)
+        if (i + 1) < len(data16):
+            data16[i + 1] = (data12[j + 2] << 8) | ( (data12[j + 1] << 4) & 0xf0)
+        i += 2
+        j += 3
+    #print(f"sample {i} byte {i}")
+    return data16
+        
 
 def get_sample_data(raw, chip_type="m"):
     """
@@ -304,7 +317,7 @@ def get_sample_data(raw, chip_type="m"):
                 ( (raw[0x0003] << 8) |                                  #  2. loop start
                   (raw[0x0004]) + 1),
 
-                (0x10000 - (
+                (0xFFFF ^ (
                   (raw[0x0005] << 8) |                                  #  3. sample length in samples, caps at 65535
                   (raw[0x0006]))),
 
@@ -329,6 +342,7 @@ def get_sample_data(raw, chip_type="m"):
             # which is pretty unlikely considering it's a quad package and has to be
             # soldered off board first and is unlikely to be on sale by itself from
             # factory.
+            # MU5 note: it only uses 21 address bits.
             return (
                 (((raw[0x0000] & 0x3F) << 16) |  # 0. start address; there is one free bit as the address space is
                  (raw[0x0001] << 8) |            #                 ; still 22 bits.
