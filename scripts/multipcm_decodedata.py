@@ -13,6 +13,7 @@ except ImportError:
     NUMPY = False
 
 from funcs import *    # various utils used by this file that should probably also be able to be used on their own
+import AudTools
 
 CHIP_SETTINGS = {
     "opl4": (33868800, 32, 24),
@@ -649,7 +650,7 @@ class MultiPCMSampleExtractor:
             case 12:
                 # comment text
                 print("converting 12 bit...")
-                data12 = convert_12_to_16(me.bank[current_instrument[0]:ceil((current_instrument[0] + (current_instrument[3]*3)/2))])
+                data12 = AudTools.convert_12_to_16(me.bank[current_instrument[0]:ceil((current_instrument[0] + (current_instrument[3]*3)/2))])
                 with WaveWriter(
                         channels=1,
                         samplerate=44100,

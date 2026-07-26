@@ -80,7 +80,7 @@ Has the following properties:
 I might implement a toggle that disables higher playback
 rate for longer wavetables
 """
-
+TEST = False
 # FURSOUND -- started on 05/09/26
 # crazy how in about a week i went from a blank
 # file to some fancy math that generates sounds
@@ -209,7 +209,9 @@ def clamp(val=0, mn=0, mx=9):
     return min(mx, max(mn, val))
 
 from math import pi, tau, sin, floor, ceil, e as math_e
+#import numba
 import FurWave  # custom wav writer; i made it because the builtin one didnt have support for chunks and now i use it because im just used to
+import AudTools
 from random import random
 try:
     import numpy as np
@@ -253,10 +255,10 @@ class Channel:
                             # will be updated when the channel is asked to update
                             # used to calculate next phase. basically, points at where
                             # the playhead is in the wave
-        self.panning = np.float16(clamp(panning, -1, 1)) # channel panning. self-explanatory
-        self.__volume__ = np.float16(clamp(volume, 0, 1))
+        self.panning = float(clamp(panning, -1, 1)) # channel panning. self-explanatory
+        self.__volume__ = float(clamp(volume, 0, 1))
         self.i_type = INTERP_MAP.get(interpolation, INTERP_NONE)
-        self.length = np.ushort(abs(length) if length else 16)
+        self.length = int(abs(length) if length else 16)
         self.skip_sound = False  # similar to None wave but is used when another wave is in use
         
         self._finish_setup_() # validate some stuff so it doesn't die
@@ -336,7 +338,9 @@ class Channel:
         else:
             raise ValueError("what is this magic data i dont understand it i need string")
 
-        self.wavetable = np.array(self.wavetable, np.float16)   
+        self.wavetable = [float(x) for x in self.wavetable]
+    
+    #@numba.njit
     def update(self, suppress_phase_update=False, suppress_noise_update=False):
         out, phase_reset_flag = 0, False
         
@@ -374,8 +378,8 @@ class Channel:
             phase = self.phase * WAVE_LEN
             WAVE_LEN_H = WAVE_LEN / 2
             #print(phase)
-            idx = floor(phase) % WAVE_LEN
-            Fphase = floor(phase)
+            idx = int(phase) % WAVE_LEN
+            Fphase = int(phase)
             #Cphase = ceil(phase)
             if self.i_type == INTERP_NONE:
                 if self.c_type == WAVE_SQUARE:
@@ -417,7 +421,7 @@ class Channel:
             return (0, 0, phase_reset_flag)
             
         elif self.c_type in [WAVE_NOISE1B, WAVE_NOISE]:  # if we have either noise, then force no interpolation as i have no fucking idea how to deal with that
-            out = self.wavetable[floor(self.phase * WAVE_LEN) % WAVE_LEN]  # and do you even really need one for noise
+            out = self.wavetable[int(self.phase * WAVE_LEN) % WAVE_LEN]  # and do you even really need one for noise
             
         if not suppress_phase_update:
             self.phase = (self.phase + (self._freq / self.sample_rate))
@@ -431,7 +435,7 @@ class Channel:
         
         # debug output
         #print(f"output:  {out}\n"
-        #      f"wt:      {self.wavetable[floor(self.phase) % len(self.wavetable)]}\n"
+        #      f"wt:      {self.wavetable[int(self.phase) % len(self.wavetable)]}\n"
         #      f"wt+1:    {self.wavetable[ceil(self.phase) % len(self.wavetable)]}\n"
         #      f"phase:   {self.phase}\n"
         #      f"phase*l: {self.phase * len(self.wavetable)}\n"
@@ -459,7 +463,7 @@ class Channel:
             self.wavetable = [(round(random()) -.5) * 2 for _ in range(self.length * 2)]
         elif self.c_type == WAVE_NOISE:
             self.wavetable = [(random() -.5) * 2 for _ in range(self.length * 2)]
-    def parse_key(itisi, key, legato=False): 
+    def parse_key(self, key, legato=False): 
         if key == "cut":
             self.cut_channel()
         elif key == "rel":
@@ -585,6 +589,8 @@ class OperatorChannel(Channel):
                  interpolation: str         = "none"
                  ):
         super().__init__(type_, width, length, wavetable, sample_rate, phase, panning, volume, interpolation,)
+    
+    #@numba.njit
     def update(self,
                suppress_phase_update=False,
                suppress_noise_update=False,
@@ -623,8 +629,8 @@ class OperatorChannel(Channel):
         if self.c_type not in [WAVE_NONE, WAVE_NOISE1B, WAVE_NOISE] and not self.skip_sound:
             phase = ((self.phase + modulation) % 1) * WAVE_LEN
             WAVE_LEN_H = WAVE_LEN / 2
-            idx = floor(phase) % WAVE_LEN
-            Fphase = floor(phase)
+            idx = int(phase) % WAVE_LEN
+            Fphase = int(phase)
             # Cphase = ceil(phase)
             if self.i_type == INTERP_NONE:
                 if self.c_type == WAVE_SQUARE:
@@ -668,7 +674,7 @@ class OperatorChannel(Channel):
 
         elif self.c_type in [WAVE_NOISE1B,
                              WAVE_NOISE]:
-            out = self.wavetable[floor(self.phase * WAVE_LEN) % WAVE_LEN]
+            out = self.wavetable[int(self.phase * WAVE_LEN) % WAVE_LEN]
 
         if not suppress_phase_update:
             self.phase = (self.phase + (self._freq / self.sample_rate))
@@ -718,7 +724,7 @@ class FMChannel:
         itisi.op_matrix = op_matrix
         itisi.op_mults = op_mults
         itisi.op_outputs = op_outputs
-        itisi.modulation_buffer = np.array([0 for _ in range(operators)], np.float16)
+        itisi.modulation_buffer = [0] * operators
         
         itisi.op_fb_mults = op_fb_mults
         itisi.op_mod_in_mults = op_mod_in_mults
@@ -729,14 +735,15 @@ class FMChannel:
         
         itisi.last_output = 0
     def update(itisi,):  # this is gonna be very slow, you know the reason. 
-        sample_buffer = np.array([0,0], np.float32)
+        sample_L = 0.
+        sample_R = 0.
         modulation_buffer = itisi.modulation_buffer.copy()
         itisi.modulation_buffer -= itisi.modulation_buffer
         
         for op, op_obj in enumerate(itisi.operators):
             op_feedback = (op_obj.last_output if itisi.op_matrix[op][op] else 0) * itisi.op_fb_mults[op]
             op_obj._freq = (itisi._base_freq * itisi.op_mults[op]) if itisi.op_mults[op] > 0 else (itisi._base_freq ** itisi.op_mults[op]) # if this raises an IndexError, it's *your* problem.
-            output_buffer = op_obj.update(modulation=op_feedback + (modulation_buffer[op] * itisi.op_mod_in_mults[op]))
+            outL, outR = op_obj.update(modulation=op_feedback + (modulation_buffer[op] * itisi.op_mod_in_mults[op]))[:2]
             # ^^^^
             # definetly your fault here becuse you *have* to do something shady to get it to spit an IndexError.
             # channel operator count is *not* dynamic, go figure
@@ -759,7 +766,8 @@ class FMChannel:
             # f"sampbuf_expect_att {sample_buffer + (np.array(output_buffer[:2], np.float32) * itisi.op_outputs[op])}       \n",
             # end=""
             # )
-            sample_buffer += (np.array(output_buffer[:2], np.float32) * itisi.op_outputs[op])
+            sample_L += outL * itisi.op_outputs[op] * itisi.master_volume
+            sample_R += outR * itisi.op_outputs[op] * itisi.master_volume
             # print(
             # f"sampbuf            {sample_buffer}       \n"
             # )
@@ -774,7 +782,7 @@ class FMChannel:
                 # )
                 itisi.modulation_buffer[carrier] += output_buffer[2] if itisi.op_matrix[op][carrier] and not op == carrier else 0
             itisi.last_output = (output_buffer[0] + output_buffer[1]) / 2 
-        return sample_buffer * itisi.master_volume
+        return [sample_L, sample_R]
     def parse_key(itisi, key, legato=False): 
         if key == "cut":
             itisi.cut_channel()
@@ -837,19 +845,20 @@ class SampleChannel(Channel):
         self.sample_tune   = sample_tune
         self.loop_type     = LOOP_TYPES.get(sample_loop, LOOP_NONE)
         self.loop_start    = loop_start
-        self.loop_end      = loop_end
+        self.loop_end      = min(loop_start, loop_end)
         #self.wavetable     = self.wavetable[:loop_end + 1] if loop_end and self.loop_type else self.wavetable
         #self.wavetable[-1] = self.wavetable[loop_start]
         self.wavetable     = self.wavetable[:loop_end] if loop_end and self.loop_type else self.wavetable
+    
+    #@numba.njit
     def update(self, suppress_phase_update=False):
         out, phase_reset_flag = 0, False
         phase = self.phase
         WAVE_LEN = len(self.wavetable)
-        Fphase = floor(phase)
+        Fphase = int(phase)
         idx = Fphase % len(self.wavetable)
         loop_start = self.loop_start
         loop_end = self.loop_end
-        loop_start = min(loop_start, loop_end)
         
         # print(self.loop_type)
         match self.loop_type:
@@ -975,7 +984,7 @@ class SampleMapChannel:
                  ):
         pass  # потом когда-нибудь (вероятно в ближайшие 100 лет)
 
-if __name__ == "__main__":
+if __name__ == "__main__" and TEST:
     # 
     f = freq_from_key
     k = key_from_note
@@ -1058,7 +1067,7 @@ if __name__ == "__main__":
     AP_YAM_NA_T_048_C_2_ = open("./AP_YAM_NA_T_048_C_2_.raw", "rb").read()
     AP_YAM_NA_T_067_G_3_ = open("./AP_YAM_NA_T_067_G_3_.raw", "rb").read()
     SampleTest1 = SampleChannel(  # TODO: refine how frequency generation works so its consistent
-        sample         = list((np.array(list(AP_YAM_NA_T_067_G_3_), np.float16) - 127.5) / 127.5),
+        sample         = ((np.array(list(AP_YAM_NA_T_067_G_3_), np.float32) - 127.5) / 127.5).tolist(),
        #sample         = list(SPL),
         sample_rate    = sr,
         sample_tune    = 13468 * 2,
@@ -1067,7 +1076,7 @@ if __name__ == "__main__":
         loop_end       = 33461,
         panning        = 0,
         volume         = 1,
-        interpolation  = "none",
+        interpolation  = "linear",
         tune           = master_tune,
         coarse_tune    = 12,)
     SampleTest2 = SampleChannel(
@@ -1080,10 +1089,22 @@ if __name__ == "__main__":
         loop_end       = 513,
         panning        = 0,
         volume         = 1,
-        interpolation  = "none",
+        interpolation  = "linear",
         tune           = master_tune,
         coarse_tune    = 12,)
-    
+    OscTest = Channel(
+        type_        = "pulse", # the default wave upon class spawn
+        width        = .25,    # pulse width for the pulse wave
+        length       = 4,  # the length of the preset waves
+        wavetable    = None, # wavetable
+        sample_rate  = sr, # default sample rate...
+        phase        = 0, # ...phase...
+        panning      = 0, #...pan...
+        volume       = 1, #...and volume.
+        interpolation = "none",
+        tune = master_tune,
+        coarse_tune = 0,
+        )
     feedbackMult = .1 # .2
 
     # ChannelFeedback.set_attack(0);ChannelFeedback.set_decay1(.06);ChannelFeedback.set_sustain(.3);ChannelFeedback.set_decay2(.1);ChannelFeedback.set_release(0)
@@ -1105,6 +1126,7 @@ if __name__ == "__main__":
     # PadRight.set_release(0,1/128)
     
     SampleTest1.set_attack(0);SampleTest1.set_decay1(.05);SampleTest1.set_sustain(.4);SampleTest1.set_decay2(.1);
+    OscTest.set_attack(0);OscTest.set_decay1(.05);OscTest.set_sustain(.4);OscTest.set_decay2(.1);
     SampleTest2.set_attack(0);SampleTest2.set_decay1(-1);SampleTest2.set_sustain(1);SampleTest2.set_decay2(-1);
     notes_pre = [
         "e-3", "a-3", "b-3", "g-4", "g-3", "b-3", "d-4", "a-4",
@@ -1155,23 +1177,25 @@ if __name__ == "__main__":
     
     seq = 0
     
-    render = [0 for _ in range(floor(sr*length) * 2)]
+    
+    render = [0.0] * (int(sr * length) * 2)
+    #out_l, out_r, __ = 0, 0, 0
     curSample = np.array([0,0], np.float32)  # current sample
     #SampleBuffer = np.array([0,0,0], np.float32)  # current sample
 
     import time
     start = time.perf_counter()
-    for _ in range(floor(sr*length)):
-        curSample -= curSample
+    for _ in range(int(sr * length)):
         if not _ % sr:
             print(f"second {1 + (_ // sr)} generated")
-        if not _ % (sr//10):
+        if not _ % (sr // 10):
         #if not _ % (sr//(5/4)):
             # SquarePluck.parse_key(notes[seq])
             # PadLeft.parse_key(notes_pads[seq])
             # PadRight.parse_key(notes_pads[seq])
             #SampleTest1.parse_key(sample_test[seq % len(sample_test)])
             SampleTest1.parse_key(notes[seq])
+            #OscTest.parse_key(notes[seq])
             #SampleTest2.parse_key(sample_test[seq % len(sample_test)])
             #SampleTest2.parse_key(notes[seq], 1)
             #SampleTest2.panning = ((_ / (sr * length)) -.5) * 2
@@ -1179,11 +1203,14 @@ if __name__ == "__main__":
         # curSample += SquarePluck.update()
         # curSample += PadLeft.update()
         # curSample += PadRight.update()
+        #out_l, out_r, __ += OscTest.update()
+        #out_l, out_r, __ += SampleTest1.update()
         curSample += SampleTest1.update()[:2]
-        #curSample += SampleTest2.update()[:2]
         #print(f"curSample {curSample}")
         
         curSample /= 2
+        #render[_ * 2] = out_l * 0.5
+        #render[_ * 2 + 1] = out_r * 0.5
         render[_ * 2] += curSample[0]
         render[_ * 2 + 1] += curSample[1]
     elapsed = time.perf_counter() - start

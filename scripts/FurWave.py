@@ -875,7 +875,7 @@ class WaveWriter:
     def __enter__(self):
         return self
     def __exit__(self, exc_type, exc_val, exc_tb):
-        pass
+        return self
 
 
 # ========== Testing ==========
@@ -990,3 +990,10 @@ if __name__ == "__main__":
         wav.write_file(f"depth_test_{depth}.wav")
 
     print("\nAll Test files created successfully!")
+
+
+
+
+
+
+# ps да, мне платят за количество строк

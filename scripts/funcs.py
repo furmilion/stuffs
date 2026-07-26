@@ -60,28 +60,7 @@ try:  # numpy is a better option than standard python list stuff
             case _: return False
     
 except Exception as e:
-    print("NumPY not found.\n"
-          "It is recommended to install NumPY as this offers slightly better performance.\n"
-          f"Ecxeption: {e}\n"
-          f"Type: {type(e)}")
-    NUMPY = False
-    char, uchar, schar,\
-    uint8_t, int8_t,\
-    ushort, uint16_t, short, int16_t,\
-    ulong, uint32_t, long, int32_t,\
-    ulonglong, uint64_t, longlong, int64_t,\
-    double, longdouble =\
-    (
-        bi.int, bi.int, bi.int,
-        bi.int, bi.int,
-        bi.int, bi.int, bi.int, bi.int,
-        bi.int, bi.int, bi.int, bi.int,
-        bi.int, bi.int, bi.int, bi.int,
-        bi.float, bi.float
-    )
-    f16 = bi.float
-    def swap_sign(int_type):
-        return int_type
+    raise ModuleNotFoundError("NumPY not found.")
 
 
 
@@ -280,22 +259,7 @@ def write_ins(instype=28, samples=None, name="Instrument"):
             f"MA\x0c\x00\x08\x00\x00\x01\xff\xff\x00\x00\x00\x01\x7f")    # macros: volume 127
     data = ["FINS", 0xE6, instype, "NA", len(name) + 1, name, 0x00,
             "MA", ]
-
-def convert_12_to_16(data12: list[int] | bytes = None):
-    if not data12: return [0, 0]
-    data16 = [0 for _ in range((len(data12) * 2) // 3)]
-    #pain(f"data16 array len {len(data16)}")
-    #pain(f"data12 in array len {len(data12)}")
-    i, j = 0, 0
-    while i < len(data16):
-        data16[i + 0] = (data12[j + 0] << 8) | (data12[j + 1] & 0xf0)
-        if (i + 1) < len(data16):
-            data16[i + 1] = (data12[j + 2] << 8) | ( (data12[j + 1] << 4) & 0xf0)
-        i += 2
-        j += 3
-    #print(f"sample {i} byte {i}")
-    return data16
-        
+     
 
 def get_sample_data(raw, chip_type="m"):
     """
@@ -444,7 +408,6 @@ def note_from_key(key: int = 0):
     
 
 if __name__ == "__main__":
-    #save_riff(bdep=16, rate=44100, data=pcm12_to_16(open("./tests/amen_12", "rb").read()), location="./tests/amen_12.wav")
     # a_n5 = opll_get_freq(0x09, 0x10)
     # a_n4 = opll_get_freq(0x12, 0x10)
     # a_n3 = opll_get_freq(0x24, 0x10)
