@@ -1,5 +1,5 @@
 """
-This is meant to use in out proprietary STMVGM VGM player, which requires a real chip rather than emulating one.
+This is meant to be used in out proprietary STMVGM VGM player, which requires a real chip rather than emulating one.
 
 The player basically consists of following stuff:
     THE SETUP:
@@ -8,14 +8,13 @@ The player basically consists of following stuff:
         the main player loop.
         the player basically iterats over the array of values and runs corresponding commands via "switch/case" statements
 
-This file basically just composes the headerless vgm array        
+This file basically just composes the headerless vgm array
 """
 
-from pathlib import Path
-
-import struct
-import random
 import gzip
+import random
+import struct
+from pathlib import Path
 
 GZ = gzip
 
@@ -63,8 +62,7 @@ stream_block = [
     "2A03 DPCM",      # 7
     "MIKEY PCM",      # 8
 ]
-for i in range(56):
-    stream_block.append(None)
+stream_block.extend(['None' for _ in range(56)])
 stream_block.extend(
 [
     "YM2612 PCM (compressed)",     # 0
@@ -78,8 +76,7 @@ stream_block.extend(
     "MIKEY PCM (compressed)",      # 8
 ]
 )
-for i in range(56):
-    stream_block.append(None)
+stream_block.extend(['None' for _ in range(56)])
 
 stream_block.extend(
 [
@@ -117,15 +114,15 @@ DELAYS = [
         16667, 20000,  # 0x62, 0x63
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 
-        23, 45, 68, 91, 113, 136, 159, 181,     # 0x70...0x7F
-        204, 227, 249, 272, 295, 317, 340, 363, #
+        23, 45, 68, 91, 113, 136, 159, 181,     # 0x70...0x77
+        204, 227, 249, 272, 295, 317, 340, 363, # 0x78...0x7F
 
-        0, 23, 45, 68, 91, 113, 136, 159,       # 0x80...0x8F
-        181, 204, 227, 249, 272, 295, 317, 340  #
+        0, 23, 45, 68, 91, 113, 136, 159,       # 0x80...0x87
+        181, 204, 227, 249, 272, 295, 317, 340  # 0x88...0x8F
 ]
 
 
-def list_files(extensions: list[str] = None) -> list[str]:
+def list_files(extensions: list[str] | None = None) -> list[str]:
     """
     List files in the current folder using pathlib.
 
@@ -141,7 +138,7 @@ def list_files(extensions: list[str] = None) -> list[str]:
     if extensions:
         # Handle extension with or without dot
         for index, extension in enumerate(extensions):
-            if not extensions[index].startswith('.'):
+            if not extension.startswith('.'):
                 extensions[index] = '.' + extensions[index]
         for f in range(len(extensions)):
             files += list(current_dir.glob(f'*{extensions[f]}'))
@@ -157,7 +154,7 @@ def list_files(extensions: list[str] = None) -> list[str]:
     return [__.name for _, __ in enumerate(files)]
 
 
-def pack_vgm(vgm: bytes = None, output_file: str = "array", cap: int = None):
+def pack_vgm(vgm: bytes | None = None, output_file: str = "array", cap: int | None = None):
     """
     the actual processor and packer
     """
@@ -173,7 +170,7 @@ def pack_vgm(vgm: bytes = None, output_file: str = "array", cap: int = None):
     if vgm[:4] != b'Vgm ':
         print("Not a VGM, trying gzip...")
         try:
-            vgm = GZ.open(VGM_FILES[file - 1], 'rb').read()
+            vgm = GZ.decompress(vgm)
             if vgm[:4] != b'Vgm ':
                 raise VGMError("Unfortunately, not a valid VGM.")
             print("Successfully decompressed the VGM")
@@ -200,7 +197,7 @@ def pack_vgm(vgm: bytes = None, output_file: str = "array", cap: int = None):
         metadata["F262clock"] = struct.unpack('<I', vgm[0x5C:0x60])[0]  # opl3
         metadata["F278clock"] = struct.unpack('<I', vgm[0x60:0x64])[0]  # opl4
         metadata["8910clock"] = struct.unpack('<I', vgm[0x74:0x78])[0]
-        
+
         # misc
         metadata["SPCMclock"] = struct.unpack('<I', vgm[0x38:0x3C])[0]  # segapcm
         metadata["RF_1clock"] = struct.unpack('<I', vgm[0x40:0x44])[0]  # rf5c68
@@ -218,7 +215,7 @@ def pack_vgm(vgm: bytes = None, output_file: str = "array", cap: int = None):
         metadata["0539clock"] = struct.unpack('<I', vgm[0xA0:0xA4])[0]  # konami k054539
         metadata["TG16clock"] = struct.unpack('<I', vgm[0xA4:0xA8])[0]  # hudson c6280
         metadata["C140clock"] = struct.unpack('<I', vgm[0xA8:0xAC])[0]  # namco c140
-        metadata["0560clock"] = struct.unpack('<I', vgm[0xAC:0xB0])[0]  # konami k053260 
+        metadata["0560clock"] = struct.unpack('<I', vgm[0xAC:0xB0])[0]  # konami k053260
         metadata["POK_clock"] = struct.unpack('<I', vgm[0xB0:0xB4])[0]  # atari pokey
         metadata["QSNDclock"] = struct.unpack('<I', vgm[0xB4:0xB8])[0]  # capcom qsound
         metadata["F292clock"] = struct.unpack('<I', vgm[0xB8:0xBC])[0]  # scsp
@@ -270,11 +267,11 @@ def pack_vgm(vgm: bytes = None, output_file: str = "array", cap: int = None):
     input("Press enter to begin...")
     cursor = metadata["VGMDatOFS"]
     while cursor < metadata["EOF"] and not die and cursor < cap:
-        # cursor < (len(vgm) - metadata["VGMDatOFS"]) 
+        # cursor < (len(vgm) - metadata["VGMDatOFS"])
         current = vgm[cursor]
         print(f'current byte: {hex(current)} @ {hex(cursor)}')
         match current:
-            
+
             # chip commands
             case 0x4F:  # game gear stereo
                 if metadata["TISNclock"]:
@@ -413,7 +410,7 @@ def pack_vgm(vgm: bytes = None, output_file: str = "array", cap: int = None):
                     cursor += 3
                 else:
                     cursor += 3
-            
+
             # non-chip commands
             case 0x61:
                 # print(f"delay: {((1000 / 44100) * ((vgm[cursor + 2] << 8) + vgm[cursor + 1])) * 1000} nanoseconds")
@@ -431,7 +428,7 @@ def pack_vgm(vgm: bytes = None, output_file: str = "array", cap: int = None):
                 arr.append(vgm[cursor])
                 cursor += 1
             case 0x66: print("done"); die = True
-            
+
             # streams
             case 0x90:
                 if not dump_mode in ["i", "d"]:
@@ -440,10 +437,10 @@ def pack_vgm(vgm: bytes = None, output_file: str = "array", cap: int = None):
                           f"Chip Type: {stream_chip[vgm[cursor + 2]]}  \n"
                           f"register {hex(vgm[cursor + 3])}\n at port {hex(vgm[cursor + 4])}\n")
                     input("Press enter to continue...")
-                    
+
                 arr.extend(vgm[cursor:cursor+5])
                 cursor += 5
-                
+
             case 0x91:
                 if not dump_mode in ["i", "d"]:
                     print(f"stream data:                                    \n"
@@ -452,46 +449,46 @@ def pack_vgm(vgm: bytes = None, output_file: str = "array", cap: int = None):
                           f"step base: {hex(vgm[cursor + 3])}\n"
                           f"step size: {hex(vgm[cursor + 4])}\n")
                     input("Press enter to continue...")
-                    
+
                 arr.extend(vgm[cursor:cursor+5])
                 cursor += 5
-                
+
             case 0x92:
                 if not dump_mode in ["i", "d"]:
                     print(f"stream frequency:                           \n"
                           f"ID: {hex(vgm[cursor + 1])}                  \n"
                           f"Frequency: {struct.unpack('<I', vgm[cursor + 2:cursor + 6])[0]}hz\n")
                     input("Press enter to continue...")
-                    
+
                 arr.extend(vgm[cursor:cursor+6])
                 cursor += 6
-                
+
             case 0x93:
                 if not dump_mode in ["i", "d"]:
                     datofs = struct.unpack('<I', vgm[cursor + 2:cursor + 6])[0] - 1
-                    datlen = struct.unpack('<I', vgm[cursor + 7:cursor + 11])[0]
+                    #datlen = struct.unpack('<I', vgm[cursor + 7:cursor + 11])[0]
                     print(f"start stream:                             \n"
                           f"ID:                {hex(vgm[cursor + 1])}                \n"
                           f"Data start offset: {datofs}      \n"
                           f"Mode:              {hex(vgm[cursor + 6])}\n"
                           f"                   length mode: {['ignore', 'amnt of cmds', 'length in msecs', 'until data end'][vgm[cursor + 6]&0b11]}\n"
-                          f"                   is reverse: {True if vgm[cursor + 6] & 0x10 else False}\n"
-                          f"                   auto loop:  {True if vgm[cursor + 6] & 0x80 else False}\n"
+                          f"                   is reverse: {'True' if vgm[cursor + 6] & 0x10 else 'False'}\n"
+                          f"                   auto loop:  {'True' if vgm[cursor + 6] & 0x80 else 'False'}\n"
                           f"Length:            {struct.unpack('<I', vgm[cursor + 7:cursor + 11])[0]}\n")
                     input("Press enter to continue...")
-                    
+
                 arr.extend(vgm[cursor:cursor+11])
                 cursor += 11
-                
+
             case 0x94:
                 if not dump_mode in ["i", "d"]:
                     print(f"end stream:\n"
                           f"ID: {hex(vgm[cursor + 1]) if vgm[cursor + 1] < 0xFF else 'all streams'}\n")
                     input("Press enter to continue...")
-                    
+
                 arr.extend(vgm[cursor:cursor+2])
                 cursor += 2
-                
+
             case 0x95:
                 if not dump_mode in ["i", "d"]:
                     print(f"fast start stream:                                   \n"
@@ -499,17 +496,17 @@ def pack_vgm(vgm: bytes = None, output_file: str = "array", cap: int = None):
                           f"Block: {hex(vgm[vgm[cursor + 3] | cursor + 2])}      \n"
                           f"Mode:  {hex(vgm[cursor + 4])}\n"
                           f"       length mode: {['ignore', 'amnt of cmds', 'length in msecs', 'until data end']}\n"
-                          f"       auto loop: {True if vgm[cursor + 4] & 0x1  else False}\n"
-                          f"       reverse:    {True if vgm[cursor + 4] & 0x10 else False}\n")
+                          f"       auto loop: {'True' if vgm[cursor + 4] & 0x1  else 'False'}\n"
+                          f"       reverse:    {'True' if vgm[cursor + 4] & 0x10 else 'False'}\n")
                     input("Press enter to continue...")
-                    
+
                 arr.extend(vgm[cursor:cursor + 5])
                 cursor += 5
-            
+
             # data blocks
             case 0x67:  # omfg the meme
                 arr.extend([0x67, 0x66])
-                
+
                 if not dump_mode in ["i", "d"]:
                     if vgm[cursor + 1] != 0x66:
                         print("something ain't right")
@@ -517,53 +514,55 @@ def pack_vgm(vgm: bytes = None, output_file: str = "array", cap: int = None):
                           f"Type:   {stream_block[vgm[cursor + 2]]}\n"
                           f"Length: {struct.unpack('<I', vgm[cursor + 3:cursor + 7])[0]}")
                     if str(input("dump? [y/n]")).lower()[0] == "y":
-                        open(f"data_block_{block_id}_" f"{stream_block[vgm[cursor + 2]]}" "_" f"{hex(struct.unpack('<I', vgm[cursor + 3:cursor + 7])[0])}" ".raw", "wb").write(vgm[cursor + 7:cursor + 7 + struct.unpack('<I', vgm[cursor + 3:cursor + 7])[0]])
+                        with open(f"data_block_{block_id}_" f"{stream_block[vgm[cursor + 2]]}" "_" f"{hex(struct.unpack('<I', vgm[cursor + 3:cursor + 7])[0])}" ".raw", "wb") as dump:
+                            dump.write(vgm[cursor + 7:cursor + 7 + struct.unpack('<I', vgm[cursor + 3:cursor + 7])[0]])
                     else:
                         print("skipped dumping")
-                    
+
                 elif dump_mode == "d":
-                    open(f"data_block_{block_id}_" f"{stream_block[vgm[cursor + 2]]}" "_" f"{hex(struct.unpack('<I', vgm[cursor + 3:cursor + 7])[0])}" ".raw", "wb").write(vgm[cursor + 7:cursor + 7 + struct.unpack('<I', vgm[cursor + 3:cursor + 7])[0]])
+                    with open(f"data_block_{block_id}_" f"{stream_block[vgm[cursor + 2]]}" "_" f"{hex(struct.unpack('<I', vgm[cursor + 3:cursor + 7])[0])}" ".raw", "wb") as dump:
+                        dump.write(vgm[cursor + 7:cursor + 7 + struct.unpack('<I', vgm[cursor + 3:cursor + 7])[0]])
                 else:
                     pass
-                    
+
                 datablock_arr.extend(vgm[cursor:cursor + struct.unpack('<I', vgm[cursor + 3:cursor + 7])[0]])
                 cursor += 7 + struct.unpack('<I', vgm[cursor + 3:cursor + 7])[0]
                 block_id += 1
-                
+
             case 0xE0:
                 print(f"PCM seek location: {struct.unpack('<I', vgm[cursor + 1:cursor + 5])}")
                 cursor += 5
-                
+
         # print(f'current byte: {hex(current)} @ {hex(cursor)}')
     # print(arr)
     print("creating array")
-    array = open(f"./{output_file}.c", "w", encoding='utf8')
-    array.write(f"#define ARRAY_LENGTH {len(arr) + len(datablock_arr) + 2}\n"
-                 "const uint8_t vgm[ARRAY_LENGTH] = {\n")
+    with open(f"./{output_file}.c", "w", encoding='utf8') as array:
+        array.write(f"#define ARRAY_LENGTH {len(arr) + len(datablock_arr) + 2}\n"
+                     "const uint8_t vgm[ARRAY_LENGTH] = {\n")
     print("procesing data")
-    open(f"./{output_file}_VGM.raw", "wb").write(bytearray(arr))
-    open(f"./{output_file}_VGM.raw", "ab").write(bytearray(datablock_arr))
-   
+    with open(f"./{output_file}_VGM.raw", "wb") as raw:
+        raw.write(bytearray(arr))
+        raw.write(bytearray(datablock_arr))
+
     for _, __ in enumerate(datablock_arr):
         if not (_ + 1) % 16:
             array.write(f"{__},\n")
         else:
             array.write(f"{__}, ")
-    array.write(f"\n")
+    array.write("\n")
     for _, __ in enumerate(arr):
         if not (_ + 1) % 16:
             array.write(f"{hex(__)},\n")
         else:
             array.write(f"{hex(__)}, ")
-    array.write(f"\n")
-    
+    array.write("\n")
+
     print("spicing things up...")
     array.write("\n};\n//" + f"{random_messages[random.randint(0, len(random_messages) - 1)]}")
     print("done!")
 
-VGM_FILES = list_files(['.vgm', '.vgz'])
-
 if __name__ == "__main__":
+    VGM_FILES = list_files(['.vgm', '.vgz'])
     try:
         file = int(input('Enter the ID of the file you want to process\n'))
         cap = int(input("Cap array length at...\n"))
@@ -571,8 +570,7 @@ if __name__ == "__main__":
             cap = 2147483647
     except ValueError:
         print("bitch fuck yo ass mate i aint doing shit")
-        raise Exception("ass")
+        raise FileNotFoundError("ass")
     # print(VGM_FILES)
-    pack_vgm(open(VGM_FILES[file - 1], 'rb').read(),cap=cap)
-
-
+    with open(VGM_FILES[file - 1], 'rb') as file:
+        pack_vgm(file.read(),cap=cap)
