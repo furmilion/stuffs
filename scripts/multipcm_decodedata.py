@@ -306,6 +306,7 @@ class MultiPCMSampleExtractor:
                  only_log: bool | int = False,        # whether to only log instruments instead of also dumping their samples
                  chip_settings = None,
                  ):
+        me.sample_hashes = {}
         me.out_loc = out_loc
         me.log_name = log_name
         me.bank1 = bank1
@@ -615,7 +616,7 @@ class MultiPCMSampleExtractor:
             print(f"length in-place calculation: {ceil((current_instrument[3]*3)/2)}")
             input()
         data = list(me.bank[current_instrument[0]:current_instrument[0] + current_instrument[3]])
-        if len(data) == 0 or int(min(data)) == int(max(data)):
+        if len(data) <= 0 or int(min(data)) == int(max(data)):
             print("Sample empty, skipping")
             me.log.write(
                 f'##############################################\n'
@@ -624,104 +625,136 @@ class MultiPCMSampleExtractor:
             )
             return
         if only_log: return
-        match (me.formats[current_instrument[1]] if current_instrument[1] in me.formats else "invalid"):  # pcm format
-            case 8:
-                if NUMPY:
-                    data_ready = (np.array(data, np.uint8) + 128) & 255
-                else:
-                    data_ready = [(val + 128) & 255 for val in data]
-                with WaveWriter(channels=1,
-                                samplerate=44100,
-                                bitdepth=8,
-                                data=list(data_ready)
-                                ) as Wave:
-                    Wave.set_smpl_chunk(sample_loop_count=1,
-                                    loop_types=[0],
-                                    loop_starts=[current_instrument[2] - 1],
-                                    loop_ends=[current_instrument[3] - 1])
-                    Wave.write_file(f"./samples/{me.out_loc}/sample_{iter}_8bit.wav")
-                # save_riff(
-                #     data=data_ready,
-                #     rate=44100,
-                #     bdep=8,
-                #     location=f'./samples/{me.out_loc}/sample_{iter}.wav',
-                #     loop_start=current_instrument[2],
-                # )
-            case 12:
-                # comment text
-                print("converting 12 bit...")
-                data12 = AudTools.convert_12_to_16(me.bank[current_instrument[0]:ceil((current_instrument[0] + (current_instrument[3]*3)/2))])
-                with WaveWriter(
-                        channels=1,
-                        samplerate=44100,
-                        bitdepth=16,
-                        data=data12
-                        ) as Wave:
-                    Wave.set_smpl_chunk(
-                        sample_loop_count=1,
-                        loop_types=[0],
-                        loop_starts=[current_instrument[2] - 1],
-                        loop_ends=[len(data12) - 1]
-                        )
-                    Wave.write_file(f"./samples/{me.out_loc}/sample_{iter}_12bit.wav")
-                print("done")
-                #print("12 bit sample detected, skipping for now.")
-            case 16:
-                with WaveWriter(
-                        channels=1,
-                        samplerate=44100,
-                        bitdepth=16,
-                        data=data
-                        ) as Wave:
-                    Wave.set_smpl_chunk(
-                        sample_loop_count=1,
-                        loop_types=[0],
-                        loop_starts=[current_instrument[2] - 1],
-                        loop_ends=[current_instrument[3] - 1]
-                        )
-                    Wave.write_file(f"./samples/{me.out_loc}/sample_{iter}_16bit.wav")
-                # save_riff(
-                #     data=me.bank[current_instrument[1]:current_instrument[1] + current_instrument[3]],
-                #     rate=44100,
-                #     bdep=16,
-                #     location=f'./samples/{me.out_loc}/sample_{iter}.wav'
-                # )
+        sample_hash = ret_hash(bytes(data),"sha512")
+        if sample_hash not in me.sample_hashes:
+            sample_name = ""
+            match (me.formats[current_instrument[1]] if current_instrument[1] in me.formats else "invalid"):  # pcm format
+                case 8:
+                    sample_name = f"sample_{iter}_8bit.wav"
+                    if NUMPY:
+                        data_ready = (np.array(data, np.uint8) + 128) & 255
+                    else:
+                        data_ready = [(val + 128) & 255 for val in data]
+                    with WaveWriter(channels=1,
+                                    samplerate=44100,
+                                    bitdepth=8,
+                                    data=list(data_ready)
+                                    ) as Wave:
+                        Wave.set_smpl_chunk(sample_loop_count=1,
+                                        loop_types=[0],
+                                        loop_starts=[current_instrument[2] - 1],
+                                        loop_ends=[current_instrument[3] - 1])
+                        Wave.write_file(f"./samples/{me.out_loc}/{sample_name}")
+                    me.sample_hashes[sample_hash] = sample_name
+                case 12:
+                    sample_name = f"sample_{iter}_12bit.wav"
+                    # comment text
+                    print("converting 12 bit...")
+                    data12 = AudTools.convert_12_to_16_accurate(me.bank[current_instrument[0]:ceil((current_instrument[0] + (current_instrument[3]*3)/2))])
+                    with WaveWriter(
+                            channels=1,
+                            samplerate=44100,
+                            bitdepth=16,
+                            data=data12
+                            ) as Wave:
+                        Wave.set_smpl_chunk(
+                            sample_loop_count=1,
+                            loop_types=[0],
+                            loop_starts=[current_instrument[2] - 1],
+                            loop_ends=[len(data12) - 1]
+                            )
+                        Wave.write_file(f"./samples/{me.out_loc}/{sample_name}")
+                    me.sample_hashes[sample_hash] = sample_name
+                    print("done")
+                    #print("12 bit sample detected, skipping for now.")
+                case 16:
+                    sample_name = f"sample_{iter}_16bit.wav"
+                    with WaveWriter(
+                            channels=1,
+                            samplerate=44100,
+                            bitdepth=16,
+                            data=data
+                            ) as Wave:
+                        Wave.set_smpl_chunk(
+                            sample_loop_count=1,
+                            loop_types=[0],
+                            loop_starts=[current_instrument[2] - 1],
+                            loop_ends=[current_instrument[3] - 1]
+                            )
+                        Wave.write_file(f"./samples/{me.out_loc}/{sample_name}")
+                    me.sample_hashes[sample_hash] = sample_name
 
-        # have to precalculate those since cant do inplace
-        atk = round(me.calculate_params("atk", current_instrument[4], current_instrument[9]), 4) \
-            if type(me.calculate_params("atk", current_instrument[4], current_instrument[9])) in [int, float] \
-            else me.calculate_params("atk", current_instrument[4], current_instrument[9])
-        d1r = round(me.calculate_params("dec", current_instrument[5], current_instrument[9]), 4) \
-            if type(me.calculate_params("dec", current_instrument[5], current_instrument[9])) in [int, float] \
-            else me.calculate_params("dec", current_instrument[5], current_instrument[9])
-        d2r = round(me.calculate_params("dec", current_instrument[6], current_instrument[9]), 4) \
-            if type(me.calculate_params("dec", current_instrument[6], current_instrument[9])) in [int, float] \
-            else me.calculate_params("dec", current_instrument[6], current_instrument[9])
-        rel = round(me.calculate_params("dec", current_instrument[8], current_instrument[9]), 4) \
-            if type(me.calculate_params("dec", current_instrument[8], current_instrument[9])) in [int, float] \
-            else me.calculate_params("dec", current_instrument[8], current_instrument[9])
+            # have to precalculate those since cant do inplace
+            atk = round(me.calculate_params("atk", current_instrument[4], current_instrument[9]), 4) \
+                if type(me.calculate_params("atk", current_instrument[4], current_instrument[9])) in [int, float] \
+                else me.calculate_params("atk", current_instrument[4], current_instrument[9])
+            d1r = round(me.calculate_params("dec", current_instrument[5], current_instrument[9]), 4) \
+                if type(me.calculate_params("dec", current_instrument[5], current_instrument[9])) in [int, float] \
+                else me.calculate_params("dec", current_instrument[5], current_instrument[9])
+            d2r = round(me.calculate_params("dec", current_instrument[6], current_instrument[9]), 4) \
+                if type(me.calculate_params("dec", current_instrument[6], current_instrument[9])) in [int, float] \
+                else me.calculate_params("dec", current_instrument[6], current_instrument[9])
+            rel = round(me.calculate_params("dec", current_instrument[8], current_instrument[9]), 4) \
+                if type(me.calculate_params("dec", current_instrument[8], current_instrument[9])) in [int, float] \
+                else me.calculate_params("dec", current_instrument[8], current_instrument[9])
 
-        me.log.write(
-            f'##############################################\n'
-            f'Instrument {iter}\n'
-            f'\n'
-            f'Start address in bank: {current_instrument[0]}\n'
-            f'Sample length:         {current_instrument[3]}\n'
-            f'Sample bytelength:     {(current_instrument[3] * 3 / 2) if me.formats.get(current_instrument[1], -1) == 12 else (current_instrument[3] * 2) if me.formats.get(current_instrument[1], -1) == 16 else current_instrument[3]}\n'
-            f'Sample loop start:     {current_instrument[2]}\n'
-            f'Sample format:         {me.formats.get(current_instrument[1], "Invalid")}-bit ({current_instrument[1]})\n'
-            f'INSTRUMENT SETTINGS:\n'
-            f'Attack Rate:           {current_instrument[4]} | {atk}ms\n'
-            f'Decay 1 Rate:          {current_instrument[5]} | {d1r}ms\n'
-            f'Decay 2 Rate:          {current_instrument[6]} | {d2r}ms\n'
-            f'Sustain Level:         {current_instrument[7]} | {me.calculate_params("sus", current_instrument[7])}dB\n'   # ∞
-            f'Release Rate:          {current_instrument[8]} | {rel}ms\n'
-            f'Rate correction:       {current_instrument[9]}\n'
-            f'Vibrato strength:      {current_instrument[10]} | {me.calculate_params("vib", current_instrument[10])} cents\n'
-            f'AM strength:           {current_instrument[11]} | {me.calculate_params("am", current_instrument[11])}dB\n'
-            f'LFO Speed:             {current_instrument[12]} | {round(me.calculate_params("lfo", current_instrument[12]), 4)}Hz\n'
-            f'\n'
-        )
+            me.log.write(
+                f'##############################################\n'
+                f'Instrument {iter}\n'
+                f'\n'
+                f'Start address in bank: {current_instrument[0]}\n'
+                f'Sample length:         {current_instrument[3]}\n'
+                f'Sample bytelength:     {(current_instrument[3] * 3 / 2) if me.formats.get(current_instrument[1], -1) == 12 else (current_instrument[3] * 2) if me.formats.get(current_instrument[1], -1) == 16 else current_instrument[3]}\n'
+                f'Sample loop start:     {current_instrument[2]}\n'
+                f'Sample format:         {me.formats.get(current_instrument[1], "Invalid")}-bit ({current_instrument[1]})\n'
+                f'Sample saved as:       {sample_name}\n'
+                f'\n'
+                f'INSTRUMENT SETTINGS:\n'
+                f'Attack Rate:           {current_instrument[4]} | {atk}ms\n'
+                f'Decay 1 Rate:          {current_instrument[5]} | {d1r}ms\n'
+                f'Decay 2 Rate:          {current_instrument[6]} | {d2r}ms\n'
+                f'Sustain Level:         {current_instrument[7]} | {me.calculate_params("sus", current_instrument[7])}dB\n'   # ∞
+                f'Release Rate:          {current_instrument[8]} | {rel}ms\n'
+                f'Rate correction:       {current_instrument[9]}\n'
+                f'Vibrato strength:      {current_instrument[10]} | {me.calculate_params("vib", current_instrument[10])} cents\n'
+                f'AM strength:           {current_instrument[11]} | {me.calculate_params("am", current_instrument[11])}dB\n'
+                f'LFO Speed:             {current_instrument[12]} | {round(me.calculate_params("lfo", current_instrument[12]), 4)}Hz\n'
+                f'\n'
+            )
+        else:
+            print(f"sample {iter} is a duplicate of {me.sample_hashes[sample_hash]}")
+            atk = round(me.calculate_params("atk", current_instrument[4], current_instrument[9]), 4) \
+                if type(me.calculate_params("atk", current_instrument[4], current_instrument[9])) in [int, float] \
+                else me.calculate_params("atk", current_instrument[4], current_instrument[9])
+            d1r = round(me.calculate_params("dec", current_instrument[5], current_instrument[9]), 4) \
+                if type(me.calculate_params("dec", current_instrument[5], current_instrument[9])) in [int, float] \
+                else me.calculate_params("dec", current_instrument[5], current_instrument[9])
+            d2r = round(me.calculate_params("dec", current_instrument[6], current_instrument[9]), 4) \
+                if type(me.calculate_params("dec", current_instrument[6], current_instrument[9])) in [int, float] \
+                else me.calculate_params("dec", current_instrument[6], current_instrument[9])
+            rel = round(me.calculate_params("dec", current_instrument[8], current_instrument[9]), 4) \
+                if type(me.calculate_params("dec", current_instrument[8], current_instrument[9])) in [int, float] \
+                else me.calculate_params("dec", current_instrument[8], current_instrument[9])
+
+            me.log.write(
+                f'##############################################\n'
+                f'Instrument {iter}\n'
+                f'\n'
+                f'Sample is a duplicate of {me.sample_hashes[sample_hash]}\n'
+                f'\n'
+                f'INSTRUMENT SETTINGS:\n'
+                f'Attack Rate:           {current_instrument[4]} | {atk}ms\n'
+                f'Decay 1 Rate:          {current_instrument[5]} | {d1r}ms\n'
+                f'Decay 2 Rate:          {current_instrument[6]} | {d2r}ms\n'
+                f'Sustain Level:         {current_instrument[7]} | {me.calculate_params("sus", current_instrument[7])}dB\n'   # ∞
+                f'Release Rate:          {current_instrument[8]} | {rel}ms\n'
+                f'Rate correction:       {current_instrument[9]}\n'
+                f'Vibrato strength:      {current_instrument[10]} | {me.calculate_params("vib", current_instrument[10])} cents\n'
+                f'AM strength:           {current_instrument[11]} | {me.calculate_params("am", current_instrument[11])}dB\n'
+                f'LFO Speed:             {current_instrument[12]} | {round(me.calculate_params("lfo", current_instrument[12]), 4)}Hz\n'
+                f'\n'
+            )
+            
         return None
 
     def extract(me) -> None:  # optimized version

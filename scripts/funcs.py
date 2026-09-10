@@ -2,8 +2,10 @@
 A module with various useful functions used in other files.
 Imports: random, os if needed, hashlib
 """
-
-from luts import ASCII_lut_arr
+try:
+    from luts import ASCII_lut_arr
+except Exception as e:
+    print(f"shart: {e}")
 import random
 from math import *
 #from typing import Any
@@ -223,24 +225,25 @@ def combine_odd_even(file1: list = None, file2: list = None) -> np.ndarray | Non
     return arr
     #return b'what'
 
-def ret_hash(data, mode="md5", **kwargs):
+def ret_hash(___INPUT_HASH_data, mode="md5", **kwargs):
     """
     A quick way to get hash in one of these modes:
         - SHA512
         - SHA256
         - MD5
     """
+    # why ___INPUT_HASH_data? i got a name conflict
     if mode.lower() == "sha512":
         hash = sha512()
-        hash.update(data)
+        hash.update(___INPUT_HASH_data)
         return hash.hexdigest()
     elif mode.lower() == "sha256":
         hash = sha256()
-        hash.update(data)
+        hash.update(___INPUT_HASH_data)
         return hash.hexdigest()
     elif mode.lower() == "md5":
         hash = md5()
-        hash.update(data)
+        hash.update(___INPUT_HASH_data)
         return hash.hexdigest()
     else:
         return "Unknown mode."

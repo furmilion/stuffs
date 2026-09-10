@@ -39,6 +39,9 @@ or redefining of drum channels or use of GS banks, a GS Reset must be performed.
 The sound set itself is located in `gm.dls` somewhere in `%systemroot%\System32\drivers\gm.dls`
 folder on Windows 10 along with its `gmreadme.txt` file.
 
+MSGS takes *aaalmost* the entire sound set from an SC-55mkII, that is what I believe at least.
+Bass Drum 1 might come from later modules, as the sound is not present in the SC-55 line.
+
 |                          | MSGS (Win10) | MSGS (WinXP_x64) / MSGS (Pre-Win10) |         SC-55          | SC-55mkII  |
 |:------------------------:|:------------:|:-----------------------------------:|:----------------------:|:----------:|
 |      Interpolation       |   Linear     |              Linear                 |       Linear(?)        |  Linear(?) |

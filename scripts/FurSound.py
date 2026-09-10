@@ -209,7 +209,6 @@ def clamp(val=0, mn=0, mx=9):
     return min(mx, max(mn, val))
 
 from math import pi, tau, sin, floor, ceil, e as math_e
-#import numba
 import FurWave  # custom wav writer; i made it because the builtin one didnt have support for chunks and now i use it because im just used to
 import AudTools
 from random import random
@@ -305,10 +304,11 @@ class Channel:
                 # so instead i opted for a saw generator extended by itself reversed
                 # which also made all waves 2 times longer since now length isnt just length of the
                 # entire wave but only of one slope
-                self.wavetable = np.array([(_ / self.length) * 2 - 1 for _ in range(self.length)], np.float16)
+                self.wavetable = [(_ / self.length) * 2 - 1 for _ in range(self.length)]
+                self.wavetable.extend(self.wavetable[::-1])
+                np.array(self.wavetable, np.float16)
                 self.wavetable += (1-max(self.wavetable))/2
                 self.wavetable *= 1/max(self.wavetable)
-                #self.wavetable.extend(self.wavetable[::-1])
             elif self.c_type == WAVE_SAMPLE:
                 if not self.wavetable:  # todo: parameters (loop points etc)
                     raise ValueError("where wave")
@@ -340,7 +340,6 @@ class Channel:
 
         self.wavetable = [float(x) for x in self.wavetable]
     
-    #@numba.njit
     def update(self, suppress_phase_update=False, suppress_noise_update=False):
         out, phase_reset_flag = 0, False
         
@@ -590,7 +589,6 @@ class OperatorChannel(Channel):
                  ):
         super().__init__(type_, width, length, wavetable, sample_rate, phase, panning, volume, interpolation,)
     
-    #@numba.njit
     def update(self,
                suppress_phase_update=False,
                suppress_noise_update=False,
@@ -850,7 +848,6 @@ class SampleChannel(Channel):
         #self.wavetable[-1] = self.wavetable[loop_start]
         self.wavetable     = self.wavetable[:loop_end] if loop_end and self.loop_type else self.wavetable
     
-    #@numba.njit
     def update(self, suppress_phase_update=False):
         out, phase_reset_flag = 0, False
         phase = self.phase

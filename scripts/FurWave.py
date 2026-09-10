@@ -1,5 +1,4 @@
 from funcs import clamp  # external import for clamp function
-from funcs import _
 import struct
 import math
 from typing import Union, List, Tuple, Dict, Optional, Any#, BinaryIO
@@ -8,12 +7,8 @@ FurWaveVersion = "1.0"
 
 try:
     import numpy as np
-    # >'np' in the try block with 'except ImportError' should also be defined in the except block
-    # no pycharm, no.
-    NUMPY = True
 except ImportError:
-    print("NumPy not found.\nIt is recommended to install NumPy for a speed boost.")
-    NUMPY = False
+    print("NumPy not found.\nIt is required for this library.")
 
 
 class WaveWriter:
@@ -118,7 +113,7 @@ class WaveWriter:
 
     def _detect_signed(self, data: np.ndarray) -> bool:
         """Detect if data contains negative values."""
-        if NUMPY and isinstance(data, np.ndarray):
+        if isinstance(data, np.ndarray):
             return np.any(data < 0)
         elif isinstance(data, (list, tuple)):
             return any(x < 0 for x in data)
@@ -126,8 +121,6 @@ class WaveWriter:
 
     def _get_optimal_dtype(self, data: Any) -> Optional[type]:
         """Get optimal NumPy dtype based on data range and bit depth."""
-        if not NUMPY:
-            return None
 
         # For packed data, we need to know the target format
         if self.packed:
@@ -162,43 +155,6 @@ class WaveWriter:
         Pack multi-byte samples into individual bytes.
         Test: [65535, 32768] (16-bit) -> [255, 255, 128, 0] (bytes)
         """
-        if not NUMPY:
-            # Without NumPy, we'd need to do manual packing (slow)
-            result = bytearray()
-            # bytes_per = self._bytes_per_sample
-
-            for sample in data:
-                if self._is_float:
-                    # For float, we need to pack differently
-                    if self.bitdepth == 32.0:
-                        result.extend(struct.pack('<f', float(sample)))
-                    else:
-                        result.extend(struct.pack('<d', float(sample)))
-                else:
-                    # For integers
-                    if self.bitdepth == 8:
-                        # 8-bit is already a byte
-                        result.append(int(sample) & 0xFF)
-                    elif self.bitdepth == 16:
-                        # 16-bit to 2 bytes (little-endian)
-                        sample = int(sample) & 0xFFFF
-                        result.append(sample & 0xFF)
-                        result.append((sample >> 8) & 0xFF)
-                    elif self.bitdepth == 24:
-                        # 24-bit to 3 bytes
-                        sample = int(sample) & 0xFFFFFF
-                        result.append(sample & 0xFF)
-                        result.append((sample >> 8) & 0xFF)
-                        result.append((sample >> 16) & 0xFF)
-                    elif self.bitdepth == 32:
-                        # 32-bit to 4 bytes
-                        sample = int(sample) & 0xFFFFFFFF
-                        for _ in range(4):
-                            result.append(sample & 0xFF)
-                            sample >>= 8
-            return np.frombuffer(result, dtype=np.uint8)
-
-        # With NumPy, use efficient view casting
         if self._is_float:
             # For float, we need to use proper dtype
             if self.bitdepth == 32.0:
@@ -239,40 +195,30 @@ class WaveWriter:
         if data is None:
             # Create a silent track (1 second of silence)
             num_samples = self.samplerate * self.channels
-            if NUMPY:
-                if self.packed:
-                    # For packed data, create zeros in the target format
-                    dtype = self._get_optimal_dtype(None)
-                    if dtype:
-                        return np.zeros(num_samples, dtype=dtype)
-                    else:
-                        return np.zeros(num_samples)
-                else:
-                    # For unpacked data (bytes), use uint8
-                    return np.zeros(num_samples * self._bytes_per_sample, dtype=np.uint8)
-            else:
-                if self.packed:
-                    return [0] * num_samples
-                else:
-                    return [0] * (num_samples * self._bytes_per_sample)
-
-        if NUMPY:
-            # Convert to numpy array if not already
-            if not isinstance(data, np.ndarray):
-                data = np.array(data)
-
-            # If data is packed, ensure it's in the optimal dtype
             if self.packed:
-                optimal_dtype = self._get_optimal_dtype(data)
-                if optimal_dtype and data.dtype != optimal_dtype:
-                    data = data.astype(optimal_dtype)
-                return data
+                # For packed data, create zeros in the target format
+                dtype = self._get_optimal_dtype(None)
+                if dtype:
+                    return np.zeros(num_samples, dtype=dtype)
+                else:
+                    return np.zeros(num_samples)
             else:
-                # Unpacked data should be uint8
-                return data.astype(np.uint8)
+                # For unpacked data (bytes), use uint8
+                return np.zeros(num_samples * self._bytes_per_sample, dtype=np.uint8)
+
+        # Convert to numpy array if not already
+        if not isinstance(data, np.ndarray):
+            data = np.array(data)
+
+        # If data is packed, ensure it's in the optimal dtype
+        if self.packed:
+            optimal_dtype = self._get_optimal_dtype(data)
+            if optimal_dtype and data.dtype != optimal_dtype:
+                data = data.astype(optimal_dtype)
+            return data
         else:
-            # Without NumPy, just store as list
-            return list(data) if data else []
+            # Unpacked data should be uint8
+            return data.astype(np.uint8)
 
     # ========== Property getters/setters ==========
 
@@ -332,7 +278,7 @@ class WaveWriter:
         if isinstance(data, (bytes, bytearray)):
             chunk_data = bytes(data)
         elif isinstance(data, (list, tuple, np.ndarray)):
-            if NUMPY and isinstance(data, np.ndarray):
+            if isinstance(data, np.ndarray):
                 chunk_data = data.tobytes()
             else:
                 # Assume list of integers
@@ -453,7 +399,19 @@ class WaveWriter:
         else:
             while len(sampler_data) < sampler_data_size:
                 sampler_data.append(0)
-
+        #data = struct.pack(">IIIIIIIII",
+        #                   manufacturer,  # I
+        #                   product,       # I
+        #                   sample_period, # I
+        #                   
+        #                   midi_unity_note,     # I
+        #                   midi_pitch_fraction, # I
+        #                   smpte_format,        # I
+        #                   smpte_offset,        # I
+        #                   
+        #                   sample_loop_count, # I
+        #                   sampler_data_size, # I
+        #                   )
         data = [  # i cant be bothered to use struct here so deal with this lmao
             (manufacturer >>  0) & 0xFF,        (manufacturer >>  8) & 0xFF,
             (manufacturer >> 16) & 0xFF,        (manufacturer >> 24) & 0xFF,
@@ -477,7 +435,7 @@ class WaveWriter:
             (sampler_data_size >> 16) & 0xFF,   (sampler_data_size >> 24) & 0xFF,
 
         ]
-        data.extend(sampler_data) if sampler_data else _()
+        data.extend(sampler_data) if sampler_data else 0
         for index in range(sample_loop_count):  # add sample loops
             data.extend(
                 [
@@ -524,10 +482,6 @@ class WaveWriter:
 
     def get_packed_data(self) -> Optional[np.ndarray]:
         """Get the data in packed format (multi-byte samples)."""
-        if not NUMPY:
-            # Without NumPy, we can't easily reconstruct packed data
-            return None
-
         if self.packed:
             # Already packed
             return self.data
@@ -575,195 +529,113 @@ class WaveWriter:
         amplitude = clamp(amplitude, 0.0, 1.0)
         num_samples = int(duration * self.samplerate) * self.channels
 
-        if NUMPY:
-            if self.packed:
-                # Generate packed samples directly
-                t = np.linspace(0, duration, num_samples // self.channels, endpoint=False)
-                if self._is_float:
-                    # For float formats, generate float samples
-                    mono = amplitude * np.sin(2 * np.pi * frequency * t)
-                    if self.channels > 1:
-                        mono = np.repeat(mono, self.channels)
-
-                    # Scale to appropriate range for the format
-                    if self.bitdepth == 32.0:
-                        self.data = mono.astype(np.float32)
-                    else:
-                        self.data = mono.astype(np.float64)
-                else:
-                    # For integer formats
-                    mono = amplitude * np.sin(2 * np.pi * frequency * t)
-                    if self.channels > 1:
-                        mono = np.repeat(mono, self.channels)
-
-                    # Scale to integer range
-                    if self.bitdepth == 8:
-                        # 8-bit is unsigned, range 0-255
-                        self.data = ((mono * 127) + 128).astype(np.uint8)
-                    elif self.bitdepth == 16:
-                        # 16-bit signed range -32768 to 32767
-                        self.data = (mono * 32767).astype(np.int16)
-                    elif self.bitdepth == 24:
-                        # 24-bit signed range -8388608 to 8388607
-                        self.data = (mono * 8388607).astype(np.int32)
-                    elif self.bitdepth == 32:
-                        # 32-bit signed range -2147483648 to 2147483647
-                        self.data = (mono * 2147483647).astype(np.int32)
-            else:
-                # Generate unpacked bytes directly
-                t = np.linspace(0, duration, num_samples // self.channels, endpoint=False)
+        if self.packed:
+            # Generate packed samples directly
+            t = np.linspace(0, duration, num_samples // self.channels, endpoint=False)
+            if self._is_float:
+                # For float formats, generate float samples
                 mono = amplitude * np.sin(2 * np.pi * frequency * t)
                 if self.channels > 1:
                     mono = np.repeat(mono, self.channels)
 
-                # Convert to bytes
-                if self._is_float:
-                    if self.bitdepth == 32.0:
-                        bytes_data = mono.astype(np.float32).tobytes()
-                    else:
-                        bytes_data = mono.astype(np.float64).tobytes()
+                # Scale to appropriate range for the format
+                if self.bitdepth == 32.0:
+                    self.data = mono.astype(np.float32)
                 else:
-                    if self.bitdepth == 8:
-                        bytes_data = ((mono * 127) + 128).astype(np.uint8).tobytes()
-                    elif self.bitdepth == 16:
-                        bytes_data = (mono * 32767).astype(np.int16).tobytes()
-                    elif self.bitdepth == 24:
-                        # 24-bit needs special handling
-                        int32_data = (mono * 8388607).astype(np.int32)
-                        bytes_data = bytearray()
-                        for val in int32_data:
-                            val = val & 0xFFFFFF
-                            bytes_data.append(val & 0xFF)
-                            bytes_data.append((val >> 8) & 0xFF)
-                            bytes_data.append((val >> 16) & 0xFF)
-                    else:
-                        bytes_data = (mono * 2147483647).astype(np.int32).tobytes()
-
-                self.data = np.frombuffer(bytes_data, dtype=np.uint8)
+                    self.data = mono.astype(np.float64)
+            else:
+                # For integer formats
+                mono = amplitude * np.sin(2 * np.pi * frequency * t)
+                if self.channels > 1:
+                    mono = np.repeat(mono, self.channels)
+                # Scale to integer range
+                if self.bitdepth == 8:
+                    # 8-bit is unsigned, range 0-255
+                    self.data = ((mono * 127) + 128).astype(np.uint8)
+                elif self.bitdepth == 16:
+                    # 16-bit signed range -32768 to 32767
+                    self.data = (mono * 32767).astype(np.int16)
+                elif self.bitdepth == 24:
+                    # 24-bit signed range -8388608 to 8388607
+                    self.data = (mono * 8388607).astype(np.int32)
+                elif self.bitdepth == 32:
+                    # 32-bit signed range -2147483648 to 2147483647
+                    self.data = (mono * 2147483647).astype(np.int32)
         else:
-            # Without NumPy, generate samples manually
-            self.data = []
-            samples_per_channel = int(duration * self.samplerate)
-
-            for i in range(samples_per_channel):
-                t = i / self.samplerate
-                sample = amplitude * math.sin(2 * math.pi * frequency * t)
-
-                if self.packed:
-                    # Store packed samples
-                    for _ in range(self.channels):
-                        self.data.append(sample)
+            # Generate unpacked bytes directly
+            t = np.linspace(0, duration, num_samples // self.channels, endpoint=False)
+            mono = amplitude * np.sin(2 * np.pi * frequency * t)
+            if self.channels > 1:
+                mono = np.repeat(mono, self.channels)
+            # Convert to bytes
+            if self._is_float:
+                if self.bitdepth == 32.0:
+                    bytes_data = mono.astype(np.float32).tobytes()
                 else:
-                    # Convert to bytes
-                    if self._is_float:
-                        if self.bitdepth == 32.0:
-                            self.data.extend(struct.pack('<f', sample))
-                        else:
-                            self.data.extend(struct.pack('<d', sample))
-                    else:
-                        if self.bitdepth == 8:
-                            self.data.append(int((sample * 127) + 128) & 0xFF)
-                        elif self.bitdepth == 16:
-                            sample_int = int(sample * 32767) & 0xFFFF
-                            self.data.append(sample_int & 0xFF)
-                            self.data.append((sample_int >> 8) & 0xFF)
-                        elif self.bitdepth == 24:
-                            sample_int = int(sample * 8388607) & 0xFFFFFF
-                            self.data.append(sample_int & 0xFF)
-                            self.data.append((sample_int >> 8) & 0xFF)
-                            self.data.append((sample_int >> 16) & 0xFF)
-                        else:
-                            sample_int = int(sample * 2147483647) & 0xFFFFFFFF
-                            for _ in range(4):
-                                self.data.append(sample_int & 0xFF)
-                                sample_int >>= 8
+                    bytes_data = mono.astype(np.float64).tobytes()
+            else:
+                if self.bitdepth == 8:
+                    bytes_data = ((mono * 127) + 128).astype(np.uint8).tobytes()
+                elif self.bitdepth == 16:
+                    bytes_data = (mono * 32767).astype(np.int16).tobytes()
+                elif self.bitdepth == 24:
+                    # 24-bit needs special handling
+                    int32_data = (mono * 8388607).astype(np.int32)
+                    bytes_data = bytearray()
+                    for val in int32_data:
+                        val = val & 0xFFFFFF
+                        bytes_data.append(val & 0xFF)
+                        bytes_data.append((val >> 8) & 0xFF)
+                        bytes_data.append((val >> 16) & 0xFF)
+                else:
+                    bytes_data = (mono * 2147483647).astype(np.int32).tobytes()
+
+            self.data = np.frombuffer(bytes_data, dtype=np.uint8)
 
     def generate_silence(self, duration: float = 1.0) -> None:
         """Generate silence."""
         num_samples = int(duration * self.samplerate) * self.channels
 
-        if NUMPY:
-            if self.packed:
-                # Create zeros in the appropriate format
-                if self._is_float:
-                    if self.bitdepth == 32.0:
-                        self.data = np.zeros(num_samples, dtype=np.float32)
-                    else:
-                        self.data = np.zeros(num_samples, dtype=np.float64)
+        if self.packed:
+            # Create zeros in the appropriate format
+            if self._is_float:
+                if self.bitdepth == 32.0:
+                    self.data = np.zeros(num_samples, dtype=np.float32)
                 else:
-                    if self.bitdepth == 8:
-                        # 8-bit silence is 128 (midpoint)
-                        self.data = np.full(num_samples, 128, dtype=np.uint8)
-                    elif self.bitdepth == 16:
-                        self.data = np.zeros(num_samples, dtype=np.int16)
-                    elif self.bitdepth == 24:
-                        self.data = np.zeros(num_samples, dtype=np.int32)
-                    else:
-                        self.data = np.zeros(num_samples, dtype=np.int32)
+                    self.data = np.zeros(num_samples, dtype=np.float64)
             else:
-                # Create zero bytes
-                bytes_per = self._bytes_per_sample
                 if self.bitdepth == 8:
-                    # 8-bit silence is 128
-                    self.data = np.full(num_samples * bytes_per, 128, dtype=np.uint8)
+                    # 8-bit silence is 128 (midpoint)
+                    self.data = np.full(num_samples, 128, dtype=np.uint8)
+                elif self.bitdepth == 16:
+                    self.data = np.zeros(num_samples, dtype=np.int16)
+                elif self.bitdepth == 24:
+                    self.data = np.zeros(num_samples, dtype=np.int32)
                 else:
-                    self.data = np.zeros(num_samples * bytes_per, dtype=np.uint8)
+                    self.data = np.zeros(num_samples, dtype=np.int32)
         else:
-            if self.packed:
-                self.data = [0.0] * num_samples
+            # Create zero bytes
+            bytes_per = self._bytes_per_sample
+            if self.bitdepth == 8:
+                # 8-bit silence is 128
+                self.data = np.full(num_samples * bytes_per, 128, dtype=np.uint8)
             else:
-                bytes_per = self._bytes_per_sample
-                if self.bitdepth == 8:
-                    self.data = [128] * (num_samples * bytes_per)
-                else:
-                    self.data = [0] * (num_samples * bytes_per)
+                self.data = np.zeros(num_samples * bytes_per, dtype=np.uint8)
 
     # ========== Sample conversion ==========
 
     def _samples_to_bytes(self) -> bytes:
         """Convert samples to bytes according to bit depth and format."""
-        if NUMPY and isinstance(self.data, np.ndarray):
+        if isinstance(self.data, np.ndarray):
             if self.packed:
                 # Pack the data into bytes
                 packed_data = self._pack_samples(self.data)
                 return bytes(packed_data)
             else:
-                # Data is already bytes
-                return bytes(self.data)
+                return bytes(self.data.astype(np.uint8))
         else:
-            # Manual conversion without NumPy
-            result = bytearray()
-
-            if self.packed:
-                # Pack multi-byte samples
-                for sample in self.data:
-                    if self._is_float:
-                        if self.bitdepth == 32.0:
-                            result.extend(struct.pack('<f', float(sample)))
-                        else:
-                            result.extend(struct.pack('<d', float(sample)))
-                    else:
-                        if self.bitdepth == 8:
-                            result.append(int(sample) & 0xFF)
-                        elif self.bitdepth == 16:
-                            sample = int(sample) & 0xFFFF
-                            result.append(sample & 0xFF)
-                            result.append((sample >> 8) & 0xFF)
-                        elif self.bitdepth == 24:
-                            sample = int(sample) & 0xFFFFFF
-                            result.append(sample & 0xFF)
-                            result.append((sample >> 8) & 0xFF)
-                            result.append((sample >> 16) & 0xFF)
-                        else:
-                            sample = int(sample) & 0xFFFFFFFF
-                            for _ in range(4):
-                                result.append(sample & 0xFF)
-                                sample >>= 8
-            else:
-                # Data is already bytes
-                result.extend(self.data)
-
-            return bytes(result)
+            # Data is already bytes
+            return bytes(self.data)
 
     # ========== File writing ==========
 
@@ -839,16 +711,10 @@ class WaveWriter:
 
     def get_duration(self) -> float:
         """Get the duration of the audio in seconds."""
-        if NUMPY and isinstance(self.data, np.ndarray):
-            if self.packed:
-                num_samples = len(self.data)
-            else:
-                num_samples = len(self.data) // self._bytes_per_sample
+        if self.packed:
+            num_samples = len(self.data)
         else:
-            if self.packed:
-                num_samples = len(self.data)
-            else:
-                num_samples = len(self.data) // self._bytes_per_sample
+            num_samples = len(self.data) // self._bytes_per_sample
 
         if self.channels > 0:
             num_frames = num_samples // self.channels
@@ -889,29 +755,20 @@ if __name__ == "__main__":
     wav1 = WaveWriter(channels=1, samplerate=44100, bitdepth=16, packed=True)
 
     # Create packed 16-bit samples
-    if NUMPY:
-        # Generate a simple sine wave as packed 16-bit values
-        t = np.linspace(0, 1, 44100, endpoint=False)
-        # 16-bit range: -32768 to 32767
-        samples = (32767 * np.sin(2 * np.pi * 440 * t)).astype(np.int16)
-        wav1.set_data(samples)
+    # Generate a simple sine wave as packed 16-bit values
+    t = np.linspace(0, 1, 44100, endpoint=False)
+    # 16-bit range: -32768 to 32767
+    samples = (32767 * np.sin(2 * np.pi * 440 * t)).astype(np.int16)
+    wav1.set_data(samples)
 
-        print(f"Packed data shape: {wav1.data.shape}")
-        print(f"Packed data dtype: {wav1.data.dtype}")
-        print(f"First 5 packed samples: {wav1.data[:5]}")
+    print(f"Packed data shape: {wav1.data.shape}")
+    print(f"Packed data dtype: {wav1.data.dtype}")
+    print(f"First 5 packed samples: {wav1.data[:5]}")
 
-        # Show the byte conversion
-        bytes_data = wav1._samples_to_bytes()
-        print(f"Converted to bytes: first 10 bytes: {list(bytes_data[:10])}")
-        print(f"[65535, 32768] should become [255, 255, 128, 0] in 16-bit mode")
-    else:
-        # Without NumPy, use list of packed values
-        samples = []
-        for i in range(44100):
-            t = i / 44100
-            sample = int(32767 * math.sin(2 * math.pi * 440 * t))
-            samples.append(sample)
-        wav1.set_data(samples)
+    # Show the byte conversion
+    bytes_data = wav1._samples_to_bytes()
+    print(f"Converted to bytes: first 10 bytes: {list(bytes_data[:10])}")
+    print(f"[65535, 32768] should become [255, 255, 128, 0] in 16-bit mode")
 
     wav1.write_file("packed_16bit.wav")
     print(f"Created packed_16bit.wav - Info: {wav1.get_info()}")
@@ -924,18 +781,16 @@ if __name__ == "__main__":
     wav2 = WaveWriter(channels=1, samplerate=44100, bitdepth=16, packed=True)
     wav2.set_data(mixed_data)
 
-    if NUMPY:
-        print(f"Mixed data dtype: {wav2.data.dtype}")  # Should be int16
-        print(f"Contains negative: {np.any(wav2.data < 0)}")
+    print(f"Mixed data dtype: {wav2.data.dtype}")  # Should be int16
+    print(f"Contains negative: {np.any(wav2.data < 0)}")
 
     # All positive data (could use unsigned)
     positive_data = [0, 16384, 32767, 49152, 65535]
     wav3 = WaveWriter(channels=1, samplerate=44100, bitdepth=16, packed=True)
     wav3.set_data(positive_data)
 
-    if NUMPY:
-        print(f"Positive data dtype: {wav3.data.dtype}")  # Should be uint16
-        print(f"Contains negative: {np.any(wav3.data < 0)}")
+    print(f"Positive data dtype: {wav3.data.dtype}")  # Should be uint16
+    print(f"Contains negative: {np.any(wav3.data < 0)}")
     wav2.write_file("sign_test_s16.wav")
     wav3.write_file("sign_test_u16.wav")
 
@@ -962,17 +817,16 @@ if __name__ == "__main__":
     print(f"Unpacked data length: {len(unpacked_wav.data)} bytes")
     print(f"Ratio: {len(unpacked_wav.data) / len(packed_wav.data)} bytes per sample")
 
-    if NUMPY:
-        print(f"\nPacked data type: {packed_wav.data.dtype}")
-        print(f"Unpacked data type: {unpacked_wav.data.dtype}")
+    print(f"\nPacked data type: {packed_wav.data.dtype}")
+    print(f"Unpacked data type: {unpacked_wav.data.dtype}")
 
-        # Demonstrate packing/unpacking
-        print(f"\nFirst 5 packed samples: {packed_wav.data[:5]}")
+    # Demonstrate packing/unpacking
+    print(f"\nFirst 5 packed samples: {packed_wav.data[:5]}")
 
-        # Get back packed data from unpacked version
-        reconstructed = unpacked_wav.get_packed_data()
-        if reconstructed is not None:
-            print(f"Reconstructed packed data (first 5): {reconstructed[:5]}")
+    # Get back packed data from unpacked version
+    reconstructed = unpacked_wav.get_packed_data()
+    if reconstructed is not None:
+        print(f"Reconstructed packed data (first 5): {reconstructed[:5]}")
 
     # Test 4: Different bit depths with packed data
     print("\nTest 4: Various bit depths with packed data")
@@ -983,10 +837,9 @@ if __name__ == "__main__":
         wav.generate_sine(440, 0.1, 0.5)
 
         depth_str = f"{depth}f" if isinstance(depth, float) else str(depth)
-        print(f"{depth_str:6} bit - Data shape: {wav.data.shape if NUMPY else len(wav.data)}")
+        print(f"{depth_str:6} bit - Data shape: {wav.data.shape}")
 
-        if NUMPY:
-            print(f"          Data dtype: {wav.data.dtype}")
+        print(f"          Data dtype: {wav.data.dtype}")
         wav.write_file(f"depth_test_{depth}.wav")
 
     print("\nAll Test files created successfully!")
