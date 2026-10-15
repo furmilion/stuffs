@@ -1,5 +1,8 @@
 # The MSGS situation is crazy
 
+[ Last edited 15/10/26 ]
+
+
 If you want to skip right to the point, click [here](#the-point).
 
 I'm honestly surprised that this turned into actual somewhat
@@ -16,7 +19,7 @@ So, you may or may not have a PC. If you do, you can run either
 some Linux distro, MacOS or Windows.
 
 If you have a Windows PC, *and* you run any version of Windows
-from Windows 98 to Windows 10 inclusive, then congrats! 
+from Windows 98 to Windows 11 inclusive, then congrats! 
 
 Your system got bundled with additional piece of software, that
 you may find in Device Manager. This mysterious piece of software
@@ -42,21 +45,35 @@ folder on Windows 10 along with its `gmreadme.txt` file.
 MSGS takes *aaalmost* the entire sound set from an SC-55mkII, that is what I believe at least.
 Bass Drum 1 might come from later modules, as the sound is not present in the SC-55 line.
 
-|                          | MSGS (Win10) | MSGS (WinXP_x64) / MSGS (Pre-Win10) |         SC-55          | SC-55mkII  |
-|:------------------------:|:------------:|:-----------------------------------:|:----------------------:|:----------:|
-|      Interpolation       |   Linear     |              Linear                 |       Linear(?)        |  Linear(?) |
-|            GM            |     Yes      |                 Yes                 | Firmware 1.20 or later |    Yes     |
-|            GS            |     Yes      |                 Yes                 |          Yes           |    Yes     |
-|          Parts           |      16      |                 16                  |           16           |     16     |
-|          Voices          |      32      |               64 / 32               |           24           |     28     |
-|      Tones (Basic)       |     226      |                 226                 |          189           |    226     |
-|    Tones (MT-32 Map)     |      0       |                  0                  |          128           |    128     |
-|        Drum Kits         |      9       |                  9                  |           9            |     9      |
-|       Sample Rate        |   22050hz    |             22050hz (?)             |        32000hz         |  32000hz   |
-| Resonant Low Pass Filter |      No      |                 No                  |          Yes           |    Yes     |
-|        Rate Limit        |     None     |                None                 |       31250 baud       | 31250 baud |
-|       CC#91 Reverb       |      No      |                 No                  |          Yes           |    Yes     |
-|       CC#93 Chorus       |      No      |                 No                  |          Yes           |    Yes     |
+|                          | MSGS (Win10) | MSGS (WinXP_x64) / MSGS (Pre-Win10) | MSGS (Win11 Inbox Dev Preview 9, Native mode*) |         SC-55          |  SC-55mkII  |
+|:------------------------:|:------------:|:-----------------------------------:|:----------------------------------------------:|:----------------------:|:-----------:|
+|      Interpolation       |   Linear     |              Linear                 |                   Sinc (likely)                |      4-p Sinc(?)       | 4-p Sinc(?) |
+|            GM            |     Yes      |                 Yes                 |                       Yes                      | Firmware 1.20 or later |     Yes     |
+|            GS            |     Yes      |                 Yes                 |                       Yes                      |          Yes           |     Yes     |
+|           GM 2           |      No      |                 No                  |                     Partial**                  |          No            |     No      |
+|            XG            |      No      |                 No                  |                 Bank select only               |          No            |     No      |
+|          Parts           |      16      |                 16                  |                       16                       |          16            |     16      |
+|          Voices          |      32      |               64 / 32               |                       256                      |          24            |     28      |
+|      Tones (Basic)       |     226      |                 226                 |                       226                      |          189           |     226     |
+|    Tones (MT-32 Map)     |      0       |                  0                  |                        0                       |          128           |     128     |
+|        Drum Kits         |      9       |                  9                  |                        9                       |           9            |      9      |
+|       Sample Rate        |   22050hz    |             22050hz (?)             |                     44100hz                    |        32000hz         |   32000hz   |
+| Resonant Low Pass Filter |      No      |                 No                  |                       No                       |          Yes           |     Yes     |
+|        Rate Limit        |     None     |                None                 |                      None                      |       31250 baud       |  31250 baud |
+|       CC#91 Reverb       |      No      |                 No                  |                      Yes***                    |          Yes           |     Yes     |
+|       CC#93 Chorus       |      No      |                 No                  |                      Yes***                    |          Yes           |     Yes     |
+---
+*Compatibility mode not mentioned as it mostly repeats the old synth, aside from these:
+- Voice allocator seems to be different, as the MIDI I'll talk about later drops some notes *in the beginning*, which it realistically should not
+- Sound output differs, for whatever reason, likely it being made for 44100hz
+
+**Supported MIDI2 Events, as mentioned:
+- Note On pitch 7.9 attribute
+- Per-note pitch bend
+- Registered per-note controllers: pitch 7.25, volume, pan
+- Per-note management, including detach
+
+***As I have no Windows 11 Machine, I cannot test whether the reverb and chorus are CC-controllable or just system toggles.
 
 ---
 
@@ -159,11 +176,16 @@ I have tried Windows XP, but MSGS there differs in general:
   - After a bit of testing, it seems that despite sharing the action with CC#123 All Notes Off, it still ignores hold pedal and releases notes.
 - It seems to sound a bit brighter?
 
-Here is a comparison between MSGS on [Windows 10](/tests/msgs_10.ogg) and MSGS on [Windows 98](/tests/msgs_98.ogg), on that Crystal Oscillator cover.
-I could not be bothered to re-render the Windows XP version, so you have Win98 one as a comparison instead. If anyone is willing to do so,
-pull request it in there and you'll be credited.
+Here are MSGS renders of that Crystal Oscillator cover on different systems:
+- [Windows 11](/tests/msgs_11.ogg)
+- [Windows 10](/tests/msgs_10.ogg)
+- [Windows XP](/tests/msgs_xp.ogg) (outdated, replacement pending)
+- [Windows 98](/tests/msgs_98.ogg)
 
-And fun fact: this shares the behavior with Windows 98 MSGS (which I did test too).
+
+I could not be bothered to re-render the Windows XP version, so I asked a friend to do it, so the render can be replaced anytime soon.
+
+And fun fact: WinXP shares the behavior with Windows 98 MSGS (which I did test too).
 
 So uh, sorry, no Crystal Oscillator midi.
 
