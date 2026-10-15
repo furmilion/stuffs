@@ -1,0 +1,70 @@
+// le epic pattern for imhex
+
+#define get import
+get std.io;
+get std.core;
+#define lshift <<
+#define rshift >>
+#define and &
+#define or |
+#define xor ^
+#define less <
+#define greater >
+fn print(auto x, auto y) { std::print(x, y); };
+
+bool PRINT_DEBUG = false;
+
+struct Filler { u16 filler; };
+struct String { u16 size; char text[size]; };
+//struct SampleData { s16 data[parent.sampleEnd - parent.sampleStart]; };
+
+struct SampleSettings {
+  u8  pad1;         // NO idea what those do, i changed those around and nothing happened
+  u8  pad2;
+  u8  pad3;
+  u8  pad4;
+  
+  u16 finerTuneUp;       // fine tune up? ~103 cents when full
+  u8  coarseTuneUp;      // coarse tune; how does it even work?
+  u8  playbackRelated;   // no idea what does this do but it doesnt play if value is not 0x40
+  u8  attenuation;       // nonlinear attenuation; ignored is >= 0x80
+  u8  fineTuneUp;        // coarser than fine tune? ~347 cents when full
+  u8  coarserTuneUp;     // coarser than coarse tune? ~3 semitones per step
+  u8  rootKey;           // root key that the pitch is calculated against
+  u8  highKey;           // upper bound on keyboard
+  u8  playbackMode;      /* Playback mode values:
+                            0, 1 - Oneshot
+                            2    - Loop
+                            >= 3 - Reverse */
+  u32 sampleLoopStart; // sample loop start   | absolute offset in rom (+ header) in samples
+  u32 sampleLoopEnd;   // sample loop end     | absolute offset in rom (+ header) in samples
+  u32 sampleStart;     // sample start offset | absolute offset in rom (+ header) in samples
+  u32 sampleEnd;       // sample end offset   | absolute offset in rom (+ header) in samples
+  //SampleData sample @ (sampleStart + sizeof(parent.parent));
+};
+
+struct Instrument {
+  u16 nameSize;
+  char name[nameSize];
+  u8 numSamples;
+  SampleSettings sampleSettings[numSamples];
+  if(PRINT_DEBUG)
+  {
+    print("Instrument '{}'", name);
+    print(" - {} samples", numSamples);
+  }
+  
+};
+
+struct Bank {
+  char signature[8];
+  u16 uniqueID;
+  u16 bankNameSize;
+  char bankName[bankNameSize];
+  if(PRINT_DEBUG){print("Bank '{}'", bankName);}
+  u16 instCount;
+  if(PRINT_DEBUG){print("{} instruments defined", instCount);}
+  Instrument instruments[instCount];
+};
+
+Bank bank @ 0;

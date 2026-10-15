@@ -1,0 +1,22 @@
+BANK 0 | SAMPLE 0
+Volume:               84
+Start address in ROM: 506115
+Start offset:         13365
+Length:               16732
+Loop length:          1935
+Loop mode:            forward
+Root key:             E-3 (40)
+Initial pitch offset: -39
+Loop pitch offset:    -15
+
+BANK 0 | SAMPLE 1
+Volume:               82
+Start address in ROM: 62240
+Start offset:         19774
+Length:               27310
+Loop length:          5196
+Loop mode:            forward
+Root key:             F#3 (42)
+Initial pitch offset: 38
+Loop pitch offset:    -15
+
