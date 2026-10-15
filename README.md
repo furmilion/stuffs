@@ -5,6 +5,7 @@ that one might possibly find useful in some way
 
 Currently contains:
 
+- Random ramble (`/papers`)
 - MIDI Files (alongside eith Domino MIDI Editor's `.dms` projects)
 - SC-55 Utilities (2):
   - Image/Text to Display SysEx converter (awaiting fixing)
