@@ -10,3 +10,6 @@
 /scripts/~*
 /scripts/k1_rom_waves/
 /scripts/localtests/
+.zed
+.idea
+update
