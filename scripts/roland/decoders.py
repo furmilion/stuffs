@@ -1,4 +1,5 @@
 import sys
+import numpy as np
 
 sys.path.append("../")
 import FurWave
@@ -39,37 +40,15 @@ def scale_fce(val: int = 0, tofloat: bool = False, scale: int = 30):
 # the wave ROMs beforehand.
 if __name__ == '__main__':
     files = []
-    with open(r"E:\D Drive (HDD)\- THE ULTIMATE STUFF COLLECTION -\Git\Git\NukeYKT Nuked SC-55\Nuked-55 Imp\roms\mk1\waverom_1_DED.bin", "rb") as wave:
-        files.append(wave.read(-1))
-    with open(r"E:\D Drive (HDD)\- THE ULTIMATE STUFF COLLECTION -\Git\Git\NukeYKT Nuked SC-55\Nuked-55 Imp\roms\mk1\waverom_2_DED.bin", "rb") as wave:
-        files.append(wave.read(-1))
-    with open(r"E:\D Drive (HDD)\- THE ULTIMATE STUFF COLLECTION -\Git\Git\NukeYKT Nuked SC-55\Nuked-55 Imp\roms\mk1\waverom_3_DED.bin", "rb") as wave:
-        files.append(wave.read(-1))
-    #READ_SIZE = 54747
-    #START = 47616
-    #END = 54747
-    #testFile = open(r"E:\D Drive (HDD)\- THE ULTIMATE STUFF COLLECTION -\Git\Git\NukeYKT Nuked SC-55\Nuked-55 Imp\roms\mk1\waverom_2_DED.bin", "rb").read(READ_SIZE+1)
-    #SIZE = len(file)
-    #print(testFile) if DEBUG else None
-    #samples = [0 for _ in range(END-START+1)]
-    #for spl in range(START, END+1):
-        #delta = decode_fce(testFile, spl) / (1 << 30)
-        #print(f"sample: {sample}, delta: {delta} ({decode_fce(testFile, spl)})") if DEBUG else None
-        #sample += delta
-        #samples[spl - START] = sample
+    with open(r"E:\D Drive (HDD)\- THE ULTIMATE STUFF COLLECTION -\Git\Git\NukeYKT Nuked SC-55\Nuked-55 Imp\roms\mk2\waverom1_DED.bin", "rb") as wave:
+        files.append(wave.read())
+    with open(r"E:\D Drive (HDD)\- THE ULTIMATE STUFF COLLECTION -\Git\Git\NukeYKT Nuked SC-55\Nuked-55 Imp\roms\mk2\waverom2_DED.bin", "rb") as wave:
+        files.append(wave.read())
     for file in files:
         SIZE = len(file)
-        sample = 0
-        samples = [0 for _ in range(SIZE)]
-        for smpl in range(SIZE):
-            #delta = decode_fce(testFile, smpl) / (1 << 30)
-            delta = decode_fce(file, smpl)
-            sample += delta
-            samples[smpl] = sample
+        deltas = [decode_fce(file, _) for _ in range(SIZE)]
         print(f"file {files.index(file) + 1} done")
         print(samples) if DEBUG else None
-        #writer = FurWave.WaveWriter(data=samples, bitdepth=32.0, packed=1)
-        writer = FurWave.WaveWriter(data=samples, bitdepth=32, packed=False)
-        #writer.set_data(samples)
+        writer = FurWave.WaveWriter(data=np.cumsum(deltas), bitdepth=32, packed=False)
         print(writer.get_data()) if DEBUG else None
         writer.write_file(f"./waverom_{files.index(file) + 1}.wav", True)

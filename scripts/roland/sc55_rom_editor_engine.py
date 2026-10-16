@@ -1,8 +1,25 @@
 """
-A GUI editor tool for editing Roland SC-55 ROMs
-This is the "engine"
+A GUI editor tool for editing Roland SC-55 ROMs.
+This is the "engine".
+
+The engine handles the following:
+    Storing currently loaded ROMs
+    Storing instrument, partial, samples and etc data
+    Decompressing and recompressing ROM data
+    Scrambling and descrambling ROM data
+    Providing the GUI module with that data
 """
-import typing
+
+import decoders
+import funcs
+
+CURRENT_ROMS: list[bytes] = [
+    b"",  # CPU
+    b"",  # Control
+    b"",  # Wave 1
+    b"",  # Wave 2
+    b"",  # Wave 3
+]
 
 # BEHOLD! The SC-55 control ROM constants
 
@@ -23,6 +40,59 @@ LFO_PHASE_SHIFT: dict[int, str] = {
 }  # Shift value added to phase accumulator.
    # I actually have no idea whether its 90° steps or finer.
 
+def load_rom(path: str = "", type: int = 0) -> tuple[bool, str]:
+    if not path:
+        return False, "no path"
+    try:
+        with open(path, "rb") as f:
+            global CURRENT_ROMS
+            CURRENT_ROMS[type] = f.read()
+        print(f"engine: loaded {path}, type={["CPU", "Control", "Wave 1", "Wave 2", "Wave 3"][type]}")
+        if len(CURRENT_ROMS[type]) % (1 << 20) and type in [2, 3, 4]:
+            print(f"invalid wave rom size: {len(CURRENT_ROMS[type])}, expected multiple of 1MB")
+            CURRENT_ROMS[type] = None
+            return False, f"invalid wave rom size: {len(CURRENT_ROMS[type])}, expected multiple of 1MB"
+        elif type == 0 and len(CURRENT_ROMS[type]) % (1 << 15):
+            print(f"invalid cpu rom size: {len(CURRENT_ROMS[type])}, expected multiple of 32KB")
+            CURRENT_ROMS[type] = None
+            return False, f"invalid cpu rom size: {len(CURRENT_ROMS[type])}, expected multiple of 32KB"
+        elif type == 1 and len(CURRENT_ROMS[type]) % (1 << 18):
+            print(f"invalid control rom size: {len(CURRENT_ROMS[type])}, expected multiple of 256KB")
+            CURRENT_ROMS[type] = None
+            return False, f"invalid control rom size: {len(CURRENT_ROMS[type])}, expected multiple of 256KB"
+
+        return True, funcs.ret_hash(CURRENT_ROMS[type], "sha256")
+    except Exception as e:
+        print(f"engine: failed to load {path}: {e}")
+        CURRENT_ROMS[type] = None
+        return False, e
+
+class SC55_Sample:
+    """
+    Represents a single sample of an SC-55 instrument.
+    """
+    def __init__(self):
+        self.attenuation = 0
+        self.address = 0
+        self.porta_ofs = 0
+        self.length = 0
+        self.loop_length = 0
+        self.loop_mode = 0  # 0 = forward, 1 = ping-pong, 2 = off
+        self.root_key = 0
+        self.initial_pitch_offset = 0  # TODO: what units?
+        self.loop_pitch_offset = 0  # TODO: what units?
+
+    def decode(self, data: bytes):
+        if not data: return
+        self.attenuation = data[0]
+        self.address = int.from_bytes(data[1:4], "big") & 0x3fffff # 3 bytes
+        self.porta_ofs = int.from_bytes(data[4:6], "big")  # 2 bytes
+        self.length = int.from_bytes(data[6:8], "big")  # 2 bytes
+        self.loop_length = int.from_bytes(data[8:10], "big")  # 2 bytes
+        self.loop_mode = data[10]
+        self.root_key = data[11]
+        self.initial_pitch_offset = int.from_bytes(data[12:14], "big")  # 2 bytes
+        self.loop_pitch_offset = int.from_bytes(data[14:16], "big")  # 2 bytes
 
 class SC55_Instrument_Partial:
     """
@@ -98,3 +168,12 @@ class SC55_Instrument:
     def decode(self, data: bytes | bytearray | list[int] | None = None):
         if not data:
             return
+
+def decompress_range(wave_rom: int = 0, start: int = 0, length: int = 0) -> list[float]:
+    print(f"engine: sample waverom {wave_rom}")
+    if not CURRENT_ROMS[wave_rom + 2]:
+        return [0 for _ in range(length)]
+    data = [0 for _ in range(length)]
+    for addr in range(length):
+        data[addr] = data[addr - 1] - decoders.scale_fce(decoders.decode_fce(CURRENT_ROMS[wave_rom + 2], start + addr), True)
+    return data
