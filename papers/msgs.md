@@ -19,6 +19,7 @@ of MSGS](https://github.com/sloptainment/slopgs) as found in Windows XP, Service
 Enjoy reading!
 
 ## What is MSGS?
+<img width="360" height="356" alt="image" src="https://github.com/user-attachments/assets/8014fa25-c42b-4a1d-9ffe-a6d4229f003c" />
 
 Ahhhh, the good ol' MSGS.
 
@@ -63,7 +64,7 @@ Bass Drum 1 might come from later modules, as the sound is not present in the SC
 | GM 2                     | No           | No                                            | Partial<sup>[[4]](#midi2-support)</sup>                                          | No                     | No          |
 | XG                       | No           | No                                            | Bank select only                                                                 | No                     | No          |
 | Parts                    | 16           | 16                                            | 16                                                                               | 16                     | 16          |
-| Voices                   | 32           | 48 + 6<sup>[[2]](#weird-voice-count)</sup>    | 256                                                                              | 24                     | 28          |
+| Voices                   | 32           | 48 (+ 6<sup>[[2]](#weird-voice-count)</sup>)  | 256                                                                              | 24                     | 28          |
 | Tones (Basic)            | 226          | 226                                           | 226                                                                              | 189                    | 226         |
 | Tones (MT-32 Map)        | 0            | 0                                             | 0                                                                                | 128                    | 128         |
 | Drum Kits                | 9            | 9                                             | 9                                                                                | 9                      | 9           |
@@ -252,3 +253,11 @@ Few such examples are:
   quite the creativity to come up with that.
 
 And finally, shameless self-promotion here, cover of [Crystal Oscillator](/tests/msgs_10.ogg).
+
+## Credits
+
+- [nnonick](https://github.com/nnonickreal) for some Windows XP testing & upcoming Windows XP recordings, and upcoming Windows Vista tests.
+- [Zumi](https://github.com/ZoomTen) for clean-room implementation of Windows XP MSGS & documenting how it works, and kickstarting this document.
+- [Abstract64](https://www.youtube.com/@64abstract), [Kot](https://www.youtube.com/@kot_bruhman) and
+  [HueArme](https://soundcloud.com/user-416698216-971657402) for making me interested in the synth in the first place.
+- YOU, for reading this.
