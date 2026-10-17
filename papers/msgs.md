@@ -1,13 +1,25 @@
 # The MSGS situation is crazy
 
-[ Last edited 16/10/26 ]
+[ Last edited 17/10/26 ]
 
 If you want to skip right to the point, click [here](#the-point).
 
 I'm honestly surprised that this turned into actual somewhat
 documentation of MSGS.
+## Disclaimer
+
+This is a rant that eventually turned into a research.
+All of the stuff described here is based purely on my
+observations and could be wrong or different in any part
+of this, I did not do any decompilations.
+
+This document also references a [clean-room reimplementation
+of MSGS](https://github.com/sloptainment/slopgs) as found in Windows XP, Service Pack 3.
+
+Enjoy reading!
 
 ## What is MSGS?
+<img width="360" height="356" alt="image" src="https://github.com/user-attachments/assets/8014fa25-c42b-4a1d-9ffe-a6d4229f003c" />
 
 Ahhhh, the good ol' MSGS.
 
@@ -46,17 +58,17 @@ Bass Drum 1 might come from later modules, as the sound is not present in the SC
 
 |                          | MSGS (Win10) | MSGS (Pre-Win10)<sup>[[1]](#why-pre-10)</sup> | MSGS (Win11 Inbox Dev Preview 9, Native mode<sup>[[3]](#native-mode-note)</sup>) | SC-55                  | SC-55mkII   |
 |:------------------------:|:------------:|:---------------------------------------------:|:--------------------------------------------------------------------------------:|:----------------------:|:-----------:|
-| Interpolation            | Linear       | Linear                                        | Sinc (likely)                                                                    | 4-p Sinc(?)            | 4-p Sinc(?) |
+| Interpolation            | Linear       | Linear                                        | Sinc (likely)                                                                    | 4-p Lin (?)            | 4-p Lin (?) |
 | GM                       | Yes          | Yes                                           | Yes                                                                              | Firmware 1.20 or later | Yes         |
 | GS                       | Yes          | Yes                                           | Yes                                                                              | Yes                    | Yes         |
 | GM 2                     | No           | No                                            | Partial<sup>[[4]](#midi2-support)</sup>                                          | No                     | No          |
 | XG                       | No           | No                                            | Bank select only                                                                 | No                     | No          |
 | Parts                    | 16           | 16                                            | 16                                                                               | 16                     | 16          |
-| Voices                   | 32           | 48 + 6<sup>[[2]](#weird-voice-count)</sup>    | 256                                                                              | 24                     | 28          |
+| Voices                   | 32           | 48 (+ 6<sup>[[2]](#weird-voice-count)</sup>)  | 256                                                                              | 24                     | 28          |
 | Tones (Basic)            | 226          | 226                                           | 226                                                                              | 189                    | 226         |
 | Tones (MT-32 Map)        | 0            | 0                                             | 0                                                                                | 128                    | 128         |
 | Drum Kits                | 9            | 9                                             | 9                                                                                | 9                      | 9           |
-| Sample Rate              | 22050hz      | 22050hz                                       | 44100hz                                                                          | 32000hz                | 32000hz     |
+| Sample Rate              | 22050hz      | 22050hz                                       | 44100hz                                                                          | 32000hz                | ~33100hz    |
 | Resonant Low Pass Filter | No           | No                                            | No                                                                               | Yes                    | Yes         |
 | Rate Limit               | None         | None                                          | None                                                                             | 31250 baud             | 31250 baud  |
 | CC#91 Reverb             | No           | No                                            | Yes<sup>[[5]](#effects-note)</sup>                                               | Yes                    | Yes         |
@@ -241,3 +253,11 @@ Few such examples are:
   quite the creativity to come up with that.
 
 And finally, shameless self-promotion here, cover of [Crystal Oscillator](/tests/msgs_10.ogg).
+
+## Credits
+
+- [nnonick](https://github.com/nnonickreal) for some Windows XP testing & upcoming Windows XP recordings, and upcoming Windows Vista tests.
+- [Zumi](https://github.com/ZoomTen) for clean-room implementation of Windows XP MSGS & documenting how it works, and kickstarting this document.
+- [Abstract64](https://www.youtube.com/@64abstract), [Kot](https://www.youtube.com/@kot_bruhman) and
+  [HueArme](https://soundcloud.com/user-416698216-971657402) for making me interested in the synth in the first place.
+- YOU, for reading this.
