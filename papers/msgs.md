@@ -1,11 +1,22 @@
 # The MSGS situation is crazy
 
-[ Last edited 16/10/26 ]
+[ Last edited 17/10/26 ]
 
 If you want to skip right to the point, click [here](#the-point).
 
 I'm honestly surprised that this turned into actual somewhat
 documentation of MSGS.
+## Disclaimer
+
+This is a rant that eventually turned into a research.
+All of the stuff described here is based purely on my
+observations and could be wrong or different in any part
+of this, I did not do any decompilations.
+
+This document also references a [clean-room reimplementation
+of MSGS](https://github.com/sloptainment/slopgs) as found in Windows XP, Service Pack 3.
+
+Enjoy reading!
 
 ## What is MSGS?
 
