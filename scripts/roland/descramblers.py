@@ -43,7 +43,7 @@ byte_lut_sc = [
 ]
 
 byte_lut_r8 = [
-    # byte lut for R-8 specifically
+    # byte lut for R-8 and D-70
     # bit order: [1, 2, 7, 3, 5, 0, 4, 6]
       0,  32,   1,  33,   2,  34,   3,  35,
       8,  40,   9,  41,  10,  42,  11,  43,
@@ -100,7 +100,11 @@ address_order_r8 = [
     0x0E,0x0A,0x0D,0x0F,0x03,0x02,0x01,0x06,
     0x04,0x05,0x00,0x13,0x14,0x15,0x16,0x17
 ]
-
+address_order_d70 = [
+    0x12,0x11,0x0F,0x0E,0x10,0x0C,0x0B,0x07,
+    0x09,0x0D,0x0A,0x08,0x03,0x02,0x01,0x06,
+    0x04,0x05,0x00,0x13,0x14,0x15,0x16,0x17
+]
 
 @numba.jit
 def descramble_address_sc(addr: int) -> int:
@@ -143,6 +147,20 @@ def descramble_address_r8(addr) -> int:
     for bit in range(24):
         out |= ((addr >> address_order[bit]) & 1) << bit
     return out
+    
+@numba.jit
+def descramble_address_d70(addr) -> int:
+    address_order = [
+        0x12,0x11,0x0F,0x0E,0x10,0x0C,0x0B,0x07,
+        0x09,0x0D,0x0A,0x08,0x03,0x02,0x01,0x06,
+        0x04,0x05,0x00,0x13,0x14,0x15,0x16,0x17
+    ]
+    if addr < 0x80:
+        return addr
+    out = 0
+    for bit in range(24):
+        out |= ((addr >> address_order[bit]) & 1) << bit
+    return out
 
 def descramble_file(file: str = '', out_to: str = '', return_buffer=False, _type=0):
     """
@@ -150,15 +168,20 @@ def descramble_file(file: str = '', out_to: str = '', return_buffer=False, _type
         0: SC-55/88 series, JV boards
         1: SRX Expansion cards
         2: R-8 (TODO)
+        3: D-70 
     """
     if not file and not return_buffer: print("nothing to descramble"); return [0]
     if not out_to and not return_buffer: print("nowhere to put"); return [0]
     with open(file, "rb") as r:
         rom = r.read()
-    if len(rom) % (1 << 20) and _type != 2: print("wrong rom size"); return [0]
-    elif _type == 2 and len(rom) % (1 << 19): print("wrong rom size"); return [0]
-    passes = len(rom) // (1 << 20)
-    buffer: list[int] = [0 for _ in range((1 << 20) * passes)]
+    if len(rom) % (1 << 20) and _type in [0, 1]: print("wrong rom size"); return [0]
+    elif _type in [2, 3] and len(rom) % (1 << 19): print("wrong rom size"); return [0]
+    if _type in [0, 1]:
+        passes = len(rom) // (1 << 20)
+        buffer: list[int] = [0 for _ in range((1 << 20) * passes)]
+    elif _type in [2, 3]:
+        passes = len(rom) // (1 << 19)
+        buffer: list[int] = [0 for _ in range((1 << 19) * passes)]
     match _type:
         case 0:
             for pass_ in range(passes):
@@ -183,6 +206,22 @@ def descramble_file(file: str = '', out_to: str = '', return_buffer=False, _type
                         buffer[addr + (524288 * pass_)] = rom[addr + (524288 * pass_)]
                         continue
                     buffer[descramble_address_r8(addr) + (524288 * pass_)] = byte_lut_r8[rom[addr + (524288 * pass_)]]
+                print(f'bank {pass_ + 1} done')
+        case 2:
+            for pass_ in range(passes):
+                for addr in range(524288):
+                    if addr < 0x20:
+                        buffer[addr + (524288 * pass_)] = rom[addr + (524288 * pass_)]
+                        continue
+                    buffer[descramble_address_r8(addr) + (524288 * pass_)] = byte_lut_r8[rom[addr + (524288 * pass_)]]
+                print(f'bank {pass_ + 1} done')
+        case 3:
+            for pass_ in range(passes):
+                for addr in range(524288):
+                    if addr < 0x80:
+                        buffer[addr + (524288 * pass_)] = rom[addr + (524288 * pass_)]
+                        continue
+                    buffer[descramble_address_d70(addr) + (524288 * pass_)] = byte_lut_r8[rom[addr + (524288 * pass_)]]
                 print(f'bank {pass_ + 1} done')
         case _:
             return [0]
@@ -266,10 +305,14 @@ def descramble_file_VERY_FUCKING_FAST(file: str = '', out_to: str = '', return_b
     if not out_to and not return_buffer: print("nowhere to put"); return [0]
     with open(file, "rb") as r:
         rom = r.read()
-    if len(rom) % (1 << 20) and _type != 2: print("wrong rom size"); return [0]
-    elif _type == 2 and len(rom) % (1 << 19): print("wrong rom size"); return [0]
-    passes = len(rom) // (1 << 20)
-    buffer: list[int] = [0 for _ in range((1 << 20) * passes)]
+    if len(rom) % (1 << 20) and _type in [0, 1]: print("wrong rom size"); return [0]
+    elif _type in [2, 3] and len(rom) % (1 << 19): print("wrong rom size"); return [0]
+    if _type in [0, 1]:
+        passes = len(rom) // (1 << 20)
+        buffer: list[int] = [0 for _ in range((1 << 20) * passes)]
+    elif _type in [2, 3]:
+        passes = len(rom) // (1 << 19)
+        buffer: list[int] = [0 for _ in range((1 << 19) * passes)]
     match _type:
         case 0:
             for pass_ in range(passes):
@@ -295,12 +338,21 @@ def descramble_file_VERY_FUCKING_FAST(file: str = '', out_to: str = '', return_b
                         continue
                     buffer[descramble_address_r8(addr) + (524288 * pass_)] = local_byte_lut_r8[rom[addr + (524288 * pass_)]]
                 print(f'bank {pass_ + 1} done')
+        case 3:
+            for pass_ in range(passes):
+                for addr in range(524288):
+                    if addr < 0x80:
+                        buffer[addr + (524288 * pass_)] = rom[addr + (524288 * pass_)]
+                        continue
+                    buffer[descramble_address_d70(addr) + (524288 * pass_)] = byte_lut_r8[rom[addr + (524288 * pass_)]]
+                print(f'bank {pass_ + 1} done')
         case _:
             return [0]
     if return_buffer:
         return buffer
     else:
         with open(out_to, "wb") as output:
+            print("shart")
             output.write(bytes(buffer))
 
 # BEHOLD! The holy testing area
@@ -310,21 +362,25 @@ def descramble_file_VERY_FUCKING_FAST(file: str = '', out_to: str = '', return_b
 # instead of just importing the
 # functions and using those.
 if __name__ == '__main__':
-    print("begin")
+    # print("begin")
     start = time.perf_counter()
-    descramble_file(
-    r"E:\D Drive (HDD)\- THE ULTIMATE STUFF COLLECTION -\Git\Git\NukeYKT Nuked SC-55\Nuked-55 Imp\roms\mk2\waverom1.bin",
-    r"E:\D Drive (HDD)\- THE ULTIMATE STUFF COLLECTION -\Git\Git\NukeYKT Nuked SC-55\Nuked-55 Imp\roms\mk2\waverom1_DED.bin")
-    descramble_file(
-    r"E:\D Drive (HDD)\- THE ULTIMATE STUFF COLLECTION -\Git\Git\NukeYKT Nuked SC-55\Nuked-55 Imp\roms\mk2\waverom2.bin",
-    r"E:\D Drive (HDD)\- THE ULTIMATE STUFF COLLECTION -\Git\Git\NukeYKT Nuked SC-55\Nuked-55 Imp\roms\mk2\waverom2_DED.bin")
-    print(f"took {time.perf_counter() - start}")
-    print("begin")
-    start = time.perf_counter()
+    # descramble_file(
+    # r"E:\D Drive (HDD)\- THE ULTIMATE STUFF COLLECTION -\Git\Git\NukeYKT Nuked SC-55\Nuked-55 Imp\roms\mk2\waverom1.bin",
+    # r"E:\D Drive (HDD)\- THE ULTIMATE STUFF COLLECTION -\Git\Git\NukeYKT Nuked SC-55\Nuked-55 Imp\roms\mk2\waverom1_DED.bin")
+    # descramble_file(
+    # r"E:\D Drive (HDD)\- THE ULTIMATE STUFF COLLECTION -\Git\Git\NukeYKT Nuked SC-55\Nuked-55 Imp\roms\mk2\waverom2.bin",
+    # r"E:\D Drive (HDD)\- THE ULTIMATE STUFF COLLECTION -\Git\Git\NukeYKT Nuked SC-55\Nuked-55 Imp\roms\mk2\waverom2_DED.bin")
+    # print(f"took {time.perf_counter() - start}")
+    # print("begin")
+    # start = time.perf_counter()
+    # descramble_file_VERY_FUCKING_FAST(
+    # r"E:\D Drive (HDD)\- THE ULTIMATE STUFF COLLECTION -\Git\Git\NukeYKT Nuked SC-55\Nuked-55 Imp\roms\mk2\waverom1.bin",
+    # r"E:\D Drive (HDD)\- THE ULTIMATE STUFF COLLECTION -\Git\Git\NukeYKT Nuked SC-55\Nuked-55 Imp\roms\mk2\waverom1_DED.bin")
+    # descramble_file_VERY_FUCKING_FAST(
+    # r"E:\D Drive (HDD)\- THE ULTIMATE STUFF COLLECTION -\Git\Git\NukeYKT Nuked SC-55\Nuked-55 Imp\roms\mk2\waverom2.bin",
+    # r"E:\D Drive (HDD)\- THE ULTIMATE STUFF COLLECTION -\Git\Git\NukeYKT Nuked SC-55\Nuked-55 Imp\roms\mk2\waverom2_DED.bin")
+    # start = time.perf_counter()
     descramble_file_VERY_FUCKING_FAST(
-    r"E:\D Drive (HDD)\- THE ULTIMATE STUFF COLLECTION -\Git\Git\NukeYKT Nuked SC-55\Nuked-55 Imp\roms\mk2\waverom1.bin",
-    r"E:\D Drive (HDD)\- THE ULTIMATE STUFF COLLECTION -\Git\Git\NukeYKT Nuked SC-55\Nuked-55 Imp\roms\mk2\waverom1_DED.bin")
-    descramble_file_VERY_FUCKING_FAST(
-    r"E:\D Drive (HDD)\- THE ULTIMATE STUFF COLLECTION -\Git\Git\NukeYKT Nuked SC-55\Nuked-55 Imp\roms\mk2\waverom2.bin",
-    r"E:\D Drive (HDD)\- THE ULTIMATE STUFF COLLECTION -\Git\Git\NukeYKT Nuked SC-55\Nuked-55 Imp\roms\mk2\waverom2_DED.bin")
+    r"E:\D Drive (HDD)\- THE ULTIMATE STUFF COLLECTION -\very h\Wave ROMs\Roland\Roland D-70\roland_d70_waverom-a.bin",
+    r"E:\D Drive (HDD)\- THE ULTIMATE STUFF COLLECTION -\very h\Wave ROMs\Roland\Roland D-70\roland_d70_waverom-a_DED.bin", _type=3)
     print(f"took {time.perf_counter() - start}")
