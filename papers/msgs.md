@@ -46,7 +46,7 @@ Bass Drum 1 might come from later modules, as the sound is not present in the SC
 
 |                          | MSGS (Win10) | MSGS (Pre-Win10)<sup>[[1]](#why-pre-10)</sup> | MSGS (Win11 Inbox Dev Preview 9, Native mode<sup>[[3]](#native-mode-note)</sup>) | SC-55                  | SC-55mkII   |
 |:------------------------:|:------------:|:---------------------------------------------:|:--------------------------------------------------------------------------------:|:----------------------:|:-----------:|
-| Interpolation            | Linear       | Linear                                        | Sinc (likely)                                                                    | 4-p Sinc(?)            | 4-p Sinc(?) |
+| Interpolation            | Linear       | Linear                                        | Sinc (likely)                                                                    | 4-p Lin (?)            | 4-p Lin (?) |
 | GM                       | Yes          | Yes                                           | Yes                                                                              | Firmware 1.20 or later | Yes         |
 | GS                       | Yes          | Yes                                           | Yes                                                                              | Yes                    | Yes         |
 | GM 2                     | No           | No                                            | Partial<sup>[[4]](#midi2-support)</sup>                                          | No                     | No          |
@@ -56,7 +56,7 @@ Bass Drum 1 might come from later modules, as the sound is not present in the SC
 | Tones (Basic)            | 226          | 226                                           | 226                                                                              | 189                    | 226         |
 | Tones (MT-32 Map)        | 0            | 0                                             | 0                                                                                | 128                    | 128         |
 | Drum Kits                | 9            | 9                                             | 9                                                                                | 9                      | 9           |
-| Sample Rate              | 22050hz      | 22050hz                                       | 44100hz                                                                          | 32000hz                | 32000hz     |
+| Sample Rate              | 22050hz      | 22050hz                                       | 44100hz                                                                          | 32000hz                | ~33100hz    |
 | Resonant Low Pass Filter | No           | No                                            | No                                                                               | Yes                    | Yes         |
 | Rate Limit               | None         | None                                          | None                                                                             | 31250 baud             | 31250 baud  |
 | CC#91 Reverb             | No           | No                                            | Yes<sup>[[5]](#effects-note)</sup>                                               | Yes                    | Yes         |
