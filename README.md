@@ -9,7 +9,7 @@ Currently contains:
 - MIDI Files (alongside eith Domino MIDI Editor's `.dms` projects)
 - SC-55 Utilities (2):
   - Image/Text to Display SysEx converter (awaiting fixing)
-  - [Unfinished] ROM Decompressor
+  - [Unfinished] Full ROM Editor
 - FurADPCM custom codec encoder/decoder written in python (currently in a terrible state, a rewrite is pending)
 - [funcs](scripts/funcs.py) general purpose function library providing some small functions.
 - FurWAVE Microsoft Wave read/write library (write-only currently), supporting both Integer and IEEE Float bit depths, 
