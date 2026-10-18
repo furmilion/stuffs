@@ -104,8 +104,36 @@ Bass Drum 1 might come from later modules, as the sound is not present in the SC
 
 [5] As I have no Windows 11 Machine, I cannot test whether the reverb and chorus are CC-controllable or just system toggles.
 
----
+#### SysEx Response
 
+A SysEx, aka System Exclusive, is a special type of MIDI messages.
+Each manufacturer has its own set of SysEx messages, alongside
+the common ones that usually all have.
+
+A System Exclusive message consists of bytes `F0 F7` acting as boundaries,
+some data between them and a checksum just before the the closing byte.
+Usually a SysEx has the following structure: `F0 vv dd dt cs F7`, where `vv` is vendor ID, `dd` is device ID, `dt` is any other data and `cs` is checksum.
+Generally SysEx _must_ be at least **6** bytes long, and at least **11** bytes long for Roland SysEx.
+Most of this section is borrowed from [here](#blog).
+
+| Vendor ID | Device ID | Data | Name | Notes |
+|:----------|:---------:|:-----|:----:|:------|
+| `7E` (Universal Non-realtime) | `dd` | `06 01` | Doesn't require a checksum; Identity Request | Windows 11-only; Returns data about the synth |
+| `7E` (Universal Non-realtime) | `dd` | `09 01` | GM System On | Doesn't require a checksum; Win11: Resets banking mode to GS |
+| `7E` (Universal Non-realtime) | `dd` | `09 02` | GM System Off | Doesn't require a checksum; Win11: Resets the synth; Win10: GM System On |
+| `7E` (Universal Non-realtime) | `dd` | `09 03` | GM2 System On | Doesn't require a checksum; Win11: Resets banking mode to GS; Win10: GM System On |
+| `7F` (Universal Realtime) | `dd` | `04 01 .. vv` | Master Volume | `..` is ignored. Otherwise, self-explanatory |
+| `7F` (Universal Realtime) | `dd` | `04 03 ll mm` | Master Fine Tuning | Due to [this](#effects-note) I cannot test how it actually works. |
+| `7F` (Universal Realtime) | `dd` | `04 04 ll mm` | Master Coarse Tuning | Due to [this](#effects-note) I cannot test how it actually works. |
+| `7F` (Universal Realtime) | `dd` | `04 05 ll mm` | Global Parameter Control | Due to [this](#effects-note) I cannot test how it actually works. |
+| `41 42 12` (Roland) | `dd` | `40 00 7F 00` | GS Reset | Self-explanatory. Win11: Resets banking mode to GS |
+| `41 42 12` (Roland) | `dd` | `40 1p 02 0x` | GS Set Channel For Part | Sets the input Part ID `p` to channel `x`. Note that Part 00 is Drums part. |
+| `41 42 12` (Roland) | `dd` | `40 1p 15 0x` | GS Part is Rhythm | Any nonzero value `x` makes Part ID `p` a Rhythm part. Allows for multiple drum parts. MSGS supposedly supports more than 2. |
+| `41 42 12` (Roland) | `dd` | `40 1p 40` | GS Scale Tuning | Tune adjust for the note scale of Part ID `p`. Ranges from -1 to +1 semitone in values from `00` to `7F` where 40 is no offset. Usually 12 bytes are sent, but the list can be terminated early by inserting an `80` before the end. |
+
+
+---
+<a name="blog"></a>
 A lot of useful CC and other info on MSGS can be found
 on [Zumi's MSGS blog](https://zumi.neocities.org/stuff/msgs/).
 
@@ -164,25 +192,33 @@ Percussive sounds:
 
 Controllers:
 
-| CC# | Purpose               | Short description                                                                                                          |
-|:---:|:---------------------:|:--------------------------------------------------------------------------------------------------------------------------:|
-| 0   | Bank Select MSB       | The most significant byte of the bank                                                                                      |
-| 5   | Portamento time       | Controls the speed of portamento                                                                                           |
-| 32  | Bank Select LSB       | The least significant byte of the bank                                                                                     |
-| 65  | Portamento            | Whether is portamento on. 0\~63: Off, 64\~127: On                                                                          |
-| 66  | Sostenuto             | Like hold pedal, but only sustains notes that already were on                                                              |
-| 67  | Soft Pedal            | Softens the notes, as in applies a slight lowpass filter                                                                   |
-| 84  | Portamento Control    | Specifies the note to glide from for the next note when set                                                                |
-| 91  | Reverb Send Level     | Specifies how loud should sound sent to reverb unit be                                                                     |
-| 93  | Chorus Send Level     | Specifies how loud should sound sent to chorus unit be                                                                     |
-| 94  | Delay Send Level      | Specifies how loud should sound sent to delay unit be                                                                      |
-| 98  | NRPN LSB              | Sets the NRPN LSB number to send data to. Sent after NRPN MSB                                                              |
-| 99  | NRPN MSB              | Sets the NRPN MSB number to send data to. Sent before NRPN LSB                                                             |
-| 120 | All Sounds Off        | Cuts all sounds, regardless of whether are they held by CC#64 or CC#65 on specified channel                                |
-| 121 | Reset All Controllers | Resets following controls: Pitchbend, PolyKeyPress, ChannelPress, Mod wheel, Expression, Hold, Portamento, Sostenuto, Soft |
-| 123 | All Notes Off         | Turns all notes off unless held by CC#64 Sustain Pedal or CC#65 Sostenuto                                                  |
+| CC# | Purpose               | Short description                                                                                                          | MSGS Responds |
+|:---:|:----------------------|:---------------------------------------------------------------------------------------------------------------------------|:--------------|
+| 0   | Bank Select MSB       | The most significant byte of the bank                                                                                      | Yes           |
+| 5   | Portamento time       | Controls the speed of portamento                                                                                           | No            |
+| 32  | Bank Select LSB       | The least significant byte of the bank                                                                                     | No            |
+| 65  | Portamento            | Whether is portamento on. 0\~63: Off, 64\~127: On                                                                          | No            |
+| 66  | Sostenuto             | Like hold pedal, but only sustains notes that already were on                                                              | No            |
+| 67  | Soft Pedal            | Softens the notes, as in applies a slight lowpass filter                                                                   | No            |
+| 84  | Portamento Control    | Specifies the note to glide from for the next note when set                                                                | No            |
+| 91  | Reverb Send Level     | Specifies how loud should sound sent to reverb unit be                                                                     | No            |
+| 93  | Chorus Send Level     | Specifies how loud should sound sent to chorus unit be                                                                     | No            |
+| 94  | Delay Send Level      | Specifies how loud should sound sent to delay unit be                                                                      | No            |
+| 98  | NRPN LSB              | Sets the NRPN LSB number to send data to. Sent after NRPN MSB                                                              | No            |
+| 99  | NRPN MSB              | Sets the NRPN MSB number to send data to. Sent before NRPN LSB                                                             | No            |
+| 120 | All Sounds Off        | Cuts all sounds, regardless of whether are they held by CC#64 or CC#65 on specified channel                                | Yes           |
+| 121 | Reset All Controllers | Resets following controls: Pitchbend, PolyKeyPress, ChannelPress, Mod wheel, Expression, Hold, Portamento, Sostenuto, Soft | Yes           |
+| 123 | All Notes Off         | Turns all notes off unless held by CC#64 Sustain Pedal or CC#65 Sostenuto                                                  | Yes           |
+| 126 | Channel Mono          | Cuts all sound on a channel and sets the polyphony to CC value                                                             | As Poly       |
+| 127 | Channel Poly          | Cuts all sound on a channel and resets it to polyphonic mode                                                               | As Poly       |
 
-MSGS, however, ignores portamento and soft pedal controls (a software synthesizer built to be
+| RPN# | Purpose               | Short description                                                                                                          | MSGS Responds |
+|:----:|:----------------------|:---------------------------------------------------------------------------------------------------------------------------|:--------------|
+| 0000 | Pitch Bend Range      | Pitch bend range. Most devices cap at 24, while MSGS allows for up to 48.                                                  | Yes           |
+| 0001 | Fine Tune             | Channel fine tune within +-1 semitone. 8192 (`2000h`) = no detune.                                                         | Yes           |
+| 0002 | Coarse Tune           | Channel coarse tune within +-64 semitones. 64 (`0040h`) = no detune.                                                       | Yes           |
+
+MSGS ignores most of these (a software synthesizer built to be
 fast and cheap with an acceptable sound quality, after all).
 Also, MSGS accepts all of these apart from Bank controls even when in GM mode,
 including the extra percussion always being available.
