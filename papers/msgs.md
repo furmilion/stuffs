@@ -1,6 +1,6 @@
 # The MSGS situation is crazy
 
-[ Last edited 17/10/26 ]
+[ Last edited 18/10/26 ]
 
 If you want to skip right to the point, click [here](#the-point).
 
