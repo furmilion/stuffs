@@ -118,7 +118,7 @@ Most of this section is borrowed from [here](#blog).
 
 | Vendor ID | Device ID | Data | Name | Notes |
 |:----------|:---------:|:-----|:----:|:------|
-| `7E` (Universal Non-realtime) | `dd` | `06 01` | Doesn't require a checksum; Identity Request | Windows 11-only; Returns data about the synth |
+| `7E` (Universal Non-realtime) | `dd` | `06 01` | Identity Request | Doesn't require a checksum; Windows 11-only; Returns data about the synth |
 | `7E` (Universal Non-realtime) | `dd` | `09 01` | GM System On | Doesn't require a checksum; Win11: Resets banking mode to GS |
 | `7E` (Universal Non-realtime) | `dd` | `09 02` | GM System Off | Doesn't require a checksum; Win11: Resets the synth; Win10: GM System On |
 | `7E` (Universal Non-realtime) | `dd` | `09 03` | GM2 System On | Doesn't require a checksum; Win11: Resets banking mode to GS; Win10: GM System On |
