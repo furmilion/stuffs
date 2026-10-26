@@ -10,6 +10,7 @@ Contents:
      - [GS crash course](#gs-crash-course)
        - [GS Additions](#gs-additions)
    - [Notes](#notes)
+ - [Quirks](#quirks)
  - [Why?](#why)
  - [Personal notes](#personal-notes)
  - [Credits](#credits)
@@ -241,6 +242,34 @@ including the extra percussion always being available.
 
 ---
 
+## Quirks
+
+Despite stemming from SC-55, MSGS gained its own quirks.
+
+General:
+ - A channel cannot have 2 instances of the same note. A new note cuts the previous one.
+   SC-55 applies this only to drum channels.
+ - Whole ass 48 semitone pitch bend range! (Why though?)
+ - No effects of any kind, apart from Windows 11
+
+Windows 98...XP:
+ - A channel cannot have 2 different patches sounding
+ - All Sounds Off instead releases notes while ignoring pedals
+ - Slower to response in general
+ - Sounds as if it was EQ'd
+
+Windows 10+:
+ - A channel can have 2 different patches sounding under the following conditions:
+   - A channel has another note sounding
+   - A program change happened
+   - A new note after a program change is struck
+ 
+ This also allows the channel to have 2 instances of the same note, although both share the note-off event.
+ - All Sounds Off cuts off all sound on a channel
+ - Faster to response
+ - Flat sound
+
+---
 ## Why?
 
 So there is an unfinished [MSGS cover](/midis/crystal_msgs.mid) of [Crystal Oscillator](https://youtu.be/uL2XWtx3ePk)
