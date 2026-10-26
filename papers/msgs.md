@@ -1,6 +1,6 @@
 # The MSGS situation is crazy
 
-[ Last edited 26/10/26 ]
+[ Last edited 27/10/26 ]
 
 Contents:
  - [Disclaimer](#disclaimer)
@@ -251,6 +251,8 @@ General:
    SC-55 applies this only to drum channels.
  - Whole ass 48 semitone pitch bend range! (Why though?)
  - No effects of any kind, apart from Windows 11
+   - Filter is also an effect in this context
+ - Does not have any NRPNs and thus has no editable envelopes
 
 Windows 98...XP:
  - A channel cannot have 2 different patches sounding
