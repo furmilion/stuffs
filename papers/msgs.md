@@ -1,8 +1,18 @@
 # The MSGS situation is crazy
 
-[ Last edited 18/10/26 ]
+[ Last edited 26/10/26 ]
 
-If you want to skip right to the point, click [here](#the-point).
+Contents:
+ - [Disclaimer](#disclaimer)
+ - [What is MSGS?](#what-is-msgs)
+  - [Crash course](#crash-course)
+   - [SysEx Response](#sysex-response)
+   - [GS crash course](#gs-crash-course)
+    - [GS Additions](#gs-additions)
+   - [Notes](#notes)
+ - [Why?](#why)
+ - [Personal notes](#personal-notes)
+ - [Credits](#credits)
 
 I'm honestly surprised that this turned into actual somewhat
 documentation of MSGS.
@@ -13,8 +23,7 @@ All of the stuff described here is based purely on my
 observations and could be wrong or different in any part
 of this, I did not do any decompilations.
 
-This document also references a [clean-room reimplementation
-of MSGS](https://github.com/sloptainment/slopgs) as found in Windows XP, Service Pack 3.
+This document also references a [clean-room reimplementation of MSGS](https://github.com/sloptainment/slopgs) as found in Windows XP, Service Pack 3.
 
 Enjoy reading!
 
@@ -139,7 +148,7 @@ on [Zumi's MSGS blog](https://zumi.neocities.org/stuff/msgs/).
 
 ---
 
-#### Crash course (but on Roland GS)
+#### GS crash course
 
 Roland GS is basically an extended version of General MIDI Level 1 aka GM.
 It adds about this:
@@ -232,7 +241,7 @@ including the extra percussion always being available.
 
 ---
 
-## The point.
+## Why?
 
 So there is an unfinished [MSGS cover](/midis/crystal_msgs.mid) of [Crystal Oscillator](https://youtu.be/uL2XWtx3ePk)
 unfortunately, I will not finish the midi at any cost, due to a simple reason: ~~not enough voices msgs has (32)~~
@@ -293,7 +302,7 @@ And finally, shameless self-promotion here, cover of [Crystal Oscillator](/tests
 ## Credits
 
 - [nnonick](https://github.com/nnonickreal) for some Windows XP testing & upcoming Windows XP recordings, and upcoming Windows Vista tests.
-- [Zumi](https://github.com/ZoomTen) for clean-room implementation of Windows XP MSGS & documenting how it works, and kickstarting this document.
+- [Zumi](https://github.com/ZoomTen) for [clean-room reimplementation](https://github.com/sloptainment/slopgs) of Windows XP MSGS & documenting how it works, and kickstarting this document.
 - [Abstract64](https://www.youtube.com/@64abstract), [Kot](https://www.youtube.com/@kot_bruhman) and
   [HueArme](https://soundcloud.com/user-416698216-971657402) for making me interested in the synth in the first place.
 - YOU, for reading this.
