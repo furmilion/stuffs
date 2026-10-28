@@ -1,8 +1,19 @@
 # The MSGS situation is crazy
 
-[ Last edited 18/10/26 ]
+[ Last edited 27/10/26 ]
 
-If you want to skip right to the point, click [here](#the-point).
+Contents:
+ - [Disclaimer](#disclaimer)
+ - [What is MSGS?](#what-is-msgs)
+   - [Crash course](#crash-course)
+     - [SysEx Response](#sysex-response)
+     - [GS crash course](#gs-crash-course)
+       - [GS Additions](#gs-additions)
+   - [Notes](#notes)
+ - [Quirks](#quirks)
+ - [Why?](#why)
+ - [Personal notes](#personal-notes)
+ - [Credits](#credits)
 
 I'm honestly surprised that this turned into actual somewhat
 documentation of MSGS.
@@ -13,8 +24,7 @@ All of the stuff described here is based purely on my
 observations and could be wrong or different in any part
 of this, I did not do any decompilations.
 
-This document also references a [clean-room reimplementation
-of MSGS](https://github.com/sloptainment/slopgs) as found in Windows XP, Service Pack 3.
+This document also references a [clean-room reimplementation of MSGS](https://github.com/sloptainment/slopgs) as found in Windows XP, Service Pack 3.
 
 Enjoy reading!
 
@@ -139,7 +149,7 @@ on [Zumi's MSGS blog](https://zumi.neocities.org/stuff/msgs/).
 
 ---
 
-#### Crash course (but on Roland GS)
+#### GS crash course
 
 Roland GS is basically an extended version of General MIDI Level 1 aka GM.
 It adds about this:
@@ -232,7 +242,37 @@ including the extra percussion always being available.
 
 ---
 
-## The point.
+## Quirks
+
+Despite stemming from SC-55, MSGS gained its own quirks.
+
+General:
+ - A channel cannot have 2 instances of the same note. A new note cuts the previous one.
+   SC-55 applies this only to drum channels.
+ - Whole ass 48 semitone pitch bend range! (Why though?)
+ - No effects of any kind, apart from Windows 11
+   - Filter is also an effect in this context
+ - Does not have any NRPNs and thus has no editable envelopes
+
+Windows 98...XP:
+ - A channel cannot have 2 different patches sounding
+ - All Sounds Off instead releases notes while ignoring pedals
+ - Slower to response in general
+ - Sounds as if it was EQ'd
+
+Windows 10+:
+ - A channel can have 2 different patches sounding under the following conditions:
+   - A channel has another note sounding
+   - A program change happened
+   - A new note after a program change is struck
+ 
+ This also allows the channel to have 2 instances of the same note, although both share the note-off event.
+ - All Sounds Off cuts off all sound on a channel
+ - Faster to response
+ - Flat sound
+
+---
+## Why?
 
 So there is an unfinished [MSGS cover](/midis/crystal_msgs.mid) of [Crystal Oscillator](https://youtu.be/uL2XWtx3ePk)
 unfortunately, I will not finish the midi at any cost, due to a simple reason: ~~not enough voices msgs has (32)~~
@@ -293,7 +333,7 @@ And finally, shameless self-promotion here, cover of [Crystal Oscillator](/tests
 ## Credits
 
 - [nnonick](https://github.com/nnonickreal) for some Windows XP testing & upcoming Windows XP recordings, and upcoming Windows Vista tests.
-- [Zumi](https://github.com/ZoomTen) for clean-room implementation of Windows XP MSGS & documenting how it works, and kickstarting this document.
+- [Zumi](https://github.com/ZoomTen) for [clean-room reimplementation](https://github.com/sloptainment/slopgs) of Windows XP MSGS & documenting how it works, and kickstarting this document.
 - [Abstract64](https://www.youtube.com/@64abstract), [Kot](https://www.youtube.com/@kot_bruhman) and
   [HueArme](https://soundcloud.com/user-416698216-971657402) for making me interested in the synth in the first place.
 - YOU, for reading this.
