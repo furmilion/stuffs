@@ -80,7 +80,7 @@ Has the following properties:
 I might implement a toggle that disables higher playback
 rate for longer wavetables
 """
-TEST = False
+TEST = 1
 # FURSOUND -- started on 05/09/26
 # crazy how in about a week i went from a blank
 # file to some fancy math that generates sounds
@@ -156,15 +156,9 @@ WAVE_ACCUMULATOR = 15  # OPL #7
 #WAVE_H           = 18
 
 WAVE_MAP = { # prepare for better wave system
-"sine": WAVE_SINE,
-"half_sine": WAVE_HALFSINE,
-"abs_sine": WAVE_ABSSINE,
-"quarter_sine": WAVE_QRTSINE,
-"even_sine": WAVE_EVENSINE,
-"even_abs_sine": WAVE_EABSSINE,
 "square": WAVE_SQUARE,
 "pulse": WAVE_PULSE,
-"opl_accumulator": WAVE_ACCUMULATOR, "log_sawtooth": WAVE_ACCUMULATOR,
+"sine": WAVE_SINE,
 "sawtooth": WAVE_SAWTOOTH,
 "sample": WAVE_SAMPLE,
 "n1b": WAVE_NOISE1B,
@@ -172,6 +166,12 @@ WAVE_MAP = { # prepare for better wave system
 "wavetable": WAVE_TABLE,
 "triangle": WAVE_TRIANGLE,
 "none": WAVE_NONE,
+"half_sine": WAVE_HALFSINE,
+"abs_sine": WAVE_ABSSINE,
+"quarter_sine": WAVE_QRTSINE,
+"even_sine": WAVE_EVENSINE,
+"even_abs_sine": WAVE_EABSSINE,
+"opl_accumulator": WAVE_ACCUMULATOR, "log_sawtooth": WAVE_ACCUMULATOR,
 #"ZeroDivisionError": WAVE_ZERODIV,
 #"h": WAVE_h,
 #"H": WAVE_H,
@@ -269,6 +269,7 @@ class Channel:
     def _finish_setup_(self):
                     
         if isinstance(self.c_type, int):
+            print(f"channel init: wave {self.c_type} {list(WAVE_MAP.keys())[self.c_type]}")
             # virtually any wave aside from binary ones is a wavetable so you can get cool artefacts with low lengths
             # i have about no idea how to do that in realtime
             if self.c_type == WAVE_SQUARE:        # 6
@@ -389,7 +390,7 @@ class Channel:
                     out = -1 if phase < WAVE_LEN_H else 1
                 elif self.c_type == WAVE_PULSE:
                     out = -1 if phase < WAVE_LEN * self.p_width else 1 # i accidentally generated a square from 0 to 1 instead of -1 to 1 :wilted_rose:
-                else: out = self.wavetable[idx]
+                else: out = self.wavetable[idx] * -1 if phase < WAVE_LEN * self.p_width else 1
             elif self.i_type == INTERP_LIN:
                 out = (
                     self.wavetable[idx] -
@@ -722,7 +723,7 @@ class FMChannel:
         itisi.op_matrix = op_matrix
         itisi.op_mults = op_mults
         itisi.op_outputs = op_outputs
-        itisi.modulation_buffer = [0] * operators
+        itisi.modulation_buffer = np.array([0] * operators, np.float32)
         
         itisi.op_fb_mults = op_fb_mults
         itisi.op_mod_in_mults = op_mod_in_mults
@@ -732,55 +733,25 @@ class FMChannel:
         itisi._base_freq = 0
         
         itisi.last_output = 0
-    def update(itisi,):  # this is gonna be very slow, you know the reason. 
-        sample_L = 0.
-        sample_R = 0.
+    def update(itisi,):  # this is gonna be very slow, you know the reason.
+        sample_buffer = np.array([0,0], np.float32)
         modulation_buffer = itisi.modulation_buffer.copy()
-        itisi.modulation_buffer -= itisi.modulation_buffer
+        itisi.modulation_buffer *= 0
         
         for op, op_obj in enumerate(itisi.operators):
             op_feedback = (op_obj.last_output if itisi.op_matrix[op][op] else 0) * itisi.op_fb_mults[op]
             op_obj._freq = (itisi._base_freq * itisi.op_mults[op]) if itisi.op_mults[op] > 0 else (itisi._base_freq ** itisi.op_mults[op]) # if this raises an IndexError, it's *your* problem.
-            outL, outR = op_obj.update(modulation=op_feedback + (modulation_buffer[op] * itisi.op_mod_in_mults[op]))[:2]
+            output_buffer = op_obj.update(modulation=op_feedback + (modulation_buffer[op] * itisi.op_mod_in_mults[op]))
             # ^^^^
             # definetly your fault here becuse you *have* to do something shady to get it to spit an IndexError.
             # channel operator count is *not* dynamic, go figure
             # you are free to juggle the matrix but not the amount of the operators. this aint SCSP.
             # even SCSP can be considered just as a single 32-op channel, just with independent operator frequencies
-            
-            # print(
-            # f"op                 {op}                  \n"
-            # f"phase              {op_obj.phase}        \n"
-            # f"fb_buf             {feedback_buffer   }        \n"
-            # f"fb_buf_op          {feedback_buffer[op]}        \n"
-            # f"fb_mul_op          {itisi.op_fb_mults[op]}        \n"
-            # f"fb_buf_op_post     {feedback_buffer[op] * itisi.op_fb_mults[op]}        \n"
-            # f"mod_buf_op         {modulation_buffer[op]}        \n"
-            # f"lastout            {op_obj.last_output}  \n"
-            # f"outbuf             {output_buffer}       \n"
-            # f"opouts             {itisi.op_outputs}       \n"
-            # f"opout              {itisi.op_outputs[op]}       \n"
-            # f"sampbuf_expect     {sample_buffer + output_buffer[:2]}       \n"
-            # f"sampbuf_expect_att {sample_buffer + (np.array(output_buffer[:2], np.float32) * itisi.op_outputs[op])}       \n",
-            # end=""
-            # )
-            sample_L += outL * itisi.op_outputs[op] * itisi.master_volume
-            sample_R += outR * itisi.op_outputs[op] * itisi.master_volume
-            # print(
-            # f"sampbuf            {sample_buffer}       \n"
-            # )
+            sample_buffer += (np.array(output_buffer[:2], np.float32) * itisi.op_outputs[op])
             for carrier in range(itisi.op_count):
-                #itisi.feedback_buffer[op]        += output_buffer[2] if itisi.op_matrix[op][op] else 0
-                # print(
-                # f"OP_MTX      {itisi.op_matrix}\n"
-                # f"OP_UPD      {op}\n"
-                # f"OP_MOD      {carrier}\n"
-                # f"OP_SELFMOD  {op == carrier}\n"
-                # f"DO_MODULATE {itisi.op_matrix[op][carrier] if not op == carrier else False}\n"
-                # )
                 itisi.modulation_buffer[carrier] += output_buffer[2] if itisi.op_matrix[op][carrier] and not op == carrier else 0
             itisi.last_output = (output_buffer[0] + output_buffer[1]) / 2 
-        return [sample_L, sample_R]
+        return sample_buffer * itisi.master_volume
     def parse_key(itisi, key, legato=False): 
         if key == "cut":
             itisi.cut_channel()
@@ -988,19 +959,19 @@ if __name__ == "__main__" and TEST:
     o = opl_approximate_curve_2
     sr = 30000 # literally everything depends on the sample rate, including bpm since its all in a for loop
     #length = (64 * .1) * 2 #length
-    length = 64 * .1 #length
+    length = 8 * .1 #length
     #length = (4 * .1) * 2 #length
     print("READY")
     master_tune = 450
 
-    ChannelFeedback = OperatorChannel(
-        type_ = "opl_accumulator",
-        sample_rate = sr,
-        interpolation = "sine", #"rectsine", #"linear",
-        panning = 0,
-        length = 256,
-        volume = 1,
-        width = .25,)
+    # ChannelFeedback = OperatorChannel(
+        # type_ = "opl_accumulator",
+        # sample_rate = sr,
+        # interpolation = "sine", #"rectsine", #"linear",
+        # panning = 0,
+        # length = 256,
+        # volume = 1,
+        # width = .25,)
     SquarePluck = FMChannel(
         tune = master_tune,
         sample_rate = sr,
@@ -1014,9 +985,9 @@ if __name__ == "__main__" and TEST:
                       ],
         op_mults =   [1, 1],
         op_volumes = [.25, 1],#[.2, 1],
-        op_outputs = [0, 2],
+        op_outputs = [0, 1],
         op_fb_mults = [0, 0],
-        op_mod_in_mults = [0, 1],
+        op_mod_in_mults = [0, .5],
         op_waves =   ["abs_sine", "sine"],
         op_tables =  [[0], [0]],)
     PadLeft = FMChannel(
@@ -1039,7 +1010,7 @@ if __name__ == "__main__" and TEST:
         op_waves =   ["sine", "even_sine"],
         op_tables =  [[0], [0]],)
     PadRight = FMChannel(
-        tune = 440,
+        tune = 450,
         coarse_tune = 4,
         sample_rate = sr,
         volume = 1,
@@ -1048,69 +1019,69 @@ if __name__ == "__main__" and TEST:
         operators = 2,
         op_matrix =  [
                       [1, 1],
-                      [0, 0],
+                      [1, 1],
                       ],
         op_mults =   [13, .5],  # = [13, .5]
-        op_volumes = [o(63-4,63), 1],#[.2, 1],
-        op_outputs = [0, 2],
+        op_volumes = [1, 1],#[.2, 1],
+        op_outputs = [1, 2],
         op_fb_mults = [0.03, 0],
-        op_mod_in_mults = [0, 1],
+        op_mod_in_mults = [1, 1],
         op_waves =   ["sine", "even_sine"],
         op_tables =  [[0], [0]],)
     
-    PLUCK = open("./crystal_oscillator_pluck.raw", "rb").read()
-    PLUCK2 = open("./crystal_oscillator_pluck_2.raw", "rb").read()
-    PLUCKCRUSH = open("./crystal_oscillator_pluck_crush.raw", "rb").read()
-    AP_YAM_NA_T_048_C_2_ = open("./AP_YAM_NA_T_048_C_2_.raw", "rb").read()
-    AP_YAM_NA_T_067_G_3_ = open("./AP_YAM_NA_T_067_G_3_.raw", "rb").read()
-    SampleTest1 = SampleChannel(  # TODO: refine how frequency generation works so its consistent
-        sample         = ((np.array(list(AP_YAM_NA_T_067_G_3_), np.float32) - 127.5) / 127.5).tolist(),
-       #sample         = list(SPL),
-        sample_rate    = sr,
-        sample_tune    = 13468 * 2,
-        sample_loop    = "forward",
-        loop_start     = 22689,
-        loop_end       = 33461,
-        panning        = 0,
-        volume         = 1,
-        interpolation  = "linear",
-        tune           = master_tune,
-        coarse_tune    = 12,)
-    SampleTest2 = SampleChannel(
-        sample         = list((np.array(list(PLUCKCRUSH), np.float16) - 127.5) / 127.5),
-       #sample         = list(SPL),
-        sample_rate    = sr,
-        sample_tune    = 4842,
-        sample_loop    = "forward",
-        loop_start     = 491,
-        loop_end       = 513,
-        panning        = 0,
-        volume         = 1,
-        interpolation  = "linear",
-        tune           = master_tune,
-        coarse_tune    = 12,)
-    OscTest = Channel(
-        type_        = "pulse", # the default wave upon class spawn
-        width        = .25,    # pulse width for the pulse wave
-        length       = 4,  # the length of the preset waves
-        wavetable    = None, # wavetable
-        sample_rate  = sr, # default sample rate...
-        phase        = 0, # ...phase...
-        panning      = 0, #...pan...
-        volume       = 1, #...and volume.
-        interpolation = "none",
-        tune = master_tune,
-        coarse_tune = 0,
-        )
+    #PLUCK = open("./crystal_oscillator_pluck.raw", "rb").read()
+    #PLUCK2 = open("./crystal_oscillator_pluck_2.raw", "rb").read()
+    #PLUCKCRUSH = open("./crystal_oscillator_pluck_crush.raw", "rb").read()
+    #AP_YAM_NA_T_048_C_2_ = open("./AP_YAM_NA_T_048_C_2_.raw", "rb").read()
+    #AP_YAM_NA_T_067_G_3_ = open("./AP_YAM_NA_T_067_G_3_.raw", "rb").read()
+    # SampleTest1 = SampleChannel(  # TODO: refine how frequency generation works so its consistent
+        # sample         = [0],#((np.array(list(AP_YAM_NA_T_067_G_3_), np.float32) - 127.5) / 127.5).tolist(),
+        # sample         = list(SPL),
+        # sample_rate    = sr,
+        # sample_tune    = 13468 * 2,
+        # sample_loop    = "forward",
+        # loop_start     = 22689,
+        # loop_end       = 33461,
+        # panning        = 0,
+        # volume         = 1,
+        # interpolation  = "linear",
+        # tune           = master_tune,
+        # coarse_tune    = 12,)
+    # SampleTest2 = SampleChannel(
+        # sample         = [0],#list((np.array(list(PLUCKCRUSH), np.float16) - 127.5) / 127.5),
+        # sample         = list(SPL),
+        # sample_rate    = sr,
+        # sample_tune    = 4842,
+        # sample_loop    = "forward",
+        # loop_start     = 491,
+        # loop_end       = 513,
+        # panning        = 0,
+        # volume         = 1,
+        # interpolation  = "linear",
+        # tune           = master_tune,
+        # coarse_tune    = 12,)
+    # OscTest = Channel(
+        # type_        = "pulse", # the default wave upon class spawn
+        # width        = .25,    # pulse width for the pulse wave
+        # length       = 4,  # the length of the preset waves
+        # wavetable    = None, # wavetable
+        # sample_rate  = sr, # default sample rate...
+        # phase        = 0, # ...phase...
+        # panning      = 0, #...pan...
+        # volume       = 1, #...and volume.
+        # interpolation = "none",
+        # tune = master_tune,
+        # coarse_tune = 0,
+        # )
     feedbackMult = .1 # .2
 
     # ChannelFeedback.set_attack(0);ChannelFeedback.set_decay1(.06);ChannelFeedback.set_sustain(.3);ChannelFeedback.set_decay2(.1);ChannelFeedback.set_release(0)
     
-    # SquarePluck.set_attack(0,0)
-    # SquarePluck.set_decay1(.05,.2)
-    # SquarePluck.set_sustain(o(63-24,63),0)
-    # SquarePluck.set_decay2(.08,0)
-    # SquarePluck.set_release(0,0,)
+    SquarePluck.set_attack(0,0)
+    SquarePluck.set_decay1(.05,.2)
+    SquarePluck.set_sustain(o(63-24,63),0)
+    SquarePluck.set_decay2(.08,0)
+    SquarePluck.set_release(0,0,)
     # PadLeft.set_attack(0,1/128)
     # PadLeft.set_decay1(-1,-1)
     # PadLeft.set_sustain(-1,-1)
@@ -1122,9 +1093,9 @@ if __name__ == "__main__" and TEST:
     # PadRight.set_decay2(-1,-1)
     # PadRight.set_release(0,1/128)
     
-    SampleTest1.set_attack(0);SampleTest1.set_decay1(.05);SampleTest1.set_sustain(.4);SampleTest1.set_decay2(.1);
-    OscTest.set_attack(0);OscTest.set_decay1(.05);OscTest.set_sustain(.4);OscTest.set_decay2(.1);
-    SampleTest2.set_attack(0);SampleTest2.set_decay1(-1);SampleTest2.set_sustain(1);SampleTest2.set_decay2(-1);
+    #SampleTest1.set_attack(0);SampleTest1.set_decay1(.05);SampleTest1.set_sustain(.4);SampleTest1.set_decay2(.1);
+    #OscTest.set_attack(0);OscTest.set_decay1(.05);OscTest.set_sustain(.4);OscTest.set_decay2(.1);
+    #SampleTest2.set_attack(0);SampleTest2.set_decay1(-1);SampleTest2.set_sustain(1);SampleTest2.set_decay2(-1);
     notes_pre = [
         "e-3", "a-3", "b-3", "g-4", "g-3", "b-3", "d-4", "a-4",
         "e-3", "b-3", "a-4", "b-4", "e-4", "b-4", "a-4", "d-5",
@@ -1170,7 +1141,6 @@ if __name__ == "__main__" and TEST:
     notes_pads = [k(_) for _ in notes_pads_pre]
     
     sample_test = [60, 48, 72, 84]
-    SampleTest2.parse_key(0, 0)
     
     seq = 0
     
@@ -1183,29 +1153,31 @@ if __name__ == "__main__" and TEST:
     import time
     start = time.perf_counter()
     for _ in range(int(sr * length)):
+        curSample -= curSample
         if not _ % sr:
             print(f"second {1 + (_ // sr)} generated")
         if not _ % (sr // 10):
         #if not _ % (sr//(5/4)):
-            # SquarePluck.parse_key(notes[seq])
+            SquarePluck.parse_key(notes[seq])
             # PadLeft.parse_key(notes_pads[seq])
             # PadRight.parse_key(notes_pads[seq])
             #SampleTest1.parse_key(sample_test[seq % len(sample_test)])
-            SampleTest1.parse_key(notes[seq])
+            # SampleTest1.parse_key(notes[seq])
             #OscTest.parse_key(notes[seq])
             #SampleTest2.parse_key(sample_test[seq % len(sample_test)])
             #SampleTest2.parse_key(notes[seq], 1)
             #SampleTest2.panning = ((_ / (sr * length)) -.5) * 2
             seq = (seq + 1) % len(notes)
-        # curSample += SquarePluck.update()
+            print(f"sequence: {seq}/{len(notes)}")
+        curSample += SquarePluck.update()[:2]
         # curSample += PadLeft.update()
         # curSample += PadRight.update()
         #out_l, out_r, __ += OscTest.update()
         #out_l, out_r, __ += SampleTest1.update()
-        curSample += SampleTest1.update()[:2]
+        # curSample += SampleTest1.update()[:2]
         #print(f"curSample {curSample}")
         
-        curSample /= 2
+        curSample /= 1
         #render[_ * 2] = out_l * 0.5
         #render[_ * 2 + 1] = out_r * 0.5
         render[_ * 2] += curSample[0]
