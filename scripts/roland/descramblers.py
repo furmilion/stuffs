@@ -151,10 +151,18 @@ def descramble_address_r8(addr) -> int:
 @numba.jit
 def descramble_address_d70(addr) -> int:
     address_order = [
-        0x12,0x11,0x0F,0x0E,0x10,0x0C,0x0B,0x07,
-        0x09,0x0D,0x0A,0x08,0x03,0x02,0x01,0x06,
-        0x04,0x05,0x00,0x13,0x14,0x15,0x16,0x17
+    # 18, 17, 14, 16, 15, 9, 13, 12, 8, 10, 7, 11, 3, 1, 2, 6, 5, 4, 0 [USED]
+    # 18, 17, 15, 14, 16, 12, 11, 7, 9, 13, 10, 8, 3, 2, 1, 6, 4, 5, 0 
+        0x12,0x11,0x0E,0x10,0x0F,0x09,0x0D,0x0C,
+        0x08,0x0A,0x07,0x0B,0x03,0x01,0x02,0x06,
+        0x05,0x04,0x00,0x13,0x14,0x15,0x16,0x17
     ]
+    address_order_alt = [
+        0x12,0x11,0x0E,0x10,0x0F,0x09,0x0D,0x0C,
+        0x08,0x0A,0x07,0x0B,0x03,0x01,0x02,0x06,
+        0x05,0x04,0x00,0x13,0x14,0x15,0x16,0x17
+    ]
+    
     if addr < 0x80:
         return addr
     out = 0
@@ -198,14 +206,6 @@ def descramble_file(file: str = '', out_to: str = '', return_buffer=False, _type
                         buffer[addr + (1048576 * pass_)] = rom[addr + (1048576 * pass_)]
                         continue
                     buffer[descramble_address_srx(addr) + (1048576 * pass_)] = byte_lut_sc[rom[addr + (1048576 * pass_)]]
-                print(f'bank {pass_ + 1} done')
-        case 2:
-            for pass_ in range(passes):
-                for addr in range(524288):
-                    if addr < 0x20:
-                        buffer[addr + (524288 * pass_)] = rom[addr + (524288 * pass_)]
-                        continue
-                    buffer[descramble_address_r8(addr) + (524288 * pass_)] = byte_lut_r8[rom[addr + (524288 * pass_)]]
                 print(f'bank {pass_ + 1} done')
         case 2:
             for pass_ in range(passes):
