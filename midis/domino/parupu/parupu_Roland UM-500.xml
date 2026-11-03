@@ -1,0 +1,692 @@
+<?xml version="1.0" encoding="Shift_JIS"?>
+<ModuleData Name="Roland UM-550" FileCreator="parupu" FileVersion="2007/07/23" WebSite="http://parupu.chu.jp/">
+
+
+<InstrumentList>
+
+<Map Name="Patch Change/MIDI Port Or USB Control Port">
+
+<PC   Name="Memory 1" PC="  1">
+<Bank Name="Memory 1" />
+</PC>
+<PC   Name="Memory 2" PC="  2">
+<Bank Name="Memory 2" />
+</PC>
+<PC   Name="Memory 3" PC="  3">
+<Bank Name="Memory 3" />
+</PC>
+<PC   Name="Memory 4" PC="  4">
+<Bank Name="Memory 4" />
+</PC>
+<PC   Name="Memory 5" PC="  5">
+<Bank Name="Memory 5" />
+</PC>
+
+</Map>
+
+</InstrumentList>
+
+
+<ControlChangeMacroList>
+
+<Folder Name="System Exclusive Message">
+
+<Folder Name="Data transmission">
+
+<Folder Name="Data set 1 DT1">
+
+<Folder Name="Data Set Parameters">
+
+<Folder Name="Current">
+
+<Table ID="300">
+<Entry Label="No Assign" Value=" 0" />
+<Entry Label="MIDI In 1" Value=" 1" />
+<Entry Label="MIDI In 2" Value=" 2" />
+<Entry Label="MIDI In 3" Value=" 3" />
+<Entry Label="MIDI In 4" Value=" 4" />
+<Entry Label="MIDI In 5" Value=" 5" />
+<Entry Label="USB In 1"  Value=" 9" />
+<Entry Label="USB In 2"  Value="10" />
+<Entry Label="USB In 3"  Value="11" />
+<Entry Label="USB In 4"  Value="12" />
+<Entry Label="USB In 5"  Value="13" />
+<Entry Label="Merge"     Value="17" />
+</Table>
+
+<CCM ID="300" Name="Current MIDI Out 1 Patch">
+<Value Default="9" Max="17" TableID="300" />
+<Data>@SYSEX 0xF0 0x41 0x10 0x00 0x54 0x12 [ 0x00 0x00 #VL ] 0xF7</Data>
+</CCM>
+
+<CCM ID="301" Name="Current MIDI Out 2 Patch">
+<Value Default="10" Max="17" TableID="300" />
+<Data>@SYSEX 0xF0 0x41 0x10 0x00 0x54 0x12 [ 0x00 0x01 #VL ] 0xF7</Data>
+</CCM>
+
+<CCM ID="302" Name="Current MIDI Out 3 Patch">
+<Value Default="11" Max="17" TableID="300" />
+<Data>@SYSEX 0xF0 0x41 0x10 0x00 0x54 0x12 [ 0x00 0x02 #VL ] 0xF7</Data>
+</CCM>
+
+<CCM ID="303" Name="Current MIDI Out 4 Patch">
+<Value Default="12" Max="17" TableID="300" />
+<Data>@SYSEX 0xF0 0x41 0x10 0x00 0x54 0x12 [ 0x00 0x03 #VL ] 0xF7</Data>
+</CCM>
+
+<CCM ID="304" Name="Current MIDI Out 5 Patch">
+<Value Default="13" Max="17" TableID="300" />
+<Data>@SYSEX 0xF0 0x41 0x10 0x00 0x54 0x12 [ 0x00 0x04 #VL ] 0xF7</Data>
+</CCM>
+
+<Table ID="308">
+<Entry Label="Merge Disable" Value=" 0" />
+<Entry Label="Merge Enable"  Value=" 1" />
+</Table>
+
+<CCM ID="308" Name="Current USB 1 Merge Enable">
+<Value Max="1" TableID="308" />
+<Data>@SYSEX 0xF0 0x41 0x10 0x00 0x54 0x12 [ 0x00 0x08 #VL ] 0xF7</Data>
+</CCM>
+
+<CCM ID="309" Name="Current USB 2 Merge Enable">
+<Value Max="1" TableID="308" />
+<Data>@SYSEX 0xF0 0x41 0x10 0x00 0x54 0x12 [ 0x00 0x09 #VL ] 0xF7</Data>
+</CCM>
+
+<CCM ID="310" Name="Current USB 3 Merge Enable">
+<Value Max="1" TableID="308" />
+<Data>@SYSEX 0xF0 0x41 0x10 0x00 0x54 0x12 [ 0x00 0x0A #VL ] 0xF7</Data>
+</CCM>
+
+<CCM ID="311" Name="Current USB 4 Merge Enable">
+<Value Max="1" TableID="308" />
+<Data>@SYSEX 0xF0 0x41 0x10 0x00 0x54 0x12 [ 0x00 0x0B #VL ] 0xF7</Data>
+</CCM>
+
+<CCM ID="312" Name="Current USB 5 Merge Enable">
+<Value Max="1" TableID="308" />
+<Data>@SYSEX 0xF0 0x41 0x10 0x00 0x54 0x12 [ 0x00 0x0C #VL ] 0xF7</Data>
+</CCM>
+
+<CCM ID="316" Name="Current MIDI In 1 Merge Enable">
+<Value Max="1" TableID="308" />
+<Data>@SYSEX 0xF0 0x41 0x10 0x00 0x54 0x12 [ 0x00 0x10 #VL ] 0xF7</Data>
+</CCM>
+
+<CCM ID="317" Name="Current MIDI In 2 Merge Enable">
+<Value Max="1" TableID="308" />
+<Data>@SYSEX 0xF0 0x41 0x10 0x00 0x54 0x12 [ 0x00 0x11 #VL ] 0xF7</Data>
+</CCM>
+
+<CCM ID="318" Name="Current MIDI In 3 Merge Enable">
+<Value Max="1" TableID="308" />
+<Data>@SYSEX 0xF0 0x41 0x10 0x00 0x54 0x12 [ 0x00 0x12 #VL ] 0xF7</Data>
+</CCM>
+
+<CCM ID="319" Name="Current MIDI In 4 Merge Enable">
+<Value Max="1" TableID="308" />
+<Data>@SYSEX 0xF0 0x41 0x10 0x00 0x54 0x12 [ 0x00 0x13 #VL ] 0xF7</Data>
+</CCM>
+
+<CCM ID="320" Name="Current MIDI In 5 Merge Enable">
+<Value Max="1" TableID="308" />
+<Data>@SYSEX 0xF0 0x41 0x10 0x00 0x54 0x12 [ 0x00 0x14 #VL ] 0xF7</Data>
+</CCM>
+
+</Folder>
+
+<Folder Name="Memory 1">
+
+<CCM ID="400" Name="Memory 1 MIDI Out 1 Patch">
+<Value Default="9" Max="17" TableID="300" />
+<Data>@SYSEX 0xF0 0x41 0x10 0x00 0x54 0x12 [ 0x01 0x00 #VL ] 0xF7</Data>
+</CCM>
+
+<CCM ID="401" Name="Memory 1 MIDI Out 2 Patch">
+<Value Default="10" Max="17" TableID="300" />
+<Data>@SYSEX 0xF0 0x41 0x10 0x00 0x54 0x12 [ 0x01 0x01 #VL ] 0xF7</Data>
+</CCM>
+
+<CCM ID="402" Name="Memory 1 MIDI Out 3 Patch">
+<Value Default="11" Max="17" TableID="300" />
+<Data>@SYSEX 0xF0 0x41 0x10 0x00 0x54 0x12 [ 0x01 0x02 #VL ] 0xF7</Data>
+</CCM>
+
+<CCM ID="403" Name="Memory 1 MIDI Out 4 Patch">
+<Value Default="12" Max="17" TableID="300" />
+<Data>@SYSEX 0xF0 0x41 0x10 0x00 0x54 0x12 [ 0x01 0x03 #VL ] 0xF7</Data>
+</CCM>
+
+<CCM ID="404" Name="Memory 1 MIDI Out 5 Patch">
+<Value Default="13" Max="17" TableID="300" />
+<Data>@SYSEX 0xF0 0x41 0x10 0x00 0x54 0x12 [ 0x01 0x04 #VL ] 0xF7</Data>
+</CCM>
+
+<CCM ID="408" Name="Memory 1 USB 1 Merge Enable">
+<Value Max="1" TableID="308" />
+<Data>@SYSEX 0xF0 0x41 0x10 0x00 0x54 0x12 [ 0x01 0x08 #VL ] 0xF7</Data>
+</CCM>
+
+<CCM ID="409" Name="Memory 1 USB 2 Merge Enable">
+<Value Max="1" TableID="308" />
+<Data>@SYSEX 0xF0 0x41 0x10 0x00 0x54 0x12 [ 0x01 0x09 #VL ] 0xF7</Data>
+</CCM>
+
+<CCM ID="410" Name="Memory 1 USB 3 Merge Enable">
+<Value Max="1" TableID="308" />
+<Data>@SYSEX 0xF0 0x41 0x10 0x00 0x54 0x12 [ 0x01 0x0A #VL ] 0xF7</Data>
+</CCM>
+
+<CCM ID="411" Name="Memory 1 USB 4 Merge Enable">
+<Value Max="1" TableID="308" />
+<Data>@SYSEX 0xF0 0x41 0x10 0x00 0x54 0x12 [ 0x01 0x0B #VL ] 0xF7</Data>
+</CCM>
+
+<CCM ID="412" Name="Memory 1 USB 5 Merge Enable">
+<Value Max="1" TableID="308" />
+<Data>@SYSEX 0xF0 0x41 0x10 0x00 0x54 0x12 [ 0x01 0x0C #VL ] 0xF7</Data>
+</CCM>
+
+<CCM ID="416" Name="Memory 1 MIDI In 1 Merge Enable">
+<Value Max="1" TableID="308" />
+<Data>@SYSEX 0xF0 0x41 0x10 0x00 0x54 0x12 [ 0x01 0x10 #VL ] 0xF7</Data>
+</CCM>
+
+<CCM ID="417" Name="Memory 1 MIDI In 2 Merge Enable">
+<Value Max="1" TableID="308" />
+<Data>@SYSEX 0xF0 0x41 0x10 0x00 0x54 0x12 [ 0x01 0x11 #VL ] 0xF7</Data>
+</CCM>
+
+<CCM ID="418" Name="Memory 1 MIDI In 3 Merge Enable">
+<Value Max="1" TableID="308" />
+<Data>@SYSEX 0xF0 0x41 0x10 0x00 0x54 0x12 [ 0x01 0x12 #VL ] 0xF7</Data>
+</CCM>
+
+<CCM ID="419" Name="Memory 1 MIDI In 4 Merge Enable">
+<Value Max="1" TableID="308" />
+<Data>@SYSEX 0xF0 0x41 0x10 0x00 0x54 0x12 [ 0x01 0x13 #VL ] 0xF7</Data>
+</CCM>
+
+<CCM ID="420" Name="Memory 1 MIDI In 5 Merge Enable">
+<Value Max="1" TableID="308" />
+<Data>@SYSEX 0xF0 0x41 0x10 0x00 0x54 0x12 [ 0x01 0x14 #VL ] 0xF7</Data>
+</CCM>
+
+</Folder>
+
+<Folder Name="Memory 2">
+
+<CCM ID="450" Name="Memory 2 MIDI Out 1 Patch">
+<Value Default="9" Max="17" TableID="300" />
+<Data>@SYSEX 0xF0 0x41 0x10 0x00 0x54 0x12 [ 0x02 0x00 #VL ] 0xF7</Data>
+</CCM>
+
+<CCM ID="451" Name="Memory 2 MIDI Out 2 Patch">
+<Value Default="10" Max="17" TableID="300" />
+<Data>@SYSEX 0xF0 0x41 0x10 0x00 0x54 0x12 [ 0x02 0x01 #VL ] 0xF7</Data>
+</CCM>
+
+<CCM ID="452" Name="Memory 2 MIDI Out 3 Patch">
+<Value Default="11" Max="17" TableID="300" />
+<Data>@SYSEX 0xF0 0x41 0x10 0x00 0x54 0x12 [ 0x02 0x02 #VL ] 0xF7</Data>
+</CCM>
+
+<CCM ID="453" Name="Memory 2 MIDI Out 4 Patch">
+<Value Default="12" Max="17" TableID="300" />
+<Data>@SYSEX 0xF0 0x41 0x10 0x00 0x54 0x12 [ 0x02 0x03 #VL ] 0xF7</Data>
+</CCM>
+
+<CCM ID="454" Name="Memory 2 MIDI Out 5 Patch">
+<Value Default="13" Max="17" TableID="300" />
+<Data>@SYSEX 0xF0 0x41 0x10 0x00 0x54 0x12 [ 0x02 0x04 #VL ] 0xF7</Data>
+</CCM>
+
+<CCM ID="458" Name="Memory 2 USB 1 Merge Enable">
+<Value Max="1" TableID="308" />
+<Data>@SYSEX 0xF0 0x41 0x10 0x00 0x54 0x12 [ 0x02 0x08 #VL ] 0xF7</Data>
+</CCM>
+
+<CCM ID="459" Name="Memory 2 USB 2 Merge Enable">
+<Value Max="1" TableID="308" />
+<Data>@SYSEX 0xF0 0x41 0x10 0x00 0x54 0x12 [ 0x02 0x09 #VL ] 0xF7</Data>
+</CCM>
+
+<CCM ID="460" Name="Memory 2 USB 3 Merge Enable">
+<Value Max="1" TableID="308" />
+<Data>@SYSEX 0xF0 0x41 0x10 0x00 0x54 0x12 [ 0x02 0x0A #VL ] 0xF7</Data>
+</CCM>
+
+<CCM ID="461" Name="Memory 2 USB 4 Merge Enable">
+<Value Max="1" TableID="308" />
+<Data>@SYSEX 0xF0 0x41 0x10 0x00 0x54 0x12 [ 0x02 0x0B #VL ] 0xF7</Data>
+</CCM>
+
+<CCM ID="462" Name="Memory 2 USB 5 Merge Enable">
+<Value Max="1" TableID="308" />
+<Data>@SYSEX 0xF0 0x41 0x10 0x00 0x54 0x12 [ 0x02 0x0C #VL ] 0xF7</Data>
+</CCM>
+
+<CCM ID="466" Name="Memory 2 MIDI In 1 Merge Enable">
+<Value Max="1" TableID="308" />
+<Data>@SYSEX 0xF0 0x41 0x10 0x00 0x54 0x12 [ 0x02 0x10 #VL ] 0xF7</Data>
+</CCM>
+
+<CCM ID="467" Name="Memory 2 MIDI In 2 Merge Enable">
+<Value Max="1" TableID="308" />
+<Data>@SYSEX 0xF0 0x41 0x10 0x00 0x54 0x12 [ 0x02 0x11 #VL ] 0xF7</Data>
+</CCM>
+
+<CCM ID="468" Name="Memory 2 MIDI In 3 Merge Enable">
+<Value Max="1" TableID="308" />
+<Data>@SYSEX 0xF0 0x41 0x10 0x00 0x54 0x12 [ 0x02 0x12 #VL ] 0xF7</Data>
+</CCM>
+
+<CCM ID="469" Name="Memory 2 MIDI In 4 Merge Enable">
+<Value Max="1" TableID="308" />
+<Data>@SYSEX 0xF0 0x41 0x10 0x00 0x54 0x12 [ 0x02 0x13 #VL ] 0xF7</Data>
+</CCM>
+
+<CCM ID="470" Name="Memory 2 MIDI In 5 Merge Enable">
+<Value Max="1" TableID="308" />
+<Data>@SYSEX 0xF0 0x41 0x10 0x00 0x54 0x12 [ 0x02 0x14 #VL ] 0xF7</Data>
+</CCM>
+
+</Folder>
+
+<Folder Name="Memory 3">
+
+<CCM ID="500" Name="Memory 3 MIDI Out 1 Patch">
+<Value Default="9" Max="17" TableID="300" />
+<Data>@SYSEX 0xF0 0x41 0x10 0x00 0x54 0x12 [ 0x03 0x00 #VL ] 0xF7</Data>
+</CCM>
+
+<CCM ID="501" Name="Memory 3 MIDI Out 2 Patch">
+<Value Default="10" Max="17" TableID="300" />
+<Data>@SYSEX 0xF0 0x41 0x10 0x00 0x54 0x12 [ 0x03 0x01 #VL ] 0xF7</Data>
+</CCM>
+
+<CCM ID="502" Name="Memory 3 MIDI Out 3 Patch">
+<Value Default="11" Max="17" TableID="300" />
+<Data>@SYSEX 0xF0 0x41 0x10 0x00 0x54 0x12 [ 0x03 0x02 #VL ] 0xF7</Data>
+</CCM>
+
+<CCM ID="503" Name="Memory 3 MIDI Out 4 Patch">
+<Value Default="12" Max="17" TableID="300" />
+<Data>@SYSEX 0xF0 0x41 0x10 0x00 0x54 0x12 [ 0x03 0x03 #VL ] 0xF7</Data>
+</CCM>
+
+<CCM ID="504" Name="Memory 3 MIDI Out 5 Patch">
+<Value Default="13" Max="17" TableID="300" />
+<Data>@SYSEX 0xF0 0x41 0x10 0x00 0x54 0x12 [ 0x03 0x04 #VL ] 0xF7</Data>
+</CCM>
+
+<CCM ID="508" Name="Memory 3 USB 1 Merge Enable">
+<Value Max="1" TableID="308" />
+<Data>@SYSEX 0xF0 0x41 0x10 0x00 0x54 0x12 [ 0x03 0x08 #VL ] 0xF7</Data>
+</CCM>
+
+<CCM ID="509" Name="Memory 3 USB 2 Merge Enable">
+<Value Max="1" TableID="308" />
+<Data>@SYSEX 0xF0 0x41 0x10 0x00 0x54 0x12 [ 0x03 0x09 #VL ] 0xF7</Data>
+</CCM>
+
+<CCM ID="510" Name="Memory 3 USB 3 Merge Enable">
+<Value Max="1" TableID="308" />
+<Data>@SYSEX 0xF0 0x41 0x10 0x00 0x54 0x12 [ 0x03 0x0A #VL ] 0xF7</Data>
+</CCM>
+
+<CCM ID="511" Name="Memory 3 USB 4 Merge Enable">
+<Value Max="1" TableID="308" />
+<Data>@SYSEX 0xF0 0x41 0x10 0x00 0x54 0x12 [ 0x03 0x0B #VL ] 0xF7</Data>
+</CCM>
+
+<CCM ID="512" Name="Memory 3 USB 5 Merge Enable">
+<Value Max="1" TableID="308" />
+<Data>@SYSEX 0xF0 0x41 0x10 0x00 0x54 0x12 [ 0x03 0x0C #VL ] 0xF7</Data>
+</CCM>
+
+<CCM ID="516" Name="Memory 3 MIDI In 1 Merge Enable">
+<Value Max="1" TableID="308" />
+<Data>@SYSEX 0xF0 0x41 0x10 0x00 0x54 0x12 [ 0x03 0x10 #VL ] 0xF7</Data>
+</CCM>
+
+<CCM ID="517" Name="Memory 3 MIDI In 2 Merge Enable">
+<Value Max="1" TableID="308" />
+<Data>@SYSEX 0xF0 0x41 0x10 0x00 0x54 0x12 [ 0x03 0x11 #VL ] 0xF7</Data>
+</CCM>
+
+<CCM ID="518" Name="Memory 3 MIDI In 3 Merge Enable">
+<Value Max="1" TableID="308" />
+<Data>@SYSEX 0xF0 0x41 0x10 0x00 0x54 0x12 [ 0x03 0x12 #VL ] 0xF7</Data>
+</CCM>
+
+<CCM ID="519" Name="Memory 3 MIDI In 4 Merge Enable">
+<Value Max="1" TableID="308" />
+<Data>@SYSEX 0xF0 0x41 0x10 0x00 0x54 0x12 [ 0x03 0x13 #VL ] 0xF7</Data>
+</CCM>
+
+<CCM ID="520" Name="Memory 3 MIDI In 5 Merge Enable">
+<Value Max="1" TableID="308" />
+<Data>@SYSEX 0xF0 0x41 0x10 0x00 0x54 0x12 [ 0x03 0x14 #VL ] 0xF7</Data>
+</CCM>
+
+</Folder>
+
+<Folder Name="Memory 4">
+
+<CCM ID="550" Name="Memory 4 MIDI Out 1 Patch">
+<Value Default="9" Max="17" TableID="300" />
+<Data>@SYSEX 0xF0 0x41 0x10 0x00 0x54 0x12 [ 0x04 0x00 #VL ] 0xF7</Data>
+</CCM>
+
+<CCM ID="551" Name="Memory 4 MIDI Out 2 Patch">
+<Value Default="10" Max="17" TableID="300" />
+<Data>@SYSEX 0xF0 0x41 0x10 0x00 0x54 0x12 [ 0x04 0x01 #VL ] 0xF7</Data>
+</CCM>
+
+<CCM ID="552" Name="Memory 4 MIDI Out 3 Patch">
+<Value Default="11" Max="17" TableID="300" />
+<Data>@SYSEX 0xF0 0x41 0x10 0x00 0x54 0x12 [ 0x04 0x02 #VL ] 0xF7</Data>
+</CCM>
+
+<CCM ID="553" Name="Memory 4 MIDI Out 4 Patch">
+<Value Default="12" Max="17" TableID="300" />
+<Data>@SYSEX 0xF0 0x41 0x10 0x00 0x54 0x12 [ 0x04 0x03 #VL ] 0xF7</Data>
+</CCM>
+
+<CCM ID="554" Name="Memory 4 MIDI Out 5 Patch">
+<Value Default="13" Max="17" TableID="300" />
+<Data>@SYSEX 0xF0 0x41 0x10 0x00 0x54 0x12 [ 0x04 0x04 #VL ] 0xF7</Data>
+</CCM>
+
+<CCM ID="558" Name="Memory 4 USB 1 Merge Enable">
+<Value Max="1" TableID="308" />
+<Data>@SYSEX 0xF0 0x41 0x10 0x00 0x54 0x12 [ 0x04 0x08 #VL ] 0xF7</Data>
+</CCM>
+
+<CCM ID="559" Name="Memory 4 USB 2 Merge Enable">
+<Value Max="1" TableID="308" />
+<Data>@SYSEX 0xF0 0x41 0x10 0x00 0x54 0x12 [ 0x04 0x09 #VL ] 0xF7</Data>
+</CCM>
+
+<CCM ID="560" Name="Memory 4 USB 3 Merge Enable">
+<Value Max="1" TableID="308" />
+<Data>@SYSEX 0xF0 0x41 0x10 0x00 0x54 0x12 [ 0x04 0x0A #VL ] 0xF7</Data>
+</CCM>
+
+<CCM ID="561" Name="Memory 4 USB 4 Merge Enable">
+<Value Max="1" TableID="308" />
+<Data>@SYSEX 0xF0 0x41 0x10 0x00 0x54 0x12 [ 0x04 0x0B #VL ] 0xF7</Data>
+</CCM>
+
+<CCM ID="562" Name="Memory 4 USB 5 Merge Enable">
+<Value Max="1" TableID="308" />
+<Data>@SYSEX 0xF0 0x41 0x10 0x00 0x54 0x12 [ 0x04 0x0C #VL ] 0xF7</Data>
+</CCM>
+
+<CCM ID="566" Name="Memory 4 MIDI In 1 Merge Enable">
+<Value Max="1" TableID="308" />
+<Data>@SYSEX 0xF0 0x41 0x10 0x00 0x54 0x12 [ 0x04 0x10 #VL ] 0xF7</Data>
+</CCM>
+
+<CCM ID="567" Name="Memory 4 MIDI In 2 Merge Enable">
+<Value Max="1" TableID="308" />
+<Data>@SYSEX 0xF0 0x41 0x10 0x00 0x54 0x12 [ 0x04 0x11 #VL ] 0xF7</Data>
+</CCM>
+
+<CCM ID="568" Name="Memory 4 MIDI In 3 Merge Enable">
+<Value Max="1" TableID="308" />
+<Data>@SYSEX 0xF0 0x41 0x10 0x00 0x54 0x12 [ 0x04 0x12 #VL ] 0xF7</Data>
+</CCM>
+
+<CCM ID="569" Name="Memory 4 MIDI In 4 Merge Enable">
+<Value Max="1" TableID="308" />
+<Data>@SYSEX 0xF0 0x41 0x10 0x00 0x54 0x12 [ 0x04 0x13 #VL ] 0xF7</Data>
+</CCM>
+
+<CCM ID="570" Name="Memory 4 MIDI In 5 Merge Enable">
+<Value Max="1" TableID="308" />
+<Data>@SYSEX 0xF0 0x41 0x10 0x00 0x54 0x12 [ 0x04 0x14 #VL ] 0xF7</Data>
+</CCM>
+
+</Folder>
+
+<Folder Name="Memory 5">
+
+<CCM ID="600" Name="Memory 5 MIDI Out 1 Patch">
+<Value Default="9" Max="17" TableID="300" />
+<Data>@SYSEX 0xF0 0x41 0x10 0x00 0x54 0x12 [ 0x05 0x00 #VL ] 0xF7</Data>
+</CCM>
+
+<CCM ID="601" Name="Memory 5 MIDI Out 2 Patch">
+<Value Default="10" Max="17" TableID="300" />
+<Data>@SYSEX 0xF0 0x41 0x10 0x00 0x54 0x12 [ 0x05 0x01 #VL ] 0xF7</Data>
+</CCM>
+
+<CCM ID="602" Name="Memory 5 MIDI Out 3 Patch">
+<Value Default="11" Max="17" TableID="300" />
+<Data>@SYSEX 0xF0 0x41 0x10 0x00 0x54 0x12 [ 0x05 0x02 #VL ] 0xF7</Data>
+</CCM>
+
+<CCM ID="603" Name="Memory 5 MIDI Out 4 Patch">
+<Value Default="12" Max="17" TableID="300" />
+<Data>@SYSEX 0xF0 0x41 0x10 0x00 0x54 0x12 [ 0x05 0x03 #VL ] 0xF7</Data>
+</CCM>
+
+<CCM ID="604" Name="Memory 5 MIDI Out 5 Patch">
+<Value Default="13" Max="17" TableID="300" />
+<Data>@SYSEX 0xF0 0x41 0x10 0x00 0x54 0x12 [ 0x05 0x04 #VL ] 0xF7</Data>
+</CCM>
+
+<CCM ID="608" Name="Memory 5 USB 1 Merge Enable">
+<Value Max="1" TableID="308" />
+<Data>@SYSEX 0xF0 0x41 0x10 0x00 0x54 0x12 [ 0x05 0x08 #VL ] 0xF7</Data>
+</CCM>
+
+<CCM ID="609" Name="Memory 5 USB 2 Merge Enable">
+<Value Max="1" TableID="308" />
+<Data>@SYSEX 0xF0 0x41 0x10 0x00 0x54 0x12 [ 0x05 0x09 #VL ] 0xF7</Data>
+</CCM>
+
+<CCM ID="610" Name="Memory 5 USB 3 Merge Enable">
+<Value Max="1" TableID="308" />
+<Data>@SYSEX 0xF0 0x41 0x10 0x00 0x54 0x12 [ 0x05 0x0A #VL ] 0xF7</Data>
+</CCM>
+
+<CCM ID="611" Name="Memory 5 USB 4 Merge Enable">
+<Value Max="1" TableID="308" />
+<Data>@SYSEX 0xF0 0x41 0x10 0x00 0x54 0x12 [ 0x05 0x0B #VL ] 0xF7</Data>
+</CCM>
+
+<CCM ID="612" Name="Memory 5 USB 5 Merge Enable">
+<Value Max="1" TableID="308" />
+<Data>@SYSEX 0xF0 0x41 0x10 0x00 0x54 0x12 [ 0x05 0x0C #VL ] 0xF7</Data>
+</CCM>
+
+<CCM ID="616" Name="Memory 5 MIDI In 1 Merge Enable">
+<Value Max="1" TableID="308" />
+<Data>@SYSEX 0xF0 0x41 0x10 0x00 0x54 0x12 [ 0x05 0x10 #VL ] 0xF7</Data>
+</CCM>
+
+<CCM ID="617" Name="Memory 5 MIDI In 2 Merge Enable">
+<Value Max="1" TableID="308" />
+<Data>@SYSEX 0xF0 0x41 0x10 0x00 0x54 0x12 [ 0x05 0x11 #VL ] 0xF7</Data>
+</CCM>
+
+<CCM ID="618" Name="Memory 5 MIDI In 3 Merge Enable">
+<Value Max="1" TableID="308" />
+<Data>@SYSEX 0xF0 0x41 0x10 0x00 0x54 0x12 [ 0x05 0x12 #VL ] 0xF7</Data>
+</CCM>
+
+<CCM ID="619" Name="Memory 5 MIDI In 4 Merge Enable">
+<Value Max="1" TableID="308" />
+<Data>@SYSEX 0xF0 0x41 0x10 0x00 0x54 0x12 [ 0x05 0x13 #VL ] 0xF7</Data>
+</CCM>
+
+<CCM ID="620" Name="Memory 5 MIDI In 5 Merge Enable">
+<Value Max="1" TableID="308" />
+<Data>@SYSEX 0xF0 0x41 0x10 0x00 0x54 0x12 [ 0x05 0x14 #VL ] 0xF7</Data>
+</CCM>
+
+</Folder>
+
+<Folder Name="System">
+
+<Table ID="800">
+<Entry Label="Filter Disable" Value=" 0" />
+<Entry Label="Filter Enable"  Value=" 1" />
+</Table>
+
+<CCM ID="800" Name="System MIDI Filter Enable Note">
+<Value Max="1" TableID="800" />
+<Data>@SYSEX 0xF0 0x41 0x10 0x00 0x54 0x12 [ 0x09 0x00 #VL ] 0xF7</Data>
+</CCM>
+
+<CCM ID="801" Name="System MIDI Filter Enable Ax">
+<Value Max="1" TableID="800" />
+<Data>@SYSEX 0xF0 0x41 0x10 0x00 0x54 0x12 [ 0x09 0x01 #VL ] 0xF7</Data>
+</CCM>
+
+<CCM ID="802" Name="System MIDI Filter Enable Bx">
+<Value Max="1" TableID="800" />
+<Data>@SYSEX 0xF0 0x41 0x10 0x00 0x54 0x12 [ 0x09 0x02 #VL ] 0xF7</Data>
+</CCM>
+
+<CCM ID="803" Name="System MIDI Filter Enable Cx">
+<Value Max="1" TableID="800" />
+<Data>@SYSEX 0xF0 0x41 0x10 0x00 0x54 0x12 [ 0x09 0x03 #VL ] 0xF7</Data>
+</CCM>
+
+<CCM ID="804" Name="System MIDI Filter Enable Dx">
+<Value Max="1" TableID="800" />
+<Data>@SYSEX 0xF0 0x41 0x10 0x00 0x54 0x12 [ 0x09 0x04 #VL ] 0xF7</Data>
+</CCM>
+
+<CCM ID="805" Name="System MIDI Filter Enable Ex">
+<Value Max="1" TableID="800" />
+<Data>@SYSEX 0xF0 0x41 0x10 0x00 0x54 0x12 [ 0x09 0x05 #VL ] 0xF7</Data>
+</CCM>
+
+<CCM ID="806" Name="System MIDI Filter Enable Sys Real/Sys Com">
+<Value Max="1" TableID="800" />
+<Data>@SYSEX 0xF0 0x41 0x10 0x00 0x54 0x12 [ 0x09 0x06 #VL ] 0xF7</Data>
+</CCM>
+
+<CCM ID="807" Name="System MIDI Filter Enable Sys Ex">
+<Value Max="1" TableID="800" />
+<Data>@SYSEX 0xF0 0x41 0x10 0x00 0x54 0x12 [ 0x09 0x07 #VL ] 0xF7</Data>
+</CCM>
+
+<Table ID="808">
+<Entry Label="Tx Disable" Value=" 0" />
+<Entry Label="Tx Enable"  Value=" 1" />
+</Table>
+
+<CCM ID="808" Name="System USB Tx1 Enable">
+<Value Max="1" TableID="808" />
+<Data>@SYSEX 0xF0 0x41 0x10 0x00 0x54 0x12 [ 0x09 0x08 #VL ] 0xF7</Data>
+</CCM>
+
+<CCM ID="809" Name="System USB Tx2 Enable">
+<Value Max="1" TableID="808" />
+<Data>@SYSEX 0xF0 0x41 0x10 0x00 0x54 0x12 [ 0x09 0x09 #VL ] 0xF7</Data>
+</CCM>
+
+<CCM ID="810" Name="System USB Tx3 Enable">
+<Value Max="1" TableID="808" />
+<Data>@SYSEX 0xF0 0x41 0x10 0x00 0x54 0x12 [ 0x09 0x0A #VL ] 0xF7</Data>
+</CCM>
+
+<CCM ID="811" Name="System USB Tx4 Enable">
+<Value Max="1" TableID="808" />
+<Data>@SYSEX 0xF0 0x41 0x10 0x00 0x54 0x12 [ 0x09 0x0B #VL ] 0xF7</Data>
+</CCM>
+
+<CCM ID="812" Name="System USB Tx5 Enable">
+<Value Max="1" TableID="808" />
+<Data>@SYSEX 0xF0 0x41 0x10 0x00 0x54 0x12 [ 0x09 0x0C #VL ] 0xF7</Data>
+</CCM>
+
+<CCM ID="816" Name="System MIDI Cnt Port">
+<Value Max="5">
+<Entry Label="No Assign"     Value="0" />
+<Entry Label="MIDI In/Out 1" Value="1" />
+<Entry Label="MIDI In/Out 2" Value="2" />
+<Entry Label="MIDI In/Out 3" Value="3" />
+<Entry Label="MIDI In/Out 4" Value="4" />
+<Entry Label="MIDI In/Out 5" Value="5" />
+</Value>
+<Data>@SYSEX 0xF0 0x41 0x10 0x00 0x54 0x12 [ 0x09 0x10 #VL ] 0xF7</Data>
+</CCM>
+
+<CCM ID="817" Name="System USB Driver Sel">
+<Value Default="1" Max="1">
+<Entry Label="Generic"  Value="0" />
+<Entry Label="Original" Value="1" />
+</Value>
+<Data>@SYSEX 0xF0 0x41 0x10 0x00 0x54 0x12 [ 0x09 0x11 #VL ] 0xF7</Data>
+</CCM>
+
+<CCM ID="818" Name="System Current Resume Sel">
+<Value Default="1" Max="1">
+<Entry Label="Do Not Resume Current" Value="0" />
+<Entry Label="Resume Current"        Value="1" />
+</Value>
+<Data>@SYSEX 0xF0 0x41 0x10 0x00 0x54 0x12 [ 0x09 0x12 #VL ] 0xF7</Data>
+</CCM>
+
+</Folder>
+
+</Folder>
+
+</Folder>
+
+</Folder>
+
+</Folder>
+
+</ControlChangeMacroList>
+
+
+<DefaultData>
+
+<Mark     Meas="1" Name="Setup" />
+
+<Track    Mode="Conductor">
+<Tempo    Tick="0"    Tempo=" 60.0" />
+<Tempo    Tick="3360" Tempo="120.0" />
+<EOT      Tick="3840" />
+</Track>
+
+<Track    Ch="1" Name="Setup">
+<Comment  Tick="0"    Text="--- Current Patch Setting ---" />
+<CC       Tick="0"    ID="300" />
+<CC       Tick="10"   ID="301" />
+<CC       Tick="20"   ID="302" />
+<CC       Tick="30"   ID="303" />
+<CC       Tick="40"   ID="304" />
+<Comment  Tick="120"  Text="--- Current Merge Setting ---" />
+<CC       Tick="120"  ID="308" />
+<CC       Tick="130"  ID="309" />
+<CC       Tick="140"  ID="310" />
+<CC       Tick="150"  ID="311" />
+<CC       Tick="160"  ID="312" />
+<Comment  Tick="240"  Text="--- MIDI Event Filter Setting ---" />
+<CC       Tick="240"  ID="800" />
+<CC       Tick="250"  ID="801" />
+<CC       Tick="260"  ID="802" />
+<CC       Tick="270"  ID="803" />
+<CC       Tick="280"  ID="804" />
+<CC       Tick="290"  ID="805" />
+<CC       Tick="300"  ID="806" />
+<CC       Tick="310"  ID="807" />
+<EOT      Tick="1920" />
+</Track>
+
+<Mark     Meas="3" Name="Start" />
+
+</DefaultData>
+
+
+</ModuleData>

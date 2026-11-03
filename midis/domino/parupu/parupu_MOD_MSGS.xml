@@ -1,0 +1,2193 @@
+<?xml version="1.0" encoding="UTF8"?>
+<ModuleData Folder="[parupu] Roland" Name="parupu MSGS mod" FileCreator="parupu, mod by Fur" FileVersion="2008/07/05" WebSite="http://parupu.chu.jp/">
+<RhythmTrackDefault Gate="50" />
+	<InstrumentList>
+
+		<Map Name="GS Map">
+
+			<PC Name="Piano 1"            PC="  1">
+				<Bank Name="Piano 1"            MSB="  0" LSB="  0" />
+				<Bank Name="Piano 1w"           MSB="  8" LSB="  0" />
+				<Bank Name="Piano 1d"           MSB=" 16" LSB="  0" />
+			</PC>
+			<PC Name="Piano 2"            PC="  2">
+				<Bank Name="Piano 2"            MSB="  0" LSB="  0" />
+				<Bank Name="Piano 2w"           MSB="  8" LSB="  0" />
+			</PC>
+			<PC Name="Piano 3"            PC="  3">
+				<Bank Name="Piano 3"            MSB="  0" LSB="  0" />
+				<Bank Name="Piano 3w"           MSB="  8" LSB="  0" />
+			</PC>
+			<PC Name="Honky-tonk"         PC="  4">
+				<Bank Name="Honky-tonk"         MSB="  0" LSB="  0" />
+				<Bank Name="HonkyTonk w"        MSB="  8" LSB="  0" />
+			</PC>
+			<PC Name="E.Piano 1"          PC="  5">
+				<Bank Name="E.Piano 1"          MSB="  0" LSB="  0" />
+				<Bank Name="Detuned EP1"        MSB="  8" LSB="  0" />
+				<Bank Name="E.Piano 1v"         MSB=" 16" LSB="  0" />
+				<Bank Name="60s E.Piano"        MSB=" 24" LSB="  0" />
+			</PC>
+			<PC Name="E.Piano 2"          PC="  6">
+				<Bank Name="E.Piano 2"          MSB="  0" LSB="  0" />
+				<Bank Name="Detuned EP2"        MSB="  8" LSB="  0" />
+				<Bank Name="E.Piano 2v"         MSB=" 16" LSB="  0" />
+			</PC>
+			<PC Name="Harpsichord"        PC="  7">
+				<Bank Name="Harpsichord"        MSB="  0" LSB="  0" />
+				<Bank Name="Coupled Hps"        MSB="  8" LSB="  0" />
+				<Bank Name="Harpsi.w"           MSB=" 16" LSB="  0" />
+				<Bank Name="Harpsi.o"           MSB=" 24" LSB="  0" />
+			</PC>
+			<PC Name="Clav."              PC="  8">
+				<Bank Name="Clav."              MSB="  0" LSB="  0" />
+			</PC>
+
+			<PC Name="Celesta"            PC="  9">
+				<Bank Name="Celesta"            MSB="  0" LSB="  0" />
+			</PC>
+			<PC Name="Glockenspl"         PC=" 10">
+				<Bank Name="Glockenspl"         MSB="  0" LSB="  0" />
+			</PC>
+			<PC Name="Music Box"          PC=" 11">
+				<Bank Name="Music Box"          MSB="  0" LSB="  0" />
+			</PC>
+			<PC Name="Vibraphone"         PC=" 12">
+				<Bank Name="Vibraphone"         MSB="  0" LSB="  0" />
+				<Bank Name="Vib.w"              MSB="  8" LSB="  0" />
+			</PC>
+			<PC Name="Marimba"            PC=" 13">
+				<Bank Name="Marimba"            MSB="  0" LSB="  0" />
+				<Bank Name="Marimba w"          MSB="  8" LSB="  0" />
+			</PC>
+			<PC Name="Xylophone"         PC=" 14">
+				<Bank Name="Xylophone"          MSB="  0" LSB="  0" />
+			</PC>
+			<PC Name="Tubularbell"        PC=" 15">
+				<Bank Name="Tubularbell"        MSB="  0" LSB="  0" />
+				<Bank Name="Church Bell"        MSB="  8" LSB="  0" />
+				<Bank Name="Carillon"           MSB="  9" LSB="  0" />
+			</PC>
+			<PC Name="Santur"             PC=" 16">
+				<Bank Name="Santur"             MSB="  0" LSB="  0" />
+			</PC>
+
+			<PC Name="Organ 1"            PC=" 17">
+				<Bank Name="Organ 1"            MSB="  0" LSB="  0" />
+				<Bank Name="Detuned Or1"        MSB="  8" LSB="  0" />
+				<Bank Name="60's Organ1"        MSB=" 16" LSB="  0" />
+				<Bank Name="Organ 4"            MSB=" 32" LSB="  0" />
+			</PC>
+			<PC Name="Organ 2"            PC=" 18">
+				<Bank Name="Organ 2"            MSB="  0" LSB="  0" />
+				<Bank Name="Detuned Or2"        MSB="  8" LSB="  0" />
+				<Bank Name="Organ 5"            MSB=" 32" LSB="  0" />
+			</PC>
+			<PC Name="Organ 3"            PC=" 19">
+				<Bank Name="Organ 3"            MSB="  0" LSB="  0" />
+			</PC>
+			<PC Name="Church Org1"        PC=" 20">
+				<Bank Name="Church Org1"        MSB="  0" LSB="  0" />
+				<Bank Name="Church Org2"        MSB="  8" LSB="  0" />
+				<Bank Name="Church Org3"        MSB=" 16" LSB="  0" />
+			</PC>
+			<PC Name="Reed Organ"         PC=" 21">
+				<Bank Name="Reed Organ"         MSB="  0" LSB="  0" />
+			</PC>
+			<PC Name="Accordion F"        PC=" 22">
+				<Bank Name="Accordion F"        MSB="  0" LSB="  0" />
+				<Bank Name="Accordion I"        MSB="  8" LSB="  0" />
+			</PC>
+			<PC Name="Harmonica"          PC=" 23">
+				<Bank Name="Harmonica"          MSB="  0" LSB="  0" />
+			</PC>
+			<PC Name="Bandoneon"          PC=" 24">
+				<Bank Name="Bandoneon"          MSB="  0" LSB="  0" />
+			</PC>
+
+			<PC Name="Nylon Gt."          PC=" 25">
+				<Bank Name="Nylon Gt."          MSB="  0" LSB="  0" />
+				<Bank Name="Ukulele"            MSB="  8" LSB="  0" />
+				<Bank Name="Nylon Gt.o"         MSB=" 16" LSB="  0" />
+				<Bank Name="Nylon Gt.2"         MSB=" 32" LSB="  0" />
+			</PC>
+			<PC Name="Steel Gt."          PC=" 26">
+				<Bank Name="Steel Gt."          MSB="  0" LSB="  0" />
+				<Bank Name="12-str.Gt"          MSB="  8" LSB="  0" />
+				<Bank Name="Mandolin"           MSB=" 16" LSB="  0" />
+			</PC>
+			<PC Name="Jazz Gt."           PC=" 27">
+				<Bank Name="Jazz Gt."           MSB="  0" LSB="  0" />
+				<Bank Name="Hawaiian Gt"        MSB="  8" LSB="  0" />
+			</PC>
+			<PC Name="Clean Gt."          PC=" 28">
+				<Bank Name="Clean Gt."          MSB="  0" LSB="  0" />
+				<Bank Name="Chorus Gt."         MSB="  8" LSB="  0" />
+			</PC>
+			<PC Name="Muted Gt."          PC=" 29">
+				<Bank Name="Muted Gt."          MSB="  0" LSB="  0" />
+				<Bank Name="Funk Gt."           MSB="  8" LSB="  0" />
+				<Bank Name="Funk Gt.2"          MSB=" 16" LSB="  0" />
+			</PC>
+			<PC Name="OverdriveGt"        PC=" 30">
+				<Bank Name="OverdriveGt"        MSB="  0" LSB="  0" />
+			</PC>
+			<PC Name="Dist.Gt."           PC=" 31">
+				<Bank Name="Dist.Gt."           MSB="  0" LSB="  0" />
+				<Bank Name="Feedback Gt"        MSB="  8" LSB="  0" />
+			</PC>
+			<PC Name="Gt.Harmonix"        PC=" 32">
+				<Bank Name="Gt.Harmonix"        MSB="  0" LSB="  0" />
+				<Bank Name="Gt.Feedback"        MSB="  8" LSB="  0" />
+			</PC>
+
+			<PC Name="Acoustic Bs"        PC=" 33">
+				<Bank Name="Acoustic Bs"        MSB="  0" LSB="  0" />
+			</PC>
+			<PC Name="Fingered Bs"        PC=" 34">
+				<Bank Name="Fingered Bs"        MSB="  0" LSB="  0" />
+			</PC>
+			<PC Name="Picked Bass"        PC=" 35">
+				<Bank Name="Picked Bass"        MSB="  0" LSB="  0" />
+			</PC>
+			<PC Name="Fretless Bs"        PC=" 36">
+				<Bank Name="Fretless Bs"        MSB="  0" LSB="  0" />
+			</PC>
+			<PC Name="Slap Bass 1"        PC=" 37">
+				<Bank Name="Slap Bass 1"        MSB="  0" LSB="  0" />
+			</PC>
+			<PC Name="Slap Bass 2"        PC=" 38">
+				<Bank Name="Slap Bass 2"        MSB="  0" LSB="  0" />
+			</PC>
+			<PC Name="Syn.Bass 1"         PC=" 39">
+				<Bank Name="Syn.Bass 1"         MSB="  0" LSB="  0" />
+				<Bank Name="Syn.Bass101"        MSB="  1" LSB="  0" />
+				<Bank Name="Syn.Bass 3"         MSB="  8" LSB="  0" />
+			</PC>
+			<PC Name="Syn.Bass 2"         PC=" 40">
+				<Bank Name="Syn.Bass 2"         MSB="  0" LSB="  0" />
+				<Bank Name="Syn.Bass 4"         MSB="  8" LSB="  0" />
+				<Bank Name="Rubber Bass"        MSB=" 16" LSB="  0" />
+			</PC>
+
+			<PC Name="Violin"             PC=" 41">
+				<Bank Name="Violin"             MSB="  0" LSB="  0" />
+				<Bank Name="Slow Violin"        MSB="  8" LSB="  0" />
+			</PC>
+			<PC Name="Viola"              PC=" 42">
+				<Bank Name="Viola"              MSB="  0" LSB="  0" />
+			</PC>
+			<PC Name="Cello"              PC=" 43">
+				<Bank Name="Cello"              MSB="  0" LSB="  0" />
+			</PC>
+			<PC Name="Contrabass"         PC=" 44">
+				<Bank Name="Contrabass"         MSB="  0" LSB="  0" />
+			</PC>
+			<PC Name="Tremolo"            PC=" 45">
+				<Bank Name="Tremolo"            MSB="  0" LSB="  0" />
+			</PC>
+			<PC Name="Pizzicato"          PC=" 46">
+				<Bank Name="Pizzicato"          MSB="  0" LSB="  0" />
+			</PC>
+			<PC Name="Harp"               PC=" 47">
+				<Bank Name="Harp"               MSB="  0" LSB="  0" />
+			</PC>
+			<PC Name="Timpani"            PC=" 48">
+				<Bank Name="Timpani"            MSB="  0" LSB="  0" />
+			</PC>
+
+			<PC Name="Strings"            PC=" 49">
+				<Bank Name="Strings"            MSB="  0" LSB="  0" />
+				<Bank Name="Orchestra"          MSB="  8" LSB="  0" />
+			</PC>
+			<PC Name="SlowStrings"        PC=" 50">
+				<Bank Name="SlowStrings"        MSB="  0" LSB="  0" />
+			</PC>
+			<PC Name="SynStrings1"        PC=" 51">
+				<Bank Name="SynStrings1"        MSB="  0" LSB="  0" />
+				<Bank Name="SynStrings3"        MSB="  8" LSB="  0" />
+			</PC>
+			<PC Name="SynStrings2"        PC=" 52">
+				<Bank Name="SynStrings2"        MSB="  0" LSB="  0" />
+			</PC>
+			<PC Name="Choir Aahs"         PC=" 53">
+				<Bank Name="Choir Aahs"         MSB="  0" LSB="  0" />
+				<Bank Name="Choir Aahs2"        MSB=" 32" LSB="  0" />
+			</PC>
+			<PC Name="Voice Oohs"         PC=" 54">
+				<Bank Name="Voice Oohs"         MSB="  0" LSB="  0" />
+			</PC>
+			<PC Name="SynVox"             PC=" 55">
+				<Bank Name="SynVox"             MSB="  0" LSB="  0" />
+			</PC>
+			<PC Name="Orchest."           PC=" 56">
+				<Bank Name="Orchest."           MSB="  0" LSB="  0" />
+			</PC>
+
+			<PC Name="Trumpet"            PC=" 57">
+				<Bank Name="Trumpet"            MSB="  0" LSB="  0" />
+			</PC>
+			<PC Name="Trombone"           PC=" 58">
+				<Bank Name="Trombone"           MSB="  0" LSB="  0" />
+				<Bank Name="Trombone 2"         MSB="  1" LSB="  0" />
+			</PC>
+			<PC Name="Tuba"               PC=" 59">
+				<Bank Name="Tuba"               MSB="  0" LSB="  0" />
+			</PC>
+			<PC Name="MuteTrumpet"        PC=" 60">
+				<Bank Name="MuteTrumpet"        MSB="  0" LSB="  0" />
+			</PC>
+			<PC Name="French Horn"        PC=" 61">
+				<Bank Name="French Horn"        MSB="  0" LSB="  0" />
+				<Bank Name="Fr.Horn 2"          MSB="  1" LSB="  0" />
+			</PC>
+			<PC Name="Brass 1"            PC=" 62">
+				<Bank Name="Brass 1"            MSB="  0" LSB="  0" />
+				<Bank Name="Brass 2"            MSB="  8" LSB="  0" />
+			</PC>
+			<PC Name="Syn.Brass 1"        PC=" 63">
+				<Bank Name="Syn.Brass 1"        MSB="  0" LSB="  0" />
+				<Bank Name="Syn.Brass 3"        MSB="  8" LSB="  0" />
+				<Bank Name="Analog Brs1"        MSB=" 16" LSB="  0" />
+			</PC>
+			<PC Name="Syn.Brass 2"        PC=" 64">
+				<Bank Name="Syn.Brass 2"        MSB="  0" LSB="  0" />
+				<Bank Name="Syn.Brass 4"        MSB="  8" LSB="  0" />
+				<Bank Name="Analog Brs2"        MSB=" 16" LSB="  0" />
+			</PC>
+
+			<PC Name="Soprano Sax"        PC=" 65">
+				<Bank Name="Soprano Sax"        MSB="  0" LSB="  0" />
+			</PC>
+			<PC Name="Alto Sax"           PC=" 66">
+				<Bank Name="Alto Sax"           MSB="  0" LSB="  0" />
+			</PC>
+			<PC Name="Tenor Sax"          PC=" 67">
+				<Bank Name="Tenor Sax"          MSB="  0" LSB="  0" />
+			</PC>
+			<PC Name="BaritoneSax"        PC=" 68">
+				<Bank Name="BaritoneSax"        MSB="  0" LSB="  0" />
+			</PC>
+			<PC Name="Oboe"               PC=" 69">
+				<Bank Name="Oboe"               MSB="  0" LSB="  0" />
+			</PC>
+			<PC Name="EnglishHorn"        PC=" 70">
+				<Bank Name="EnglishHorn"        MSB="  0" LSB="  0" />
+			</PC>
+			<PC Name="Bassoon"            PC=" 71">
+				<Bank Name="Bassoon"            MSB="  0" LSB="  0" />
+			</PC>
+			<PC Name="Clarinet"           PC=" 72">
+				<Bank Name="Clarinet"           MSB="  0" LSB="  0" />
+			</PC>
+
+			<PC Name="Piccolo"            PC=" 73">
+				<Bank Name="Piccolo"            MSB="  0" LSB="  0" />
+			</PC>
+			<PC Name="Flute"              PC=" 74">
+				<Bank Name="Flute"              MSB="  0" LSB="  0" />
+			</PC>
+			<PC Name="Recorder"           PC=" 75">
+				<Bank Name="Recorder"           MSB="  0" LSB="  0" />
+			</PC>
+			<PC Name="Pan Flute"          PC=" 76">
+				<Bank Name="Pan Flute"          MSB="  0" LSB="  0" />
+			</PC>
+			<PC Name="Bottle Blow"        PC=" 77">
+				<Bank Name="Bottle Blow"        MSB="  0" LSB="  0" />
+			</PC>
+			<PC Name="Shakuhachi"         PC=" 78">
+				<Bank Name="Shakuhachi"         MSB="  0" LSB="  0" />
+			</PC>
+			<PC Name="Whistle"            PC=" 79">
+				<Bank Name="Whistle"            MSB="  0" LSB="  0" />
+			</PC>
+			<PC Name="Ocarina"            PC=" 80">
+				<Bank Name="Ocarina"            MSB="  0" LSB="  0" />
+			</PC>
+
+			<PC Name="Square Wave"        PC=" 81">
+				<Bank Name="Square Wave"        MSB="  0" LSB="  0" />
+				<Bank Name="Square"             MSB="  1" LSB="  0" />
+				<Bank Name="Sine Wave"          MSB="  8" LSB="  0" />
+			</PC>
+			<PC Name="Saw Wave"           PC=" 82">
+				<Bank Name="Saw Wave"           MSB="  0" LSB="  0" />
+				<Bank Name="Saw"                MSB="  1" LSB="  0" />
+				<Bank Name="Doctor Solo"        MSB="  8" LSB="  0" />
+			</PC>
+			<PC Name="SynCalliope"        PC=" 83">
+				<Bank Name="SynCalliope"        MSB="  0" LSB="  0" />
+			</PC>
+			<PC Name="ChifferLead"        PC=" 84">
+				<Bank Name="ChifferLead"        MSB="  0" LSB="  0" />
+			</PC>
+			<PC Name="Charang"            PC=" 85">
+				<Bank Name="Charang"            MSB="  0" LSB="  0" />
+			</PC>
+			<PC Name="Solo Vox"           PC=" 86">
+				<Bank Name="Solo Vox"           MSB="  0" LSB="  0" />
+			</PC>
+			<PC Name="5th Saw"            PC=" 87">
+				<Bank Name="5th Saw"            MSB="  0" LSB="  0" />
+			</PC>
+			<PC Name="Bass &amp; Lead"        PC=" 88">
+				<Bank Name="Bass &amp; Lead"        MSB="  0" LSB="  0" />
+			</PC>
+
+			<PC Name="Fantasia"           PC=" 89">
+				<Bank Name="Fantasia"           MSB="  0" LSB="  0" />
+			</PC>
+			<PC Name="Warm Pad"           PC=" 90">
+				<Bank Name="Warm Pad"           MSB="  0" LSB="  0" />
+			</PC>
+			<PC Name="Polysynth"          PC=" 91">
+				<Bank Name="Polysynth"          MSB="  0" LSB="  0" />
+			</PC>
+			<PC Name="Space Voice"        PC=" 92">
+				<Bank Name="Space Voice"        MSB="  0" LSB="  0" />
+			</PC>
+			<PC Name="Bowed Glass"        PC=" 93">
+				<Bank Name="Bowed Glass"        MSB="  0" LSB="  0" />
+			</PC>
+			<PC Name="Metal Pad"          PC=" 94">
+				<Bank Name="Metal Pad"          MSB="  0" LSB="  0" />
+			</PC>
+			<PC Name="Halo Pad"           PC=" 95">
+				<Bank Name="Halo Pad"           MSB="  0" LSB="  0" />
+			</PC>
+			<PC Name="Sweep Pad"          PC=" 96">
+				<Bank Name="Sweep Pad"          MSB="  0" LSB="  0" />
+			</PC>
+
+			<PC Name="Ice Rain"           PC=" 97">
+				<Bank Name="Ice Rain"           MSB="  0" LSB="  0" />
+			</PC>
+			<PC Name="Soundtrack"         PC=" 98">
+				<Bank Name="Soundtrack"         MSB="  0" LSB="  0" />
+			</PC>
+			<PC Name="Crystal"            PC=" 99">
+				<Bank Name="Crystal"            MSB="  0" LSB="  0" />
+				<Bank Name="Syn Mallet"         MSB="  1" LSB="  0" />
+			</PC>
+			<PC Name="Atmosphere"         PC="100">
+				<Bank Name="Atmosphere"         MSB="  0" LSB="  0" />
+			</PC>
+			<PC Name="Brightness"         PC="101">
+				<Bank Name="Brightness"         MSB="  0" LSB="  0" />
+			</PC>
+			<PC Name="Goblin"             PC="102">
+				<Bank Name="Goblin"             MSB="  0" LSB="  0" />
+			</PC>
+			<PC Name="Echo Drops"         PC="103">
+				<Bank Name="Echo Drops"         MSB="  0" LSB="  0" />
+				<Bank Name="Echo Bell"          MSB="  1" LSB="  0" />
+				<Bank Name="Echo Pan"           MSB="  2" LSB="  0" />
+			</PC>
+			<PC Name="Star Theme"         PC="104">
+				<Bank Name="Star Theme"         MSB="  0" LSB="  0" />
+			</PC>
+
+			<PC Name="Sitar"              PC="105">
+				<Bank Name="Sitar"              MSB="  0" LSB="  0" />
+				<Bank Name="Sitar 2"            MSB="  1" LSB="  0" />
+			</PC>
+			<PC Name="Banjo"              PC="106">
+				<Bank Name="Banjo"              MSB="  0" LSB="  0" />
+			</PC>
+			<PC Name="Shamisen"           PC="107">
+				<Bank Name="Shamisen"           MSB="  0" LSB="  0" />
+			</PC>
+			<PC Name="Koto"               PC="108">
+				<Bank Name="Koto"               MSB="  0" LSB="  0" />
+				<Bank Name="Taisho Koto"        MSB="  8" LSB="  0" />
+			</PC>
+			<PC Name="Kalimba"            PC="109">
+				<Bank Name="Kalimba"            MSB="  0" LSB="  0" />
+			</PC>
+			<PC Name="Bagpipe"            PC="110">
+				<Bank Name="Bagpipe"            MSB="  0" LSB="  0" />
+			</PC>
+			<PC Name="Fiddle"             PC="111">
+				<Bank Name="Fiddle"             MSB="  0" LSB="  0" />
+			</PC>
+			<PC Name="Shanai"             PC="112">
+				<Bank Name="Shanai"             MSB="  0" LSB="  0" />
+			</PC>
+
+			<PC Name="Tinkle Bell"        PC="113">
+				<Bank Name="Tinkle Bell"        MSB="  0" LSB="  0" />
+			</PC>
+			<PC Name="Agogo"              PC="114">
+				<Bank Name="Agogo"              MSB="  0" LSB="  0" />
+			</PC>
+			<PC Name="Steel Drums"        PC="115">
+				<Bank Name="Steel Drums"        MSB="  0" LSB="  0" />
+			</PC>
+			<PC Name="Woodblock"          PC="116">
+				<Bank Name="Woodblock"          MSB="  0" LSB="  0" />
+				<Bank Name="Castanets"          MSB="  8" LSB="  0" />
+			</PC>
+			<PC Name="Taiko"              PC="117">
+				<Bank Name="Taiko"              MSB="  0" LSB="  0" />
+				<Bank Name="Concert BD"         MSB="  8" LSB="  0" />
+			</PC>
+			<PC Name="Melo. Tom 1"        PC="118">
+				<Bank Name="Melo. Tom 1"        MSB="  0" LSB="  0" />
+				<Bank Name="Melo. Tom 2"        MSB="  8" LSB="  0" />
+			</PC>
+			<PC Name="Synth Drum"         PC="119">
+				<Bank Name="Synth Drum"         MSB="  0" LSB="  0" />
+				<Bank Name="808 Tom"            MSB="  8" LSB="  0" />
+				<Bank Name="Elec Perc"          MSB="  9" LSB="  0" />
+			</PC>
+			<PC Name="Reverse Cym"        PC="120">
+				<Bank Name="Reverse Cym"        MSB="  0" LSB="  0" />
+			</PC>
+
+			<PC Name="Gt.FretNoiz"        PC="121">
+				<Bank Name="Gt.FretNoiz"        MSB="  0" LSB="  0" />
+				<Bank Name="Gt.CutNoise"        MSB="  1" LSB="  0" />
+				<Bank Name="String Slap"        MSB="  2" LSB="  0" />
+			</PC>
+			<PC Name="BreathNoise"        PC="122">
+				<Bank Name="BreathNoise"        MSB="  0" LSB="  0" />
+				<Bank Name="Fl.KeyClick"        MSB="  1" LSB="  0" />
+			</PC>
+			<PC Name="Seashore"           PC="123">
+				<Bank Name="Seashore"           MSB="  0" LSB="  0" />
+				<Bank Name="Rain"               MSB="  1" LSB="  0" />
+				<Bank Name="Thunder"            MSB="  2" LSB="  0" />
+				<Bank Name="Wind"               MSB="  3" LSB="  0" />
+				<Bank Name="Stream"             MSB="  4" LSB="  0" />
+				<Bank Name="Bubble"             MSB="  5" LSB="  0" />
+			</PC>
+			<PC Name="Bird"               PC="124">
+				<Bank Name="Bird"               MSB="  0" LSB="  0" />
+				<Bank Name="Dog"                MSB="  1" LSB="  0" />
+				<Bank Name="HorseGallop"        MSB="  2" LSB="  0" />
+				<Bank Name="Bird 2"             MSB="  3" LSB="  0" />
+			</PC>
+			<PC Name="Telephone 1"        PC="125">
+				<Bank Name="Telephone 1"        MSB="  0" LSB="  0" />
+				<Bank Name="Telephone 2"        MSB="  1" LSB="  0" />
+				<Bank Name="Creaking"           MSB="  2" LSB="  0" />
+				<Bank Name="Door"               MSB="  3" LSB="  0" />
+				<Bank Name="Scratch"            MSB="  4" LSB="  0" />
+				<Bank Name="Wind Chimes"        MSB="  5" LSB="  0" />
+			</PC>
+			<PC Name="Helicopter"         PC="126">
+				<Bank Name="Helicopter"         MSB="  0" LSB="  0" />
+				<Bank Name="Car-Engine"         MSB="  1" LSB="  0" />
+				<Bank Name="Car-Stop"           MSB="  2" LSB="  0" />
+				<Bank Name="Car-Pass"           MSB="  3" LSB="  0" />
+				<Bank Name="Car-Crash"          MSB="  4" LSB="  0" />
+				<Bank Name="Siren"              MSB="  5" LSB="  0" />
+				<Bank Name="Train"              MSB="  6" LSB="  0" />
+				<Bank Name="Jetplane"           MSB="  7" LSB="  0" />
+				<Bank Name="Starship"           MSB="  8" LSB="  0" />
+				<Bank Name="Burst Noise"        MSB="  9" LSB="  0" />
+			</PC>
+			<PC Name="Applause"           PC="127">
+				<Bank Name="Applause"           MSB="  0" LSB="  0" />
+				<Bank Name="Laughing"           MSB="  1" LSB="  0" />
+				<Bank Name="Screaming"          MSB="  2" LSB="  0" />
+				<Bank Name="Punch"              MSB="  3" LSB="  0" />
+				<Bank Name="Heart Beat"         MSB="  4" LSB="  0" />
+				<Bank Name="Footsteps"          MSB="  5" LSB="  0" />
+			</PC>
+			<PC Name="Gun Shot"           PC="128">
+				<Bank Name="Gun Shot"           MSB="  0" LSB="  0" />
+				<Bank Name="Machine Gun"        MSB="  1" LSB="  0" />
+				<Bank Name="Lasergun"           MSB="  2" LSB="  0" />
+				<Bank Name="Explosion"          MSB="  3" LSB="  0" />
+			</PC>
+
+		</Map>
+
+		<Map Name="GM Instrument">
+
+			<PC Name="Piano 1"            PC="  1">
+				<Bank Name="Piano 1"            />
+			</PC>
+			<PC Name="Piano 2"            PC="  2">
+				<Bank Name="Piano 2"            />
+			</PC>
+			<PC Name="Piano 3"            PC="  3">
+				<Bank Name="Piano 3"            />
+			</PC>
+			<PC Name="Honky-tonk"         PC="  4">
+				<Bank Name="Honky-tonk"         />
+			</PC>
+			<PC Name="E.Piano 1"          PC="  5">
+				<Bank Name="E.Piano 1"          />
+			</PC>
+			<PC Name="E.Piano 2"          PC="  6">
+				<Bank Name="E.Piano 2"          />
+			</PC>
+			<PC Name="Harpsichord"        PC="  7">
+				<Bank Name="Harpsichord"        />
+			</PC>
+			<PC Name="Clav."              PC="  8">
+				<Bank Name="Clav."              />
+			</PC>
+
+			<PC Name="Celesta"            PC="  9">
+				<Bank Name="Celesta"            />
+			</PC>
+			<PC Name="Glockenspiel"       PC=" 10">
+				<Bank Name="Glockenspiel"       />
+			</PC>
+			<PC Name="Music Box"          PC=" 11">
+				<Bank Name="Music Box"          />
+			</PC>
+			<PC Name="Vibraphone"         PC=" 12">
+				<Bank Name="Vibraphone"         />
+			</PC>
+			<PC Name="Marimba"            PC=" 13">
+				<Bank Name="Marimba"            />
+			</PC>
+			<PC Name="Xylophone"          PC=" 14">
+				<Bank Name="Xylophone"          />
+			</PC>
+			<PC Name="Tubular-bell"       PC=" 15">
+				<Bank Name="Tubular-bell"       />
+			</PC>
+			<PC Name="Santur"             PC=" 16">
+				<Bank Name="Santur"             />
+			</PC>
+
+			<PC Name="Organ 1"            PC=" 17">
+				<Bank Name="Organ 1"            />
+			</PC>
+			<PC Name="Organ 2"            PC=" 18">
+				<Bank Name="Organ 2"            />
+			</PC>
+			<PC Name="Organ 3"            PC=" 19">
+				<Bank Name="Organ 3"            />
+			</PC>
+			<PC Name="Church Org.1"       PC=" 20">
+				<Bank Name="Church Org.1"       />
+			</PC>
+			<PC Name="Reed Organ"         PC=" 21">
+				<Bank Name="Reed Organ"         />
+			</PC>
+			<PC Name="Accordion Fr"       PC=" 22">
+				<Bank Name="Accordion Fr"       />
+			</PC>
+			<PC Name="Harmonica"          PC=" 23">
+				<Bank Name="Harmonica"          />
+			</PC>
+			<PC Name="Bandoneon"          PC=" 24">
+				<Bank Name="Bandoneon"          />
+			</PC>
+
+			<PC Name="Nylon-str.Gt"       PC=" 25">
+				<Bank Name="Nylon-str.Gt"       />
+			</PC>
+			<PC Name="Steel-str.Gt"       PC=" 26">
+				<Bank Name="Steel-str.Gt"       />
+			</PC>
+			<PC Name="Jazz Gt."           PC=" 27">
+				<Bank Name="Jazz Gt."           />
+			</PC>
+			<PC Name="Clean Gt."          PC=" 28">
+				<Bank Name="Clean Gt."          />
+			</PC>
+			<PC Name="Muted Gt."          PC=" 29">
+				<Bank Name="Muted Gt."          />
+			</PC>
+			<PC Name="Overdrive Gt"       PC=" 30">
+				<Bank Name="Overdrive Gt"       />
+			</PC>
+			<PC Name="DistortionGt"       PC=" 31">
+				<Bank Name="DistortionGt"       />
+			</PC>
+			<PC Name="Gt.Harmonics"       PC=" 32">
+				<Bank Name="Gt.Harmonics"       />
+			</PC>
+
+			<PC Name="Acoustic Bs."       PC=" 33">
+				<Bank Name="Acoustic Bs."       />
+			</PC>
+			<PC Name="Fingered Bs."       PC=" 34">
+				<Bank Name="Fingered Bs."       />
+			</PC>
+			<PC Name="Picked Bass"        PC=" 35">
+				<Bank Name="Picked Bass"        />
+			</PC>
+			<PC Name="Fretless Bs."       PC=" 36">
+				<Bank Name="Fretless Bs."       />
+			</PC>
+			<PC Name="Slap Bass 1"        PC=" 37">
+				<Bank Name="Slap Bass 1"        />
+			</PC>
+			<PC Name="Slap Bass 2"        PC=" 38">
+				<Bank Name="Slap Bass 2"        />
+			</PC>
+			<PC Name="Synth Bass 1"       PC=" 39">
+				<Bank Name="Synth Bass 1"       />
+			</PC>
+			<PC Name="Synth Bass 2"       PC=" 40">
+				<Bank Name="Synth Bass 2"       />
+			</PC>
+
+			<PC Name="Violin"             PC=" 41">
+				<Bank Name="Violin"             />
+			</PC>
+			<PC Name="Viola"              PC=" 42">
+				<Bank Name="Viola"              />
+			</PC>
+			<PC Name="Cello"              PC=" 43">
+				<Bank Name="Cello"              />
+			</PC>
+			<PC Name="Contrabass"         PC=" 44">
+				<Bank Name="Contrabass"         />
+			</PC>
+			<PC Name="Tremolo Str"        PC=" 45">
+				<Bank Name="Tremolo Str"        />
+			</PC>
+			<PC Name="PizzicatoStr"       PC=" 46">
+				<Bank Name="PizzicatoStr"       />
+			</PC>
+			<PC Name="Harp"               PC=" 47">
+				<Bank Name="Harp"               />
+			</PC>
+			<PC Name="Timpani"            PC=" 48">
+				<Bank Name="Timpani"            />
+			</PC>
+
+			<PC Name="Strings"            PC=" 49">
+				<Bank Name="Strings"            />
+			</PC>
+			<PC Name="Slow Strings"       PC=" 50">
+				<Bank Name="Slow Strings"       />
+			</PC>
+			<PC Name="Syn.Strings1"       PC=" 51">
+				<Bank Name="Syn.Strings1"       />
+			</PC>
+			<PC Name="Syn.Strings2"       PC=" 52">
+				<Bank Name="Syn.Strings2"       />
+			</PC>
+			<PC Name="Choir Aahs"         PC=" 53">
+				<Bank Name="Choir Aahs"         />
+			</PC>
+			<PC Name="Voice Oohs"         PC=" 54">
+				<Bank Name="Voice Oohs"         />
+			</PC>
+			<PC Name="SynVox"             PC=" 55">
+				<Bank Name="SynVox"             />
+			</PC>
+			<PC Name="OrchestraHit"       PC=" 56">
+				<Bank Name="OrchestraHit"       />
+			</PC>
+
+			<PC Name="Trumpet"            PC=" 57">
+				<Bank Name="Trumpet"            />
+			</PC>
+			<PC Name="Trombone"           PC=" 58">
+				<Bank Name="Trombone"           />
+			</PC>
+			<PC Name="Tuba"               PC=" 59">
+				<Bank Name="Tuba"               />
+			</PC>
+			<PC Name="MutedTrumpet"       PC=" 60">
+				<Bank Name="MutedTrumpet"       />
+			</PC>
+			<PC Name="French Horns"       PC=" 61">
+				<Bank Name="French Horns"       />
+			</PC>
+			<PC Name="Brass 1"            PC=" 62">
+				<Bank Name="Brass 1"            />
+			</PC>
+			<PC Name="Synth Brass1"       PC=" 63">
+				<Bank Name="Synth Brass1"       />
+			</PC>
+			<PC Name="Synth Brass2"       PC=" 64">
+				<Bank Name="Synth Brass2"       />
+			</PC>
+
+			<PC Name="Soprano Sax"        PC=" 65">
+				<Bank Name="Soprano Sax"        />
+			</PC>
+			<PC Name="Alto Sax"           PC=" 66">
+				<Bank Name="Alto Sax"           />
+			</PC>
+			<PC Name="Tenor Sax"          PC=" 67">
+				<Bank Name="Tenor Sax"          />
+			</PC>
+			<PC Name="Baritone Sax"       PC=" 68">
+				<Bank Name="Baritone Sax"       />
+			</PC>
+			<PC Name="Oboe"               PC=" 69">
+				<Bank Name="Oboe"               />
+			</PC>
+			<PC Name="English Horn"       PC=" 70">
+				<Bank Name="English Horn"       />
+			</PC>
+			<PC Name="Bassoon"            PC=" 71">
+				<Bank Name="Bassoon"            />
+			</PC>
+			<PC Name="Clarinet"           PC=" 72">
+				<Bank Name="Clarinet"           />
+			</PC>
+			<PC Name="Piccolo"            PC=" 73">
+				<Bank Name="Piccolo"            />
+			</PC>
+			<PC Name="Flute"              PC=" 74">
+				<Bank Name="Flute"              />
+			</PC>
+			<PC Name="Recorder"           PC=" 75">
+				<Bank Name="Recorder"           />
+			</PC>
+			<PC Name="Pan Flute"          PC=" 76">
+				<Bank Name="Pan Flute"          />
+			</PC>
+			<PC Name="Bottle Blow"        PC=" 77">
+				<Bank Name="Bottle Blow"        />
+			</PC>
+			<PC Name="Shakuhachi"         PC=" 78">
+				<Bank Name="Shakuhachi"         />
+			</PC>
+			<PC Name="Whistle"            PC=" 79">
+				<Bank Name="Whistle"            />
+			</PC>
+			<PC Name="Ocarina"            PC=" 80">
+				<Bank Name="Ocarina"            />
+			</PC>
+
+			<PC Name="Square Wave"        PC=" 81">
+				<Bank Name="Square Wave"        />
+			</PC>
+			<PC Name="Saw Wave"           PC=" 82">
+				<Bank Name="Saw Wave"           />
+			</PC>
+			<PC Name="Syn.Calliope"       PC=" 83">
+				<Bank Name="Syn.Calliope"       />
+			</PC>
+			<PC Name="Chiffer Lead"       PC=" 84">
+				<Bank Name="Chiffer Lead"       />
+			</PC>
+			<PC Name="Charang"            PC=" 85">
+				<Bank Name="Charang"            />
+			</PC>
+			<PC Name="Solo Vox"           PC=" 86">
+				<Bank Name="Solo Vox"           />
+			</PC>
+			<PC Name="5th Saw Wave"       PC=" 87">
+				<Bank Name="5th Saw Wave"       />
+			</PC>
+			<PC Name="Bass &amp; Lead"        PC=" 88">
+				<Bank Name="Bass &amp; Lead"        />
+			</PC>
+
+			<PC Name="Fantasia"           PC=" 89">
+				<Bank Name="Fantasia"           />
+			</PC>
+			<PC Name="Warm Pad"           PC=" 90">
+				<Bank Name="Warm Pad"           />
+			</PC>
+			<PC Name="Polysynth"          PC=" 91">
+				<Bank Name="Polysynth"          />
+			</PC>
+			<PC Name="Space Voice"        PC=" 92">
+				<Bank Name="Space Voice"        />
+			</PC>
+			<PC Name="Bowed Glass"        PC=" 93">
+				<Bank Name="Bowed Glass"       />
+			</PC>
+			<PC Name="Metal Pad"          PC=" 94">
+				<Bank Name="Metal Pad"          />
+			</PC>
+			<PC Name="Halo Pad"           PC=" 95">
+				<Bank Name="Halo Pad"           />
+			</PC>
+			<PC Name="Sweep Pad"          PC=" 96">
+				<Bank Name="Sweep Pad"          />
+			</PC>
+
+			<PC Name="Ice Rain"           PC=" 97">
+				<Bank Name="Ice Rain"           />
+			</PC>
+			<PC Name="Soundtrack"         PC=" 98">
+				<Bank Name="Soundtrack"         />
+			</PC>
+			<PC Name="Crystal"            PC=" 99">
+				<Bank Name="Crystal"            />
+			</PC>
+			<PC Name="Atmosphere"         PC="100">
+				<Bank Name="Atmosphere"         />
+			</PC>
+			<PC Name="Brightness"         PC="101">
+				<Bank Name="Brightness"         />
+			</PC>
+			<PC Name="Goblin"             PC="102">
+				<Bank Name="Goblin"             />
+			</PC>
+			<PC Name="Echo Drops"         PC="103">
+				<Bank Name="Echo Drops"         />
+			</PC>
+			<PC Name="Star Theme"         PC="104">
+				<Bank Name="Star Theme"         />
+			</PC>
+
+			<PC Name="Sitar"              PC="105">
+				<Bank Name="Sitar"              />
+			</PC>
+			<PC Name="Banjo"              PC="106">
+				<Bank Name="Banjo"              />
+			</PC>
+			<PC Name="Shamisen"           PC="107">
+				<Bank Name="Shamisen"           />
+			</PC>
+			<PC Name="Koto"               PC="108">
+				<Bank Name="Koto"               />
+			</PC>
+			<PC Name="Kalimba"            PC="109">
+				<Bank Name="Kalimba"            />
+			</PC>
+			<PC Name="Bagpipe"            PC="110">
+				<Bank Name="Bagpipe"            />
+			</PC>
+			<PC Name="Fiddle"             PC="111">
+				<Bank Name="Fiddle"             />
+			</PC>
+			<PC Name="Shanai"             PC="112">
+				<Bank Name="Shanai"             />
+			</PC>
+
+			<PC Name="Tinkle Bell"        PC="113">
+				<Bank Name="Tinkle Bell"        />
+			</PC>
+			<PC Name="Agogo"              PC="114">
+				<Bank Name="Agogo"              />
+			</PC>
+			<PC Name="Steel Drums"        PC="115">
+				<Bank Name="Steel Drums"        />
+			</PC>
+			<PC Name="Woodblock"          PC="116">
+				<Bank Name="Woodblock"          />
+			</PC>
+			<PC Name="Taiko"              PC="117">
+				<Bank Name="Taiko"              />
+			</PC>
+			<PC Name="Melo. Tom 1"        PC="118">
+				<Bank Name="Melo. Tom 1"        />
+			</PC>
+			<PC Name="Synth Drum"         PC="119">
+				<Bank Name="Synth Drum"         />
+			</PC>
+			<PC Name="Reverse Cym."       PC="120">
+				<Bank Name="Reverse Cym."       />
+			</PC>
+
+			<PC Name="Gt.FretNoise"       PC="121">
+				<Bank Name="Gt.FretNoise"       />
+			</PC>
+			<PC Name="Breath Noise"       PC="122">
+				<Bank Name="Breath Noise"       />
+			</PC>
+			<PC Name="Seashore"           PC="123">
+				<Bank Name="Seashore"           />
+			</PC>
+			<PC Name="Bird"               PC="124">
+				<Bank Name="Bird"               />
+			</PC>
+			<PC Name="Telephone 1"        PC="125">
+				<Bank Name="Telephone 1"        />
+			</PC>
+			<PC Name="Helicopter"         PC="126">
+				<Bank Name="Helicopter"         />
+			</PC>
+			<PC Name="Applause"           PC="127">
+				<Bank Name="Applause"           />
+			</PC>
+			<PC Name="Gun Shot"           PC="128">
+				<Bank Name="Gun Shot"           />
+			</PC>
+
+		</Map>
+
+	</InstrumentList>
+
+	<DrumSetList>
+
+		<Map Name="GS Map">
+
+			<PC Name="STANDARD"           PC="  1">
+				<Bank Name="STANDARD"           MSB="  0" LSB="  0">
+					<Tone Name="High Q"                                   Key=" 27" />
+					<Tone Name="Slap"                                     Key=" 28" />
+					<Tone Name="Scratch Push"                             Key=" 29" />
+					<Tone Name="Scratch Pull"                             Key=" 30" />
+					<Tone Name="Sticks"                                   Key=" 31" />
+					<Tone Name="Square Click"                             Key=" 32" />
+					<Tone Name="Metronome Click"                          Key=" 33" />
+					<Tone Name="Metronome Bell"                           Key=" 34" />
+					<Tone Name="Kick Drum2"                               Key=" 35" />
+					<Tone Name="Kick Drum1"                               Key=" 36" />
+					<Tone Name="Side Stick"                               Key=" 37" />
+					<Tone Name="Snare Drum1"                              Key=" 38" />
+					<Tone Name="Hand Clap"                                Key=" 39" />
+					<Tone Name="Snare Drum2"                              Key=" 40" />
+					<Tone Name="Low Tom2"                                 Key=" 41" />
+					<Tone Name="Closed Hi-hat"                            Key=" 42" />
+					<Tone Name="Low Tom1"                                 Key=" 43" />
+					<Tone Name="Pedal Hi-hat"                             Key=" 44" />
+					<Tone Name="Mid Tom2"                                 Key=" 45" />
+					<Tone Name="Open Hi-hat"                              Key=" 46" />
+					<Tone Name="Mid Tom1"                                 Key=" 47" />
+					<Tone Name="High Tom2"                                Key=" 48" />
+					<Tone Name="Crash Cymbal1"                            Key=" 49" />
+					<Tone Name="High Tom1"                                Key=" 50" />
+					<Tone Name="Ride Cymbal1"                             Key=" 51" />
+					<Tone Name="Chinese Cymbal"                           Key=" 52" />
+					<Tone Name="Ride Bell"                                Key=" 53" />
+					<Tone Name="Tambourine"                               Key=" 54" />
+					<Tone Name="Splash Cymbal"                            Key=" 55" />
+					<Tone Name="Cowbell"                                  Key=" 56" />
+					<Tone Name="Crash Cymbal2"                            Key=" 57" />
+					<Tone Name="Vibra-slap"                               Key=" 58" />
+					<Tone Name="Ride Cymbal2"                             Key=" 59" />
+					<Tone Name="High Bongo"                               Key=" 60" />
+					<Tone Name="Low Bongo"                                Key=" 61" />
+					<Tone Name="Mute High Conga"                          Key=" 62" />
+					<Tone Name="Open High Conga"                          Key=" 63" />
+					<Tone Name="Low Conga"                                Key=" 64" />
+					<Tone Name="High Timbale"                             Key=" 65" />
+					<Tone Name="Low Timbale"                              Key=" 66" />
+					<Tone Name="High Agogo"                               Key=" 67" />
+					<Tone Name="Low Agogo"                                Key=" 68" />
+					<Tone Name="Cabasa"                                   Key=" 69" />
+					<Tone Name="Maracas"                                  Key=" 70" />
+					<Tone Name="Short Hi Whistle"                         Key=" 71" />
+					<Tone Name="Long Low Whistle"                         Key=" 72" />
+					<Tone Name="Short Guiro"                              Key=" 73" />
+					<Tone Name="Long Guiro"                               Key=" 74" />
+					<Tone Name="Claves"                                   Key=" 75" />
+					<Tone Name="High Wood Block"                          Key=" 76" />
+					<Tone Name="Low Wood Block"                           Key=" 77" />
+					<Tone Name="Mute Cuica"                               Key=" 78" />
+					<Tone Name="Open Cuica"                               Key=" 79" />
+					<Tone Name="Mute Triangle"                            Key=" 80" />
+					<Tone Name="Open Triangle"                            Key=" 81" />
+					<Tone Name="Shaker"                                   Key=" 82" />
+					<Tone Name="Jingle Bell"                              Key=" 83" />
+					<Tone Name="Bell Tree"                                Key=" 84" />
+					<Tone Name="Castanets"                                Key=" 85" />
+					<Tone Name="Mute Surdo"                               Key=" 86" />
+					<Tone Name="Open Surdo"                               Key=" 87" />
+				</Bank>
+			</PC>
+
+			<PC Name="ROOM"               PC="  9">
+				<Bank Name="ROOM"               MSB="  0" LSB="  0">
+					<Tone Name="High Q"                                   Key=" 27" />
+					<Tone Name="Slap"                                     Key=" 28" />
+					<Tone Name="Scratch Push"                             Key=" 29" />
+					<Tone Name="Scratch Pull"                             Key=" 30" />
+					<Tone Name="Sticks"                                   Key=" 31" />
+					<Tone Name="Square Click"                             Key=" 32" />
+					<Tone Name="Metronome Click"                          Key=" 33" />
+					<Tone Name="Metronome Bell"                           Key=" 34" />
+					<Tone Name="Kick Drum2"                               Key=" 35" />
+					<Tone Name="Kick Drum1"                               Key=" 36" />
+					<Tone Name="Side Stick"                               Key=" 37" />
+					<Tone Name="Snare Drum1"                              Key=" 38" />
+					<Tone Name="Hand Clap"                                Key=" 39" />
+					<Tone Name="Snare Drum2"                              Key=" 40" />
+					<Tone Name="Room Low Tom2"                            Key=" 41" />
+					<Tone Name="Closed Hi-hat"                            Key=" 42" />
+					<Tone Name="Room Low Tom1"                            Key=" 43" />
+					<Tone Name="Pedal Hi-hat"                             Key=" 44" />
+					<Tone Name="Room Mid Tom2"                            Key=" 45" />
+					<Tone Name="Open Hi-hat"                              Key=" 46" />
+					<Tone Name="Room Mid Tom1"                            Key=" 47" />
+					<Tone Name="Room Hi Tom2"                             Key=" 48" />
+					<Tone Name="Crash Cymbal1"                            Key=" 49" />
+					<Tone Name="Room Hi Tom1"                             Key=" 50" />
+					<Tone Name="Ride Cymbal1"                             Key=" 51" />
+					<Tone Name="Chinese Cymbal"                           Key=" 52" />
+					<Tone Name="Ride Bell"                                Key=" 53" />
+					<Tone Name="Tambourine"                               Key=" 54" />
+					<Tone Name="Splash Cymbal"                            Key=" 55" />
+					<Tone Name="Cowbell"                                  Key=" 56" />
+					<Tone Name="Crash Cymbal2"                            Key=" 57" />
+					<Tone Name="Vibra-slap"                               Key=" 58" />
+					<Tone Name="Ride Cymbal2"                             Key=" 59" />
+					<Tone Name="High Bongo"                               Key=" 60" />
+					<Tone Name="Low Bongo"                                Key=" 61" />
+					<Tone Name="Mute High Conga"                          Key=" 62" />
+					<Tone Name="Open High Conga"                          Key=" 63" />
+					<Tone Name="Low Conga"                                Key=" 64" />
+					<Tone Name="High Timbale"                             Key=" 65" />
+					<Tone Name="Low Timbale"                              Key=" 66" />
+					<Tone Name="High Agogo"                               Key=" 67" />
+					<Tone Name="Low Agogo"                                Key=" 68" />
+					<Tone Name="Cabasa"                                   Key=" 69" />
+					<Tone Name="Maracas"                                  Key=" 70" />
+					<Tone Name="Short Hi Whistle"                         Key=" 71" />
+					<Tone Name="Long Low Whistle"                         Key=" 72" />
+					<Tone Name="Short Guiro"                              Key=" 73" />
+					<Tone Name="Long Guiro"                               Key=" 74" />
+					<Tone Name="Claves"                                   Key=" 75" />
+					<Tone Name="High Wood Block"                          Key=" 76" />
+					<Tone Name="Low Wood Block"                           Key=" 77" />
+					<Tone Name="Mute Cuica"                               Key=" 78" />
+					<Tone Name="Open Cuica"                               Key=" 79" />
+					<Tone Name="Mute Triangle"                            Key=" 80" />
+					<Tone Name="Open Triangle"                            Key=" 81" />
+					<Tone Name="Shaker"                                   Key=" 82" />
+					<Tone Name="Jingle Bell"                              Key=" 83" />
+					<Tone Name="Bell Tree"                                Key=" 84" />
+					<Tone Name="Castanets"                                Key=" 85" />
+					<Tone Name="Mute Surdo"                               Key=" 86" />
+					<Tone Name="Open Surdo"                               Key=" 87" />
+				</Bank>
+			</PC>
+
+			<PC Name="POWER"              PC=" 17">
+				<Bank Name="POWER"              MSB="  0" LSB="  0">
+					<Tone Name="High Q"                                   Key=" 27" />
+					<Tone Name="Slap"                                     Key=" 28" />
+					<Tone Name="Scratch Push"                             Key=" 29" />
+					<Tone Name="Scratch Pull"                             Key=" 30" />
+					<Tone Name="Sticks"                                   Key=" 31" />
+					<Tone Name="Square Click"                             Key=" 32" />
+					<Tone Name="Metronome Click"                          Key=" 33" />
+					<Tone Name="Metronome Bell"                           Key=" 34" />
+					<Tone Name="Kick Drum2"                               Key=" 35" />
+					<Tone Name="MONDO Kick"                               Key=" 36" />
+					<Tone Name="Side Stick"                               Key=" 37" />
+					<Tone Name="Gated SD"                                 Key=" 38" />
+					<Tone Name="Hand Clap"                                Key=" 39" />
+					<Tone Name="Snare Drum2"                              Key=" 40" />
+					<Tone Name="Room Low Tom2"                            Key=" 41" />
+					<Tone Name="Closed Hi-hat"                            Key=" 42" />
+					<Tone Name="Room Low Tom1"                            Key=" 43" />
+					<Tone Name="Pedal Hi-hat"                             Key=" 44" />
+					<Tone Name="Room Mid Tom2"                            Key=" 45" />
+					<Tone Name="Open Hi-hat"                              Key=" 46" />
+					<Tone Name="Room Mid Tom1"                            Key=" 47" />
+					<Tone Name="Room Hi Tom2"                             Key=" 48" />
+					<Tone Name="Crash Cymbal1"                            Key=" 49" />
+					<Tone Name="Room Hi Tom1"                             Key=" 50" />
+					<Tone Name="Ride Cymbal1"                             Key=" 51" />
+					<Tone Name="Chinese Cymbal"                           Key=" 52" />
+					<Tone Name="Ride Bell"                                Key=" 53" />
+					<Tone Name="Tambourine"                               Key=" 54" />
+					<Tone Name="Splash Cymbal"                            Key=" 55" />
+					<Tone Name="Cowbell"                                  Key=" 56" />
+					<Tone Name="Crash Cymbal2"                            Key=" 57" />
+					<Tone Name="Vibra-slap"                               Key=" 58" />
+					<Tone Name="Ride Cymbal2"                             Key=" 59" />
+					<Tone Name="High Bongo"                               Key=" 60" />
+					<Tone Name="Low Bongo"                                Key=" 61" />
+					<Tone Name="Mute High Conga"                          Key=" 62" />
+					<Tone Name="Open High Conga"                          Key=" 63" />
+					<Tone Name="Low Conga"                                Key=" 64" />
+					<Tone Name="High Timbale"                             Key=" 65" />
+					<Tone Name="Low Timbale"                              Key=" 66" />
+					<Tone Name="High Agogo"                               Key=" 67" />
+					<Tone Name="Low Agogo"                                Key=" 68" />
+					<Tone Name="Cabasa"                                   Key=" 69" />
+					<Tone Name="Maracas"                                  Key=" 70" />
+					<Tone Name="Short Hi Whistle"                         Key=" 71" />
+					<Tone Name="Long Low Whistle"                         Key=" 72" />
+					<Tone Name="Short Guiro"                              Key=" 73" />
+					<Tone Name="Long Guiro"                               Key=" 74" />
+					<Tone Name="Claves"                                   Key=" 75" />
+					<Tone Name="High Wood Block"                          Key=" 76" />
+					<Tone Name="Low Wood Block"                           Key=" 77" />
+					<Tone Name="Mute Cuica"                               Key=" 78" />
+					<Tone Name="Open Cuica"                               Key=" 79" />
+					<Tone Name="Mute Triangle"                            Key=" 80" />
+					<Tone Name="Open Triangle"                            Key=" 81" />
+					<Tone Name="Shaker"                                   Key=" 82" />
+					<Tone Name="Jingle Bell"                              Key=" 83" />
+					<Tone Name="Bell Tree"                                Key=" 84" />
+					<Tone Name="Castanets"                                Key=" 85" />
+					<Tone Name="Mute Surdo"                               Key=" 86" />
+					<Tone Name="Open Surdo"                               Key=" 87" />
+				</Bank>
+			</PC>
+
+			<PC Name="ELECTRONIC"         PC=" 25">
+				<Bank Name="ELECTRONIC"         MSB="  0" LSB="  0">
+					<Tone Name="High Q"                                   Key=" 27" />
+					<Tone Name="Slap"                                     Key=" 28" />
+					<Tone Name="Scratch Push"                             Key=" 29" />
+					<Tone Name="Scratch Pull"                             Key=" 30" />
+					<Tone Name="Sticks"                                   Key=" 31" />
+					<Tone Name="Square Click"                             Key=" 32" />
+					<Tone Name="Metronome Click"                          Key=" 33" />
+					<Tone Name="Metronome Bell"                           Key=" 34" />
+					<Tone Name="Kick Drum2"                               Key=" 35" />
+					<Tone Name="Elec BD"                                  Key=" 36" />
+					<Tone Name="Side Stick"                               Key=" 37" />
+					<Tone Name="Elec SD"                                  Key=" 38" />
+					<Tone Name="Hand Clap"                                Key=" 39" />
+					<Tone Name="Gated SD"                                 Key=" 40" />
+					<Tone Name="Elec Low Tom2"                            Key=" 41" />
+					<Tone Name="Closed Hi-hat"                            Key=" 42" />
+					<Tone Name="Elec Low Tom1"                            Key=" 43" />
+					<Tone Name="Pedal Hi-hat"                             Key=" 44" />
+					<Tone Name="Elec Mid Tom2"                            Key=" 45" />
+					<Tone Name="Open Hi-hat"                              Key=" 46" />
+					<Tone Name="Elec Mid Tom1"                            Key=" 47" />
+					<Tone Name="Elec Hi Tom2"                             Key=" 48" />
+					<Tone Name="Crash Cymbal1"                            Key=" 49" />
+					<Tone Name="Elec Hi Tom1"                             Key=" 50" />
+					<Tone Name="Ride Cymbal1"                             Key=" 51" />
+					<Tone Name="Reverse Cymbal"                           Key=" 52" />
+					<Tone Name="Ride Bell"                                Key=" 53" />
+					<Tone Name="Tambourine"                               Key=" 54" />
+					<Tone Name="Splash Cymbal"                            Key=" 55" />
+					<Tone Name="Cowbell"                                  Key=" 56" />
+					<Tone Name="Crash Cymbal2"                            Key=" 57" />
+					<Tone Name="Vibra-slap"                               Key=" 58" />
+					<Tone Name="Ride Cymbal2"                             Key=" 59" />
+					<Tone Name="High Bongo"                               Key=" 60" />
+					<Tone Name="Low Bongo"                                Key=" 61" />
+					<Tone Name="Mute High Conga"                          Key=" 62" />
+					<Tone Name="Open High Conga"                          Key=" 63" />
+					<Tone Name="Low Conga"                                Key=" 64" />
+					<Tone Name="High Timbale"                             Key=" 65" />
+					<Tone Name="Low Timbale"                              Key=" 66" />
+					<Tone Name="High Agogo"                               Key=" 67" />
+					<Tone Name="Low Agogo"                                Key=" 68" />
+					<Tone Name="Cabasa"                                   Key=" 69" />
+					<Tone Name="Maracas"                                  Key=" 70" />
+					<Tone Name="Short Hi Whistle"                         Key=" 71" />
+					<Tone Name="Long Low Whistle"                         Key=" 72" />
+					<Tone Name="Short Guiro"                              Key=" 73" />
+					<Tone Name="Long Guiro"                               Key=" 74" />
+					<Tone Name="Claves"                                   Key=" 75" />
+					<Tone Name="High Wood Block"                          Key=" 76" />
+					<Tone Name="Low Wood Block"                           Key=" 77" />
+					<Tone Name="Mute Cuica"                               Key=" 78" />
+					<Tone Name="Open Cuica"                               Key=" 79" />
+					<Tone Name="Mute Triangle"                            Key=" 80" />
+					<Tone Name="Open Triangle"                            Key=" 81" />
+					<Tone Name="Shaker"                                   Key=" 82" />
+					<Tone Name="Jingle Bell"                              Key=" 83" />
+					<Tone Name="Bell Tree"                                Key=" 84" />
+					<Tone Name="Castanets"                                Key=" 85" />
+					<Tone Name="Mute Surdo"                               Key=" 86" />
+					<Tone Name="Open Surdo"                               Key=" 87" />
+				</Bank>
+			</PC>
+
+			<PC Name="TR-808"             PC=" 26">
+				<Bank Name="TR-808"             MSB="  0" LSB="  0">
+					<Tone Name="High Q"                                   Key=" 27" />
+					<Tone Name="Slap"                                     Key=" 28" />
+					<Tone Name="Scratch Push"                             Key=" 29" />
+					<Tone Name="Scratch Pull"                             Key=" 30" />
+					<Tone Name="Sticks"                                   Key=" 31" />
+					<Tone Name="Square Click"                             Key=" 32" />
+					<Tone Name="Metronome Click"                          Key=" 33" />
+					<Tone Name="Metronome Bell"                           Key=" 34" />
+					<Tone Name="Kick Drum2"                               Key=" 35" />
+					<Tone Name="808 Bass Drum"                            Key=" 36" />
+					<Tone Name="808 Rim Shot"                             Key=" 37" />
+					<Tone Name="808 Snare Drum"                           Key=" 38" />
+					<Tone Name="Hand Clap"                                Key=" 39" />
+					<Tone Name="Snare Drum2"                              Key=" 40" />
+					<Tone Name="808 Low Tom2"                             Key=" 41" />
+					<Tone Name="808 CHH"                                  Key=" 42" />
+					<Tone Name="808 Low Tom1"                             Key=" 43" />
+					<Tone Name="808 CHH"                                  Key=" 44" />
+					<Tone Name="808 Mid Tom2"                             Key=" 45" />
+					<Tone Name="808 OHH"                                  Key=" 46" />
+					<Tone Name="808 Mid Tom1"                             Key=" 47" />
+					<Tone Name="808 Hi Tom2"                              Key=" 48" />
+					<Tone Name="808 Cymbal"                               Key=" 49" />
+					<Tone Name="808 Hi Tom1"                              Key=" 50" />
+					<Tone Name="Ride Cymbal1"                             Key=" 51" />
+					<Tone Name="Chinese Cymbal"                           Key=" 52" />
+					<Tone Name="Ride Bell"                                Key=" 53" />
+					<Tone Name="Tambourine"                               Key=" 54" />
+					<Tone Name="Splash Cymbal"                            Key=" 55" />
+					<Tone Name="808 Cowbell"                              Key=" 56" />
+					<Tone Name="Crash Cymbal2"                            Key=" 57" />
+					<Tone Name="Vibra-slap"                               Key=" 58" />
+					<Tone Name="Ride Cymbal2"                             Key=" 59" />
+					<Tone Name="High Bongo"                               Key=" 60" />
+					<Tone Name="Low Bongo"                                Key=" 61" />
+					<Tone Name="808 High Conga"                           Key=" 62" />
+					<Tone Name="808 Mid Conga"                            Key=" 63" />
+					<Tone Name="808 Low Conga"                            Key=" 64" />
+					<Tone Name="High Timbale"                             Key=" 65" />
+					<Tone Name="Low Timbale"                              Key=" 66" />
+					<Tone Name="High Agogo"                               Key=" 67" />
+					<Tone Name="Low Agogo"                                Key=" 68" />
+					<Tone Name="Cabasa"                                   Key=" 69" />
+					<Tone Name="808 Maracas"                              Key=" 70" />
+					<Tone Name="Short Hi Whistle"                         Key=" 71" />
+					<Tone Name="Long Low Whistle"                         Key=" 72" />
+					<Tone Name="Short Guiro"                              Key=" 73" />
+					<Tone Name="Long Guiro"                               Key=" 74" />
+					<Tone Name="808 Claves"                               Key=" 75" />
+					<Tone Name="High Wood Block"                          Key=" 76" />
+					<Tone Name="Low Wood Block"                           Key=" 77" />
+					<Tone Name="Mute Cuica"                               Key=" 78" />
+					<Tone Name="Open Cuica"                               Key=" 79" />
+					<Tone Name="Mute Triangle"                            Key=" 80" />
+					<Tone Name="Open Triangle"                            Key=" 81" />
+					<Tone Name="Shaker"                                   Key=" 82" />
+					<Tone Name="Jingle Bell"                              Key=" 83" />
+					<Tone Name="Bell Tree"                                Key=" 84" />
+					<Tone Name="Castanets"                                Key=" 85" />
+					<Tone Name="Mute Surdo"                               Key=" 86" />
+					<Tone Name="Open Surdo"                               Key=" 87" />
+				</Bank>
+			</PC>
+
+			<PC Name="JAZZ"               PC=" 33">
+				<Bank Name="JAZZ"               MSB="  0" LSB="  0">
+					<Tone Name="High Q"                                   Key=" 27" />
+					<Tone Name="Slap"                                     Key=" 28" />
+					<Tone Name="Scratch Push"                             Key=" 29" />
+					<Tone Name="Scratch Pull"                             Key=" 30" />
+					<Tone Name="Sticks"                                   Key=" 31" />
+					<Tone Name="Square Click"                             Key=" 32" />
+					<Tone Name="Metronome Click"                          Key=" 33" />
+					<Tone Name="Metronome Bell"                           Key=" 34" />
+					<Tone Name="Jazz BD2"                                 Key=" 35" />
+					<Tone Name="Jazz BD1"                                 Key=" 36" />
+					<Tone Name="Side Stick"                               Key=" 37" />
+					<Tone Name="Snare Drum1"                              Key=" 38" />
+					<Tone Name="Hand Clap"                                Key=" 39" />
+					<Tone Name="Snare Drum2"                              Key=" 40" />
+					<Tone Name="Low Tom2"                                 Key=" 41" />
+					<Tone Name="Closed Hi-hat"                            Key=" 42" />
+					<Tone Name="Low Tom1"                                 Key=" 43" />
+					<Tone Name="Pedal Hi-hat"                             Key=" 44" />
+					<Tone Name="Mid Tom2"                                 Key=" 45" />
+					<Tone Name="Open Hi-hat"                              Key=" 46" />
+					<Tone Name="Mid Tom1"                                 Key=" 47" />
+					<Tone Name="High Tom2"                                Key=" 48" />
+					<Tone Name="Crash Cymbal1"                            Key=" 49" />
+					<Tone Name="High Tom1"                                Key=" 50" />
+					<Tone Name="Ride Cymbal1"                             Key=" 51" />
+					<Tone Name="Chinese Cymbal"                           Key=" 52" />
+					<Tone Name="Ride Bell"                                Key=" 53" />
+					<Tone Name="Tambourine"                               Key=" 54" />
+					<Tone Name="Splash Cymbal"                            Key=" 55" />
+					<Tone Name="Cowbell"                                  Key=" 56" />
+					<Tone Name="Crash Cymbal2"                            Key=" 57" />
+					<Tone Name="Vibra-slap"                               Key=" 58" />
+					<Tone Name="Ride Cymbal2"                             Key=" 59" />
+					<Tone Name="High Bongo"                               Key=" 60" />
+					<Tone Name="Low Bongo"                                Key=" 61" />
+					<Tone Name="Mute High Conga"                          Key=" 62" />
+					<Tone Name="Open High Conga"                          Key=" 63" />
+					<Tone Name="Low Conga"                                Key=" 64" />
+					<Tone Name="High Timbale"                             Key=" 65" />
+					<Tone Name="Low Timbale"                              Key=" 66" />
+					<Tone Name="High Agogo"                               Key=" 67" />
+					<Tone Name="Low Agogo"                                Key=" 68" />
+					<Tone Name="Cabasa"                                   Key=" 69" />
+					<Tone Name="Maracas"                                  Key=" 70" />
+					<Tone Name="Short Hi Whistle"                         Key=" 71" />
+					<Tone Name="Long Low Whistle"                         Key=" 72" />
+					<Tone Name="Short Guiro"                              Key=" 73" />
+					<Tone Name="Long Guiro"                               Key=" 74" />
+					<Tone Name="Claves"                                   Key=" 75" />
+					<Tone Name="High Wood Block"                          Key=" 76" />
+					<Tone Name="Low Wood Block"                           Key=" 77" />
+					<Tone Name="Mute Cuica"                               Key=" 78" />
+					<Tone Name="Open Cuica"                               Key=" 79" />
+					<Tone Name="Mute Triangle"                            Key=" 80" />
+					<Tone Name="Open Triangle"                            Key=" 81" />
+					<Tone Name="Shaker"                                   Key=" 82" />
+					<Tone Name="Jingle Bell"                              Key=" 83" />
+					<Tone Name="Bell Tree"                                Key=" 84" />
+					<Tone Name="Castanets"                                Key=" 85" />
+					<Tone Name="Mute Surdo"                               Key=" 86" />
+					<Tone Name="Open Surdo"                               Key=" 87" />
+				</Bank>
+			</PC>
+
+			<PC Name="BRUSH"              PC=" 41">
+				<Bank Name="BRUSH"              MSB="  0" LSB="  0">
+					<Tone Name="High Q"                                   Key=" 27" />
+					<Tone Name="Slap"                                     Key=" 28" />
+					<Tone Name="Scratch Push"                             Key=" 29" />
+					<Tone Name="Scratch Pull"                             Key=" 30" />
+					<Tone Name="Sticks"                                   Key=" 31" />
+					<Tone Name="Square Click"                             Key=" 32" />
+					<Tone Name="Metronome Click"                          Key=" 33" />
+					<Tone Name="Metronome Bell"                           Key=" 34" />
+					<Tone Name="Jazz BD2"                                 Key=" 35" />
+					<Tone Name="Jazz BD1"                                 Key=" 36" />
+					<Tone Name="Side Stick"                               Key=" 37" />
+					<Tone Name="Brush Tap"                                Key=" 38" />
+					<Tone Name="Brush Slap"                               Key=" 39" />
+					<Tone Name="Brash Swirl"                              Key=" 40" />
+					<Tone Name="Low Tom2"                                 Key=" 41" />
+					<Tone Name="Closed Hi-hat"                            Key=" 42" />
+					<Tone Name="Low Tom1"                                 Key=" 43" />
+					<Tone Name="Pedal Hi-hat"                             Key=" 44" />
+					<Tone Name="Mid Tom2"                                 Key=" 45" />
+					<Tone Name="Open Hi-hat"                              Key=" 46" />
+					<Tone Name="Mid Tom1"                                 Key=" 47" />
+					<Tone Name="High Tom2"                                Key=" 48" />
+					<Tone Name="Crash Cymbal1"                            Key=" 49" />
+					<Tone Name="High Tom1"                                Key=" 50" />
+					<Tone Name="Ride Cymbal1"                             Key=" 51" />
+					<Tone Name="Chinese Cymbal"                           Key=" 52" />
+					<Tone Name="Ride Bell"                                Key=" 53" />
+					<Tone Name="Tambourine"                               Key=" 54" />
+					<Tone Name="Splash Cymbal"                            Key=" 55" />
+					<Tone Name="Cowbell"                                  Key=" 56" />
+					<Tone Name="Crash Cymbal2"                            Key=" 57" />
+					<Tone Name="Vibra-slap"                               Key=" 58" />
+					<Tone Name="Ride Cymbal2"                             Key=" 59" />
+					<Tone Name="High Bongo"                               Key=" 60" />
+					<Tone Name="Low Bongo"                                Key=" 61" />
+					<Tone Name="Mute High Conga"                          Key=" 62" />
+					<Tone Name="Open High Conga"                          Key=" 63" />
+					<Tone Name="Low Conga"                                Key=" 64" />
+					<Tone Name="High Timbale"                             Key=" 65" />
+					<Tone Name="Low Timbale"                              Key=" 66" />
+					<Tone Name="High Agogo"                               Key=" 67" />
+					<Tone Name="Low Agogo"                                Key=" 68" />
+					<Tone Name="Cabasa"                                   Key=" 69" />
+					<Tone Name="Maracas"                                  Key=" 70" />
+					<Tone Name="Short Hi Whistle"                         Key=" 71" />
+					<Tone Name="Long Low Whistle"                         Key=" 72" />
+					<Tone Name="Short Guiro"                              Key=" 73" />
+					<Tone Name="Long Guiro"                               Key=" 74" />
+					<Tone Name="Claves"                                   Key=" 75" />
+					<Tone Name="High Wood Block"                          Key=" 76" />
+					<Tone Name="Low Wood Block"                           Key=" 77" />
+					<Tone Name="Mute Cuica"                               Key=" 78" />
+					<Tone Name="Open Cuica"                               Key=" 79" />
+					<Tone Name="Mute Triangle"                            Key=" 80" />
+					<Tone Name="Open Triangle"                            Key=" 81" />
+					<Tone Name="Shaker"                                   Key=" 82" />
+					<Tone Name="Jingle Bell"                              Key=" 83" />
+					<Tone Name="Bell Tree"                                Key=" 84" />
+					<Tone Name="Castanets"                                Key=" 85" />
+					<Tone Name="Mute Surdo"                               Key=" 86" />
+					<Tone Name="Open Surdo"                               Key=" 87" />
+				</Bank>
+			</PC>
+
+			<PC Name="ORCHESTRA"          PC=" 49">
+				<Bank Name="ORCHESTRA"          MSB="  0" LSB="  0">
+					<Tone Name="Closed Hi-hat"                            Key=" 27" />
+					<Tone Name="Pedal Hi-hat"                             Key=" 28" />
+					<Tone Name="Open Hi-hat"                              Key=" 29" />
+					<Tone Name="Ride Cymbal1"                             Key=" 30" />
+					<Tone Name="Sticks"                                   Key=" 31" />
+					<Tone Name="Square Click"                             Key=" 32" />
+					<Tone Name="Metronome Click"                          Key=" 33" />
+					<Tone Name="Metronome Bell"                           Key=" 34" />
+					<Tone Name="Concert BD2"                              Key=" 35" />
+					<Tone Name="Concert BD1"                              Key=" 36" />
+					<Tone Name="Side Stick"                               Key=" 37" />
+					<Tone Name="Concert SD"                               Key=" 38" />
+					<Tone Name="Castanets"                                Key=" 39" />
+					<Tone Name="Concert SD"                               Key=" 40" />
+					<Tone Name="Timpani F"                                Key=" 41" />
+					<Tone Name="Timpani F#"                               Key=" 42" />
+					<Tone Name="Timpani G"                                Key=" 43" />
+					<Tone Name="Timpani G#"                               Key=" 44" />
+					<Tone Name="Timpani A"                                Key=" 45" />
+					<Tone Name="Timpani A#"                               Key=" 46" />
+					<Tone Name="Timpani B"                                Key=" 47" />
+					<Tone Name="Timpani c"                                Key=" 48" />
+					<Tone Name="Timpani c#"                               Key=" 49" />
+					<Tone Name="Timpani d"                                Key=" 50" />
+					<Tone Name="Timpani d#"                               Key=" 51" />
+					<Tone Name="Timpani e"                                Key=" 52" />
+					<Tone Name="Timpani f"                                Key=" 53" />
+					<Tone Name="Tambourine"                               Key=" 54" />
+					<Tone Name="Splash Cymbal"                            Key=" 55" />
+					<Tone Name="Cowbell"                                  Key=" 56" />
+					<Tone Name="Concert Cymbal2"                          Key=" 57" />
+					<Tone Name="Vibra-slap"                               Key=" 58" />
+					<Tone Name="Concert Cymbal1"                          Key=" 59" />
+					<Tone Name="High Bongo"                               Key=" 60" />
+					<Tone Name="Low Bongo"                                Key=" 61" />
+					<Tone Name="Mute High Conga"                          Key=" 62" />
+					<Tone Name="Open High Conga"                          Key=" 63" />
+					<Tone Name="Low Conga"                                Key=" 64" />
+					<Tone Name="High Timbale"                             Key=" 65" />
+					<Tone Name="Low Timbale"                              Key=" 66" />
+					<Tone Name="High Agogo"                               Key=" 67" />
+					<Tone Name="Low Agogo"                                Key=" 68" />
+					<Tone Name="Cabasa"                                   Key=" 69" />
+					<Tone Name="Maracas"                                  Key=" 70" />
+					<Tone Name="Short Hi Whistle"                         Key=" 71" />
+					<Tone Name="Long Low Whistle"                         Key=" 72" />
+					<Tone Name="Short Guiro"                              Key=" 73" />
+					<Tone Name="Long Guiro"                               Key=" 74" />
+					<Tone Name="Claves"                                   Key=" 75" />
+					<Tone Name="High Wood Block"                          Key=" 76" />
+					<Tone Name="Low Wood Block"                           Key=" 77" />
+					<Tone Name="Mute Cuica"                               Key=" 78" />
+					<Tone Name="Open Cuica"                               Key=" 79" />
+					<Tone Name="Mute Triangle"                            Key=" 80" />
+					<Tone Name="Open Triangle"                            Key=" 81" />
+					<Tone Name="Shaker"                                   Key=" 82" />
+					<Tone Name="Jingle Bell"                              Key=" 83" />
+					<Tone Name="Bell Tree"                                Key=" 84" />
+					<Tone Name="Castanets"                                Key=" 85" />
+					<Tone Name="Mute Surdo"                               Key=" 86" />
+					<Tone Name="Open Surdo"                               Key=" 87" />
+					<Tone Name="Applause"                                 Key=" 88" />
+				</Bank>
+			</PC>
+
+			<PC Name="SFX"                PC=" 57">
+				<Bank Name="SFX"                MSB="  0" LSB="  0">
+					<Tone Name="High Q"                                   Key=" 39" />
+					<Tone Name="Slap"                                     Key=" 40" />
+					<Tone Name="Scratch Push"                             Key=" 41" />
+					<Tone Name="Scratch Pull"                             Key=" 42" />
+					<Tone Name="Sticks"                                   Key=" 43" />
+					<Tone Name="Square Click"                             Key=" 44" />
+					<Tone Name="Metronome Click"                          Key=" 45" />
+					<Tone Name="Metronome Bell"                           Key=" 46" />
+					<Tone Name="Guitar Fret Noise"                        Key=" 47" />
+					<Tone Name="Guitar cutting noise/up"                  Key=" 48" />
+					<Tone Name="Guitar cutting noise/down"                Key=" 49" />
+					<Tone Name="String slap of double bass"               Key=" 50" />
+					<Tone Name="Fl.Key Click"                             Key=" 51" />
+					<Tone Name="Laughing"                                 Key=" 52" />
+					<Tone Name="Scream"                                   Key=" 53" />
+					<Tone Name="Punch"                                    Key=" 54" />
+					<Tone Name="Heart Beat"                               Key=" 55" />
+					<Tone Name="Footsteps1"                               Key=" 56" />
+					<Tone Name="Footsteps2"                               Key=" 57" />
+					<Tone Name="Applause"                                 Key=" 58" />
+					<Tone Name="Door Creaking"                            Key=" 59" />
+					<Tone Name="Door"                                     Key=" 60" />
+					<Tone Name="Scratch"                                  Key=" 61" />
+					<Tone Name="Wind Chimes"                              Key=" 62" />
+					<Tone Name="Car-Engine"                               Key=" 63" />
+					<Tone Name="Car-Stop"                                 Key=" 64" />
+					<Tone Name="Car-Pass"                                 Key=" 65" />
+					<Tone Name="Car-Crash"                                Key=" 66" />
+					<Tone Name="Siren"                                    Key=" 67" />
+					<Tone Name="Train"                                    Key=" 68" />
+					<Tone Name="Jetplane"                                 Key=" 69" />
+					<Tone Name="Helicopter"                               Key=" 70" />
+					<Tone Name="Starship"                                 Key=" 71" />
+					<Tone Name="Gun Shot"                                 Key=" 72" />
+					<Tone Name="Machine Gun"                              Key=" 73" />
+					<Tone Name="Lasergun"                                 Key=" 74" />
+					<Tone Name="Explosion"                                Key=" 75" />
+					<Tone Name="Dog"                                      Key=" 76" />
+					<Tone Name="Horse-Gallop"                             Key=" 77" />
+					<Tone Name="Birds"                                    Key=" 78" />
+					<Tone Name="Rain"                                     Key=" 79" />
+					<Tone Name="Thunder"                                  Key=" 80" />
+					<Tone Name="Wind"                                     Key=" 81" />
+					<Tone Name="Seashore"                                 Key=" 82" />
+					<Tone Name="Stream"                                   Key=" 83" />
+					<Tone Name="Bubble"                                   Key=" 84" />
+				</Bank>
+			</PC>
+
+		</Map>
+
+		<Map Name="GM Drum Set">
+
+			<PC Name="STANDARD"           PC="  1">
+				<Bank Name="STANDARD"           >
+					<Tone Name="Kick Drum2"                               Key=" 35" />
+					<Tone Name="Kick Drum1"                               Key=" 36" />
+					<Tone Name="Side Stick"                               Key=" 37" />
+					<Tone Name="Snare Drum1"                              Key=" 38" />
+					<Tone Name="Hand Clap"                                Key=" 39" />
+					<Tone Name="Snare Drum2"                              Key=" 40" />
+					<Tone Name="Low Tom2"                                 Key=" 41" />
+					<Tone Name="Closed Hi-hat"                            Key=" 42" />
+					<Tone Name="Low Tom1"                                 Key=" 43" />
+					<Tone Name="Pedal Hi-hat"                             Key=" 44" />
+					<Tone Name="Mid Tom2"                                 Key=" 45" />
+					<Tone Name="Open Hi-hat"                              Key=" 46" />
+					<Tone Name="Mid Tom1"                                 Key=" 47" />
+					<Tone Name="High Tom2"                                Key=" 48" />
+					<Tone Name="Crash Cymbal1"                            Key=" 49" />
+					<Tone Name="High Tom1"                                Key=" 50" />
+					<Tone Name="Ride Cymbal1"                             Key=" 51" />
+					<Tone Name="Chinese Cymbal"                           Key=" 52" />
+					<Tone Name="Ride Bell"                                Key=" 53" />
+					<Tone Name="Tambourine"                               Key=" 54" />
+					<Tone Name="Splash Cymbal"                            Key=" 55" />
+					<Tone Name="Cowbell"                                  Key=" 56" />
+					<Tone Name="Crash Cymbal2"                            Key=" 57" />
+					<Tone Name="Vibra-slap"                               Key=" 58" />
+					<Tone Name="Ride Cymbal2"                             Key=" 59" />
+					<Tone Name="High Bongo"                               Key=" 60" />
+					<Tone Name="Low Bongo"                                Key=" 61" />
+					<Tone Name="Mute High Conga"                          Key=" 62" />
+					<Tone Name="Open High Conga"                          Key=" 63" />
+					<Tone Name="Low Conga"                                Key=" 64" />
+					<Tone Name="High Timbale"                             Key=" 65" />
+					<Tone Name="Low Timbale"                              Key=" 66" />
+					<Tone Name="High Agogo"                               Key=" 67" />
+					<Tone Name="Low Agogo"                                Key=" 68" />
+					<Tone Name="Cabasa"                                   Key=" 69" />
+					<Tone Name="Maracas"                                  Key=" 70" />
+					<Tone Name="Short Hi Whistle"                         Key=" 71" />
+					<Tone Name="Long Low Whistle"                         Key=" 72" />
+					<Tone Name="Short Guiro"                              Key=" 73" />
+					<Tone Name="Long Guiro"                               Key=" 74" />
+					<Tone Name="Claves"                                   Key=" 75" />
+					<Tone Name="High Wood Block"                          Key=" 76" />
+					<Tone Name="Low Wood Block"                           Key=" 77" />
+					<Tone Name="Mute Cuica"                               Key=" 78" />
+					<Tone Name="Open Cuica"                               Key=" 79" />
+					<Tone Name="Mute Triangle"                            Key=" 80" />
+					<Tone Name="Open Triangle"                            Key=" 81" />
+				</Bank>
+			</PC>
+
+		</Map>
+
+	</DrumSetList>
+
+	<ControlChangeMacroList>
+
+		<Table ID="0">
+			<Entry Label="Off" Value="0" />
+			<Entry Label="On"  Value="1" />
+		</Table>
+
+		<Folder Name="Channel Voice Messages">
+
+			<Folder Name="Control Change">
+
+				<CCM ID="0" Name="Bank Select(MSB)" Color="#990033">
+					<Value />
+					<Data>@CC 0 #VL</Data>
+				</CCM>
+
+				<CCM ID="32" Name="Bank Select(LSB)" Color="#993399">
+					<Value />
+					<Data>@CC 32 #VL</Data>
+				</CCM>
+
+				<CCM ID="1" Name="Modulation" Color="#3333FF">
+					<Value />
+					<Data>@CC 1 #VL</Data>
+				</CCM>
+
+				<CCM ID="6" Name="Data Entry(MSB)" Color="#3333FF">
+					<Value />
+					<Data>@CC 6 #VL</Data>
+				</CCM>
+
+				<CCM ID="38" Name="Data Entry(LSB)" Color="#3333FF">
+					<Value />
+					<Data>@CC 38 #VL</Data>
+				</CCM>
+
+				<CCM ID="7" Name="Volume" Color="#FF0000">
+					<Value Default="100" />
+					<Data>@CC 7 #VL</Data>
+				</CCM>
+
+				<Table ID="10">
+					<Entry Label="L64" Value="-64" />
+					<Entry Label="L63" Value="-63" />
+					<Entry Label="L62" Value="-62" />
+					<Entry Label="L61" Value="-61" />
+					<Entry Label="L60" Value="-60" />
+					<Entry Label="L59" Value="-59" />
+					<Entry Label="L58" Value="-58" />
+					<Entry Label="L57" Value="-57" />
+					<Entry Label="L56" Value="-56" />
+					<Entry Label="L55" Value="-55" />
+					<Entry Label="L54" Value="-54" />
+					<Entry Label="L53" Value="-53" />
+					<Entry Label="L52" Value="-52" />
+					<Entry Label="L51" Value="-51" />
+					<Entry Label="L50" Value="-50" />
+					<Entry Label="L49" Value="-49" />
+					<Entry Label="L48" Value="-48" />
+					<Entry Label="L47" Value="-47" />
+					<Entry Label="L46" Value="-46" />
+					<Entry Label="L45" Value="-45" />
+					<Entry Label="L44" Value="-44" />
+					<Entry Label="L43" Value="-43" />
+					<Entry Label="L42" Value="-42" />
+					<Entry Label="L41" Value="-41" />
+					<Entry Label="L40" Value="-40" />
+					<Entry Label="L39" Value="-39" />
+					<Entry Label="L38" Value="-38" />
+					<Entry Label="L37" Value="-37" />
+					<Entry Label="L36" Value="-36" />
+					<Entry Label="L35" Value="-35" />
+					<Entry Label="L34" Value="-34" />
+					<Entry Label="L33" Value="-33" />
+					<Entry Label="L32" Value="-32" />
+					<Entry Label="L31" Value="-31" />
+					<Entry Label="L30" Value="-30" />
+					<Entry Label="L29" Value="-29" />
+					<Entry Label="L28" Value="-28" />
+					<Entry Label="L27" Value="-27" />
+					<Entry Label="L26" Value="-26" />
+					<Entry Label="L25" Value="-25" />
+					<Entry Label="L24" Value="-24" />
+					<Entry Label="L23" Value="-23" />
+					<Entry Label="L22" Value="-22" />
+					<Entry Label="L21" Value="-21" />
+					<Entry Label="L20" Value="-20" />
+					<Entry Label="L19" Value="-19" />
+					<Entry Label="L18" Value="-18" />
+					<Entry Label="L17" Value="-17" />
+					<Entry Label="L16" Value="-16" />
+					<Entry Label="L15" Value="-15" />
+					<Entry Label="L14" Value="-14" />
+					<Entry Label="L13" Value="-13" />
+					<Entry Label="L12" Value="-12" />
+					<Entry Label="L11" Value="-11" />
+					<Entry Label="L10" Value="-10" />
+					<Entry Label="L9"  Value=" -9" />
+					<Entry Label="L8"  Value=" -8" />
+					<Entry Label="L7"  Value=" -7" />
+					<Entry Label="L6"  Value=" -6" />
+					<Entry Label="L5"  Value=" -5" />
+					<Entry Label="L4"  Value=" -4" />
+					<Entry Label="L3"  Value=" -3" />
+					<Entry Label="L2"  Value=" -2" />
+					<Entry Label="L1"  Value=" -1" />
+					<Entry Label="C"   Value="  0" />
+					<Entry Label="R1"  Value="  1" />
+					<Entry Label="R2"  Value="  2" />
+					<Entry Label="R3"  Value="  3" />
+					<Entry Label="R4"  Value="  4" />
+					<Entry Label="R5"  Value="  5" />
+					<Entry Label="R6"  Value="  6" />
+					<Entry Label="R7"  Value="  7" />
+					<Entry Label="R8"  Value="  8" />
+					<Entry Label="R9"  Value="  9" />
+					<Entry Label="R10" Value=" 10" />
+					<Entry Label="R11" Value=" 11" />
+					<Entry Label="R12" Value=" 12" />
+					<Entry Label="R13" Value=" 13" />
+					<Entry Label="R14" Value=" 14" />
+					<Entry Label="R15" Value=" 15" />
+					<Entry Label="R16" Value=" 16" />
+					<Entry Label="R17" Value=" 17" />
+					<Entry Label="R18" Value=" 18" />
+					<Entry Label="R19" Value=" 19" />
+					<Entry Label="R20" Value=" 20" />
+					<Entry Label="R21" Value=" 21" />
+					<Entry Label="R22" Value=" 22" />
+					<Entry Label="R23" Value=" 23" />
+					<Entry Label="R24" Value=" 24" />
+					<Entry Label="R25" Value=" 25" />
+					<Entry Label="R26" Value=" 26" />
+					<Entry Label="R27" Value=" 27" />
+					<Entry Label="R28" Value=" 28" />
+					<Entry Label="R29" Value=" 29" />
+					<Entry Label="R30" Value=" 30" />
+					<Entry Label="R31" Value=" 31" />
+					<Entry Label="R32" Value=" 32" />
+					<Entry Label="R33" Value=" 33" />
+					<Entry Label="R34" Value=" 34" />
+					<Entry Label="R35" Value=" 35" />
+					<Entry Label="R36" Value=" 36" />
+					<Entry Label="R37" Value=" 37" />
+					<Entry Label="R38" Value=" 38" />
+					<Entry Label="R39" Value=" 39" />
+					<Entry Label="R40" Value=" 40" />
+					<Entry Label="R41" Value=" 41" />
+					<Entry Label="R42" Value=" 42" />
+					<Entry Label="R43" Value=" 43" />
+					<Entry Label="R44" Value=" 44" />
+					<Entry Label="R45" Value=" 45" />
+					<Entry Label="R46" Value=" 46" />
+					<Entry Label="R47" Value=" 47" />
+					<Entry Label="R48" Value=" 48" />
+					<Entry Label="R49" Value=" 49" />
+					<Entry Label="R50" Value=" 50" />
+					<Entry Label="R51" Value=" 51" />
+					<Entry Label="R52" Value=" 52" />
+					<Entry Label="R53" Value=" 53" />
+					<Entry Label="R54" Value=" 54" />
+					<Entry Label="R55" Value=" 55" />
+					<Entry Label="R56" Value=" 56" />
+					<Entry Label="R57" Value=" 57" />
+					<Entry Label="R58" Value=" 58" />
+					<Entry Label="R59" Value=" 59" />
+					<Entry Label="R60" Value=" 60" />
+					<Entry Label="R61" Value=" 61" />
+					<Entry Label="R62" Value=" 62" />
+					<Entry Label="R63" Value=" 63" />
+				</Table>
+
+				<CCM ID="10" Name="Pan" Color="#669933">
+					<Value Min="-64" Max="63" Offset="64" TableID="10" />
+					<Data>@CC 10 #VL</Data>
+				</CCM>
+
+				<CCM ID="11" Name="Expression" Color="#FF8000">
+					<Value Default="127" />
+					<Data>@CC 11 #VL</Data>
+				</CCM>
+
+				<Table ID="64">
+					<Entry Label="Off" Value="  0" />
+					<Entry Label="On"  Value="127" />
+				</Table>
+
+				<CCM ID="64" Name="Hold 1" Color="#800000">
+					<Value TableID="64" />
+					<Data>@CC 64 #VL</Data>
+				</CCM>
+
+				<Table ID="71">	
+					<Entry Label="-64" Value="-64" />
+					<Entry Label="-63" Value="-63" />
+					<Entry Label="-62" Value="-62" />
+					<Entry Label="-61" Value="-61" />
+					<Entry Label="-60" Value="-60" />
+					<Entry Label="-59" Value="-59" />
+					<Entry Label="-58" Value="-58" />
+					<Entry Label="-57" Value="-57" />
+					<Entry Label="-56" Value="-56" />
+					<Entry Label="-55" Value="-55" />
+					<Entry Label="-54" Value="-54" />
+					<Entry Label="-53" Value="-53" />
+					<Entry Label="-52" Value="-52" />
+					<Entry Label="-51" Value="-51" />
+					<Entry Label="-50" Value="-50" />
+					<Entry Label="-49" Value="-49" />
+					<Entry Label="-48" Value="-48" />
+					<Entry Label="-47" Value="-47" />
+					<Entry Label="-46" Value="-46" />
+					<Entry Label="-45" Value="-45" />
+					<Entry Label="-44" Value="-44" />
+					<Entry Label="-43" Value="-43" />
+					<Entry Label="-42" Value="-42" />
+					<Entry Label="-41" Value="-41" />
+					<Entry Label="-40" Value="-40" />
+					<Entry Label="-39" Value="-39" />
+					<Entry Label="-38" Value="-38" />
+					<Entry Label="-37" Value="-37" />
+					<Entry Label="-36" Value="-36" />
+					<Entry Label="-35" Value="-35" />
+					<Entry Label="-34" Value="-34" />
+					<Entry Label="-33" Value="-33" />
+					<Entry Label="-32" Value="-32" />
+					<Entry Label="-31" Value="-31" />
+					<Entry Label="-30" Value="-30" />
+					<Entry Label="-29" Value="-29" />
+					<Entry Label="-28" Value="-28" />
+					<Entry Label="-27" Value="-27" />
+					<Entry Label="-26" Value="-26" />
+					<Entry Label="-25" Value="-25" />
+					<Entry Label="-24" Value="-24" />
+					<Entry Label="-23" Value="-23" />
+					<Entry Label="-22" Value="-22" />
+					<Entry Label="-21" Value="-21" />
+					<Entry Label="-20" Value="-20" />
+					<Entry Label="-19" Value="-19" />
+					<Entry Label="-18" Value="-18" />
+					<Entry Label="-17" Value="-17" />
+					<Entry Label="-16" Value="-16" />
+					<Entry Label="-15" Value="-15" />
+					<Entry Label="-14" Value="-14" />
+					<Entry Label="-13" Value="-13" />
+					<Entry Label="-12" Value="-12" />
+					<Entry Label="-11" Value="-11" />
+					<Entry Label="-10" Value="-10" />
+					<Entry Label="-9"  Value=" -9" />
+					<Entry Label="-8"  Value=" -8" />
+					<Entry Label="-7"  Value=" -7" />
+					<Entry Label="-6"  Value=" -6" />
+					<Entry Label="-5"  Value=" -5" />
+					<Entry Label="-4"  Value=" -4" />
+					<Entry Label="-3"  Value=" -3" />
+					<Entry Label="-2"  Value=" -2" />
+					<Entry Label="-1"  Value=" -1" />
+					<Entry Label="+0"  Value="  0" />
+					<Entry Label="+1"  Value="  1" />
+					<Entry Label="+2"  Value="  2" />
+					<Entry Label="+3"  Value="  3" />
+					<Entry Label="+4"  Value="  4" />
+					<Entry Label="+5"  Value="  5" />
+					<Entry Label="+6"  Value="  6" />
+					<Entry Label="+7"  Value="  7" />
+					<Entry Label="+8"  Value="  8" />
+					<Entry Label="+9"  Value="  9" />
+					<Entry Label="+10" Value=" 10" />
+					<Entry Label="+11" Value=" 11" />
+					<Entry Label="+12" Value=" 12" />
+					<Entry Label="+13" Value=" 13" />
+					<Entry Label="+14" Value=" 14" />
+					<Entry Label="+15" Value=" 15" />
+					<Entry Label="+16" Value=" 16" />
+					<Entry Label="+17" Value=" 17" />
+					<Entry Label="+18" Value=" 18" />
+					<Entry Label="+19" Value=" 19" />
+					<Entry Label="+20" Value=" 20" />
+					<Entry Label="+21" Value=" 21" />
+					<Entry Label="+22" Value=" 22" />
+					<Entry Label="+23" Value=" 23" />
+					<Entry Label="+24" Value=" 24" />
+					<Entry Label="+25" Value=" 25" />
+					<Entry Label="+26" Value=" 26" />
+					<Entry Label="+27" Value=" 27" />
+					<Entry Label="+28" Value=" 28" />
+					<Entry Label="+29" Value=" 29" />
+					<Entry Label="+30" Value=" 30" />
+					<Entry Label="+31" Value=" 31" />
+					<Entry Label="+32" Value=" 32" />
+					<Entry Label="+33" Value=" 33" />
+					<Entry Label="+34" Value=" 34" />
+					<Entry Label="+35" Value=" 35" />
+					<Entry Label="+36" Value=" 36" />
+					<Entry Label="+37" Value=" 37" />
+					<Entry Label="+38" Value=" 38" />
+					<Entry Label="+39" Value=" 39" />
+					<Entry Label="+40" Value=" 40" />
+					<Entry Label="+41" Value=" 41" />
+					<Entry Label="+42" Value=" 42" />
+					<Entry Label="+43" Value=" 43" />
+					<Entry Label="+44" Value=" 44" />
+					<Entry Label="+45" Value=" 45" />
+					<Entry Label="+46" Value=" 46" />
+					<Entry Label="+47" Value=" 47" />
+					<Entry Label="+48" Value=" 48" />
+					<Entry Label="+49" Value=" 49" />
+					<Entry Label="+50" Value=" 50" />
+					<Entry Label="+51" Value=" 51" />
+					<Entry Label="+52" Value=" 52" />
+					<Entry Label="+53" Value=" 53" />
+					<Entry Label="+54" Value=" 54" />
+					<Entry Label="+55" Value=" 55" />
+					<Entry Label="+56" Value=" 56" />
+					<Entry Label="+57" Value=" 57" />
+					<Entry Label="+58" Value=" 58" />
+					<Entry Label="+59" Value=" 59" />
+					<Entry Label="+60" Value=" 60" />
+					<Entry Label="+61" Value=" 61" />
+					<Entry Label="+62" Value=" 62" />
+					<Entry Label="+63" Value=" 63" />
+				</Table>
+
+				<CCM ID="101" Name="RPN MSB" Color="#336666">
+					<Value Default="127" />
+					<Data>@CC 101 #VL</Data>
+				</CCM>
+
+				<CCM ID="100" Name="RPN LSB" Color="#003333">
+					<Value Default="127" />
+					<Data>@CC 100 #VL</Data>
+				</CCM>
+
+				<Folder Name="RPN">
+
+					<CCM ID="140" Name="Pitch Bend Sensitivity" Color="#8000FF">
+						<Value Default="2" Max="48" Name="semitone" />
+						<Data>@RPN 0x00 0x00 #VL #NONE</Data>
+					</CCM>
+
+					<CCM ID="141" Name="Master Fine Tuning">
+						<Value Min="-8192" Max="8191" Offset="8192"/>
+						<Data>@RPN 0x00 0x01 #VH #VL</Data>
+					</CCM>
+
+					<CCM ID="142" Name="Master Coarse Tuning" Color="#303030">
+						<Value Min="-64" Max="63" Offset="64" Name="semitone" TableID="71" />
+						<Data>@RPN 0x00 0x02 #VL #NONE</Data>
+					</CCM>
+
+					<CCM ID="146" Name="RPN Null" Color="#000080">
+						<Data>@RPN 0x7F 0x7F #NONE #NONE</Data>
+					</CCM>
+
+				</Folder><!--RPN-->
+
+			</Folder><!--Control Change-->
+
+			<CCM ID="133" Name="Pitch Bend Change" Color="#993333">
+				<Value Min="-8192" Max="8191" Offset="8192"/>
+				<Data>@PB #VH #VL</Data>
+			</CCM>
+
+		</Folder>
+
+		<Folder Name="Channel Mode Messages">
+
+			<CCM ID="120" Name="All Sounds Off" Color="#202020">
+				<Data>@CC 120 0</Data>
+			</CCM>
+
+			<CCM ID="121" Name="Reset All Controllers" Color="#202020">
+				<Data>@CC 121 0</Data>
+			</CCM>
+
+			<CCM ID="123" Name="All Notes Off" Color="#202020">
+				<Data>@CC 123 0</Data>
+			</CCM>
+
+			<CCM ID="126" Name="Mono" Color="#668033">
+				<Value Default="1" Max="16" />
+				<Data>@CC 126 #VL</Data>
+			</CCM>
+
+			<CCM ID="127" Name="Poly" Color="#334099">
+				<Data>@CC 127 0</Data>
+			</CCM>
+
+		</Folder><!--Channel Voice Messages-->
+
+		<Folder Name="System Exclusive Message">
+
+			<Folder Name="System Exclusive Messages Related To Mode Settings">
+
+				<CCM ID="200" Name="GM System On" Color="#119911">
+					<Data>@SYSEX 0xF0 0x7E 0x7F 0x09 0x01 0xF7</Data>
+				</CCM>
+
+				<CCM ID="205" Name="GS Reset" Color="#669900">
+					<Data>@SYSEX 0xF0 0x41 0x10 0x42 0x12 0x40 0x00 0x7F 0x00 0x41 0xF7</Data>
+				</CCM>
+
+			</Folder><!--System Exclusive Messages Related To Mode Settings-->
+
+			<Folder Name="Universal Realtime System Exclusive Messages">
+
+				<CCM ID="210" Name="Master Volume" Color="#FF0000">
+					<Value Default="127" />
+					<Data>@SYSEX 0xF0 0x7F 0x7F 0x04 0x01 0x00 #VL 0xF7</Data>
+				</CCM>
+
+			</Folder><!--Universal Realtime System Exclusive Messages-->
+
+			<Folder Name="Data Transmission">
+
+				<Folder Name="Data Set 1 DT1">
+
+					<Folder Name="System Parameters">
+
+						<CCM ID="404" Name="Mode Set" Color="#226600">
+							<Value Max="0">
+								<Entry Label="GS Reset" Value="0" />
+							</Value>
+							<Data>@SYSEX 0xF0 0x41 0x10 0x42 0x12 [ 0x40 0x00 0x7F #VL ] 0xF7</Data>
+						</CCM>
+
+					</Folder><!--System Parameters-->
+
+					<Folder Name="Part Parameters">
+
+						<CCM ID="602" Name="Rx.Channel">
+							<Value Default="17" Min="1" Max="17">
+								<Entry Label="1"   Value=" 1" />
+								<Entry Label="2"   Value=" 2" />
+								<Entry Label="3"   Value=" 3" />
+								<Entry Label="4"   Value=" 4" />
+								<Entry Label="5"   Value=" 5" />
+								<Entry Label="6"   Value=" 6" />
+								<Entry Label="7"   Value=" 7" />
+								<Entry Label="8"   Value=" 8" />
+								<Entry Label="9"   Value=" 9" />
+								<Entry Label="10"  Value="10" />
+								<Entry Label="11"  Value="11" />
+								<Entry Label="12"  Value="12" />
+								<Entry Label="13"  Value="13" />
+								<Entry Label="14"  Value="14" />
+								<Entry Label="15"  Value="15" />
+								<Entry Label="16"  Value="16" />
+								<Entry Label="Off" Value="17" />
+							</Value>
+							<Data>@SYSEX 0xF0 0x41 0x10 0x42 0x12 [ 0x40 #1RCH 0x02 #VL ] 0xF7</Data>
+						</CCM>
+
+						<CCM ID="621" Name="Use For Rhythm Part" Color="#666699">
+							<Value Max="2">
+								<Entry Label="Off"  Value="0" />
+								<Entry Label="Map1" Value="1" />
+								<Entry Label="Map2" Value="2" />
+							</Value>
+							<Data>@SYSEX 0xF0 0x41 0x10 0x42 0x12 [ 0x40 #1RCH 0x15 #VL ] 0xF7</Data>
+						</CCM>
+
+					</Folder><!--Part Parameters-->
+
+				</Folder><!--Data Set 1 DT1-->
+
+			</Folder><!--Data Transmission-->
+
+		</Folder><!--System Exclusive Message-->
+
+	</ControlChangeMacroList>
+
+	<DefaultData>
+
+		<Mark Meas="1" Name="Setup" />
+
+		<Track Mode="Conductor">
+			<Tempo    Tick="0"    Tempo=" 60.0" />
+			<Tempo    Tick="3360" Tempo="120.0" />
+			<EOT      Tick="3840" />
+		</Track>
+
+		<Track Ch="1" Name="Setup">
+			<CC       Tick="0"    ID="200" />
+			<CC       Tick="240"  ID="205" />
+			<EOT      Tick="1920" />
+		</Track>
+
+		<Track Ch="1">
+			<PC       Tick="2400" PC="1" MSB="0" LSB="0" Mode="Auto" />
+			<CC       Tick="2410" ID="7"   />
+			<CC       Tick="2420" ID="10" />
+			<CC       Tick="2430" ID="142" />
+			<CC       Tick="2440" ID="141" />
+			<EOT      Tick="3840" />
+		</Track>
+
+		<Track Ch="2">
+			<PC       Tick="2400" PC="1" MSB="0" LSB="0" Mode="Auto" />
+			<CC       Tick="2410" ID="7"   />
+			<CC       Tick="2420" ID="10" />
+			<CC       Tick="2430" ID="142" />
+			<CC       Tick="2440" ID="141" />
+			<EOT      Tick="3840" />
+		</Track>
+
+		<Track Ch="3">
+			<PC       Tick="2401" PC="1" MSB="0" LSB="0" Mode="Auto" />
+			<CC       Tick="2411" ID="7"   />
+			<CC       Tick="2421" ID="10" />
+			<CC       Tick="2431" ID="142" />
+			<CC       Tick="2441" ID="141" />
+			<EOT      Tick="3840" />
+		</Track>
+
+		<Track Ch="4">
+			<PC       Tick="2401" PC="1" MSB="0" LSB="0" Mode="Auto" />
+			<CC       Tick="2411" ID="7"   />
+			<CC       Tick="2421" ID="10" />
+			<CC       Tick="2431" ID="142" />
+			<CC       Tick="2441" ID="141" />
+			<EOT      Tick="3840" />
+		</Track>
+
+		<Track Ch="5">
+			<PC       Tick="2402" PC="1" MSB="0" LSB="0" Mode="Auto" />
+			<CC       Tick="2412" ID="7"   />
+			<CC       Tick="2422" ID="10" />
+			<CC       Tick="2432" ID="142" />
+			<CC       Tick="2442" ID="141" />
+			<EOT      Tick="3840" />
+		</Track>
+
+		<Track Ch="6">
+			<PC       Tick="2402" PC="1" MSB="0" LSB="0" Mode="Auto" />
+			<CC       Tick="2412" ID="7"   />
+			<CC       Tick="2422" ID="10" />
+			<CC       Tick="2432" ID="142" />
+			<CC       Tick="2442" ID="141" />
+			<EOT      Tick="3840" />
+		</Track>
+
+		<Track Ch="7">
+			<PC       Tick="2403" PC="1" MSB="0" LSB="0" Mode="Auto" />
+			<CC       Tick="2413" ID="7"   />
+			<CC       Tick="2423" ID="10" />
+			<CC       Tick="2433" ID="142" />
+			<CC       Tick="2443" ID="141" />
+			<EOT      Tick="3840" />
+		</Track>
+
+		<Track Ch="8">
+			<PC       Tick="2403" PC="1" MSB="0" LSB="0" Mode="Auto" />
+			<CC       Tick="2413" ID="7"   />
+			<CC       Tick="2423" ID="10" />
+			<CC       Tick="2433" ID="142" />
+			<CC       Tick="2443" ID="141" />
+			<EOT      Tick="3840" />
+		</Track>
+
+		<Track Ch="9">
+			<PC       Tick="2404" PC="1" MSB="0" LSB="0" Mode="Auto" />
+			<CC       Tick="2414" ID="7"   />
+			<CC       Tick="2424" ID="10" />
+			<CC       Tick="2434" ID="142" />
+			<CC       Tick="2444" ID="141" />
+			<EOT      Tick="3840" />
+		</Track>
+
+		<Track Ch="10" Name="Rhythm" Mode="Rhythm">
+			<PC       Tick="2404" PC="1" MSB="0" LSB="0" Mode="Auto" />
+			<CC       Tick="2414" ID="7"   />
+			<CC       Tick="2424" ID="10" />
+			<CC       Tick="2434" ID="142" />
+			<CC       Tick="2444" ID="141" />
+			<EOT      Tick="3840" />
+		</Track>
+
+		<Track Ch="11">
+			<PC       Tick="2405" PC="1" MSB="0" LSB="0" Mode="Auto" />
+			<CC       Tick="2415" ID="7"   />
+			<CC       Tick="2425" ID="10" />
+			<CC       Tick="2435" ID="142" />
+			<CC       Tick="2445" ID="141" />
+			<EOT      Tick="3840" />
+		</Track>
+
+		<Track Ch="12">
+			<PC       Tick="2405" PC="1" MSB="0" LSB="0" Mode="Auto" />
+			<CC       Tick="2415" ID="7"   />
+			<CC       Tick="2425" ID="10" />
+			<CC       Tick="2435" ID="142" />
+			<CC       Tick="2445" ID="141" />
+			<EOT      Tick="3840" />
+		</Track>
+
+		<Track Ch="13">
+			<PC       Tick="2406" PC="1" MSB="0" LSB="0" Mode="Auto" />
+			<CC       Tick="2416" ID="7"   />
+			<CC       Tick="2426" ID="10" />
+			<CC       Tick="2436" ID="142" />
+			<CC       Tick="2446" ID="141" />
+			<EOT      Tick="3840" />
+		</Track>
+
+		<Track Ch="14">
+			<PC       Tick="2406" PC="1" MSB="0" LSB="0" Mode="Auto" />
+			<CC       Tick="2416" ID="7"   />
+			<CC       Tick="2426" ID="10" />
+			<CC       Tick="2436" ID="142" />
+			<CC       Tick="2446" ID="141" />
+			<EOT      Tick="3840" />
+		</Track>
+
+		<Track Ch="15">
+			<PC       Tick="2407" PC="1" MSB="0" LSB="0" Mode="Auto" />
+			<CC       Tick="2417" ID="7"   />
+			<CC       Tick="2427" ID="10" />
+			<CC       Tick="2437" ID="142" />
+			<CC       Tick="2447" ID="141" />
+			<EOT      Tick="3840" />
+		</Track>
+
+		<Track Ch="16">
+			<PC       Tick="2407" PC="1" MSB="0" LSB="0" Mode="Auto" />
+			<CC       Tick="2417" ID="7"   />
+			<CC       Tick="2427" ID="10" />
+			<CC       Tick="2437" ID="142" />
+			<CC       Tick="2447" ID="141" />
+			<EOT      Tick="3840" />
+		</Track>
+
+		<Mark Meas="3" Name="Start" />
+
+	</DefaultData>
+
+</ModuleData>

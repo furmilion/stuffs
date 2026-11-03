@@ -136,6 +136,7 @@ def descramble_address_srx(addr) -> int:
 
 @numba.jit
 def descramble_address_r8(addr) -> int:
+    # 18, 17, 15, 14, 16, 12, 11, 7, 9, 13, 10, 8, 3, 2, 1, 6, 4, 5, 0 
     address_order = [
         0x12,0x11,0x08,0x09,0x10,0x0B,0x0C,0x07,
         0x0E,0x0A,0x0D,0x0F,0x03,0x02,0x01,0x06,
@@ -344,7 +345,7 @@ def descramble_file_VERY_FUCKING_FAST(file: str = '', out_to: str = '', return_b
                     if addr < 0x80:
                         buffer[addr + (524288 * pass_)] = rom[addr + (524288 * pass_)]
                         continue
-                    buffer[descramble_address_d70(addr) + (524288 * pass_)] = byte_lut_r8[rom[addr + (524288 * pass_)]]
+                    buffer[descramble_address_d70(addr) + (524288 * pass_)] = local_byte_lut_r8[rom[addr + (524288 * pass_)]]
                 print(f'bank {pass_ + 1} done')
         case _:
             return [0]
@@ -383,4 +384,7 @@ if __name__ == '__main__':
     descramble_file_VERY_FUCKING_FAST(
     r"E:\D Drive (HDD)\- THE ULTIMATE STUFF COLLECTION -\very h\Wave ROMs\Roland\Roland D-70\roland_d70_waverom-a.bin",
     r"E:\D Drive (HDD)\- THE ULTIMATE STUFF COLLECTION -\very h\Wave ROMs\Roland\Roland D-70\roland_d70_waverom-a_DED.bin", _type=3)
+    descramble_file_VERY_FUCKING_FAST(
+    r"E:\D Drive (HDD)\- THE ULTIMATE STUFF COLLECTION -\very h\Wave ROMs\Roland\Roland D-70\roland_d70_waverom-a.bin",
+    r"E:\D Drive (HDD)\- THE ULTIMATE STUFF COLLECTION -\very h\Wave ROMs\Roland\Roland D-70\roland_d70_waverom-a_DED_2.bin", _type=2)
     print(f"took {time.perf_counter() - start}")

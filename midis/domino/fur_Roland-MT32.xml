@@ -1,0 +1,2485 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ModuleData Name="Roland MT-32" Folder="Roland" Priority="11" FileCreator="Furmilion" FileVersion="1.08" WebSite="">
+	<ControlChangeEventDefault ID="255" />
+	<ExclusiveEventDefault Data="F0h 41h 10h 16h 12h [ 20h 00h 00h &quot; Domino MIDI Editor &quot; ] F7h" />
+	<RhythmTrackDefault Gate="50" />
+	<ProgramChangeEventPropertyDlg AutoPreviewDelay="10" />
+	
+    <InstrumentList>
+        <Map Name="Preset Timbres">
+            <PC Name="AcouPiano1" PC="1">
+                <Bank Name="AcouPiano1" LSB="0" MSB="0" />      
+			</PC>
+            <PC Name="AcouPiano2" PC="2">
+                <Bank Name="AcouPiano2" LSB="0" MSB="0" />
+			</PC>
+            <PC Name="AcouPiano3" PC="3">
+                <Bank Name="AcouPiano3" LSB="0" MSB="0" />
+			</PC>
+            <PC Name="ElecPiano1" PC="4">
+                <Bank Name="ElecPiano1" LSB="0" MSB="0" />
+			</PC>
+            <PC Name="ElecPiano2" PC="5">
+                <Bank Name="ElecPiano2" LSB="0" MSB="0" />
+			</PC>
+            <PC Name="ElecPiano3" PC="6">
+                <Bank Name="ElecPiano3" LSB="0" MSB="0" />
+			</PC>
+            <PC Name="ElecPiano4" PC="7">
+                <Bank Name="ElecPiano4" LSB="0" MSB="0" />
+			</PC>
+            <PC Name="Honkytonk" PC="8">
+                <Bank Name="Honkytonk" LSB="0" MSB="0" />
+			</PC>
+            <PC Name="Elec Org 1" PC="9">
+                <Bank Name="Elec Org 1" LSB="0" MSB="0" />
+			</PC>
+            <PC Name="Elec Org 2" PC="10">
+                <Bank Name="Elec Org 2" LSB="0" MSB="0" />
+			</PC>
+            <PC Name="Elec Org 3" PC="11">
+                <Bank Name="Elec Org 3" LSB="0" MSB="0" />
+			</PC>
+            <PC Name="Elec Org 4" PC="12">
+                <Bank Name="Elec Org 4" LSB="0" MSB="0" />
+			</PC>
+            <PC Name="Pipe Org 1" PC="13">
+                <Bank Name="Pipe Org 1" LSB="0" MSB="0" />
+			</PC>
+            <PC Name="Pipe Org 2" PC="14">
+                <Bank Name="Pipe Org 2" LSB="0" MSB="0" />
+			</PC>
+            <PC Name="Pipe Org 3" PC="15">
+                <Bank Name="Pipe Org 3" LSB="0" MSB="0" />
+			</PC>
+            <PC Name="Accordion" PC="16">
+                <Bank Name="Accordion" LSB="0" MSB="0" />
+			</PC>
+            <PC Name="Harpsi 1" PC="17">
+                <Bank Name="Harpsi 1" LSB="0" MSB="0" />
+			</PC>
+            <PC Name="Harpsi 2" PC="18">
+                <Bank Name="Harpsi 2" LSB="0" MSB="0" />
+			</PC>
+            <PC Name="Harpsi 3" PC="19">
+                <Bank Name="Harpsi 3" LSB="0" MSB="0" />
+			</PC>
+            <PC Name="Clavi 1" PC="20">
+                <Bank Name="Clavi 1" LSB="0" MSB="0" />
+			</PC>
+            <PC Name="Clavi 2" PC="21">
+                <Bank Name="Clavi 2" LSB="0" MSB="0" />
+			</PC>
+            <PC Name="Clavi 3" PC="22">
+                <Bank Name="Clavi 3" LSB="0" MSB="0" />
+			</PC>
+            <PC Name="Celesta 1" PC="23">
+                <Bank Name="Celesta 1" LSB="0" MSB="0" />
+			</PC>
+            <PC Name="Celesta 2" PC="24">
+                <Bank Name="Celesta 2" LSB="0" MSB="0" />
+			</PC>
+            <PC Name="Syn Brass1" PC="25">
+                <Bank Name="Syn Brass1" LSB="0" MSB="0" />
+			</PC>
+            <PC Name="Syn Brass2" PC="26">
+                <Bank Name="Syn Brass2" LSB="0" MSB="0" />
+			</PC>
+            <PC Name="Syn Brass3" PC="27">
+                <Bank Name="Syn Brass3" LSB="0" MSB="0" />
+			</PC>
+            <PC Name="Syn Brass4" PC="28">
+                <Bank Name="Syn Brass4" LSB="0" MSB="0" />
+			</PC>
+            <PC Name="Syn Bass 1" PC="29">
+                <Bank Name="Syn Bass 1" LSB="0" MSB="0" />
+			</PC>
+            <PC Name="Syn Bass 2" PC="30">
+                <Bank Name="Syn Bass 2" LSB="0" MSB="0" />
+			</PC>
+            <PC Name="Syn Bass 3" PC="31">
+                <Bank Name="Syn Bass 3" LSB="0" MSB="0" />
+			</PC>
+            <PC Name="Syn Bass 4" PC="32">
+                <Bank Name="Syn Bass 4" LSB="0" MSB="0" />
+			</PC>
+            <PC Name="Fantasy" PC="33">
+                <Bank Name="Fantasy" LSB="0" MSB="0" />
+			</PC>
+            <PC Name="Harmo Pan" PC="34">
+                <Bank Name="Harmo Pan" LSB="0" MSB="0" />
+			</PC>
+            <PC Name="Chorale" PC="35">
+                <Bank Name="Chorale" LSB="0" MSB="0" />
+			</PC>
+            <PC Name="Glasses" PC="36">
+                <Bank Name="Glasses" LSB="0" MSB="0" />
+			</PC>
+            <PC Name="Soundtrack" PC="37">
+                <Bank Name="Soundtrack" LSB="0" MSB="0" />
+			</PC>
+            <PC Name="Atmosphere" PC="38">
+                <Bank Name="Atmosphere" LSB="0" MSB="0" />
+			</PC>
+            <PC Name="Warm Bell" PC="39">
+                <Bank Name="Warm Bell" LSB="0" MSB="0" />
+			</PC>
+            <PC Name="Funny Vox" PC="40">
+                <Bank Name="Funny Vox" LSB="0" MSB="0" />
+			</PC>
+            <PC Name="Echo Bell" PC="41">
+                <Bank Name="Echo Bell" LSB="0" MSB="0" />
+			</PC>
+            <PC Name="Ice Rain" PC="42">
+                <Bank Name="Ice Rain" LSB="0" MSB="0" />
+			</PC>
+            <PC Name="Oboe 2001" PC="43">
+                <Bank Name="Oboe 2001" LSB="0" MSB="0" />
+			</PC>
+            <PC Name="Echo Pan" PC="44">
+                <Bank Name="Echo Pan" LSB="0" MSB="0" />
+			</PC>
+            <PC Name="DoctorSolo" PC="45">
+                <Bank Name="DoctorSolo" LSB="0" MSB="0" />
+			</PC>
+            <PC Name="Schooldaze" PC="46">
+                <Bank Name="Schooldaze" LSB="0" MSB="0" />
+			</PC>
+            <PC Name="BellSinger" PC="47">
+                <Bank Name="BellSinger" LSB="0" MSB="0" />
+			</PC>
+            <PC Name="SquareWave" PC="48">
+                <Bank Name="SquareWave" LSB="0" MSB="0" />
+			</PC>
+            <PC Name="Str Sect 1" PC="49">
+                <Bank Name="Str Sect 1" LSB="0" MSB="0" />
+			</PC>
+            <PC Name="Str Sect 2" PC="50">
+                <Bank Name="Str Sect 2" LSB="0" MSB="0" />
+			</PC>
+            <PC Name="Str Sect 3" PC="51">
+                <Bank Name="Str Sect 3" LSB="0" MSB="0" />
+			</PC>
+            <PC Name="Pizzicato" PC="52">
+                <Bank Name="Pizzicato" LSB="0" MSB="0" />
+			</PC>
+            <PC Name="Violin 1" PC="53">
+                <Bank Name="Violin 1" LSB="0" MSB="0" />
+			</PC>
+            <PC Name="Violin 2" PC="54">
+                <Bank Name="Violin 2" LSB="0" MSB="0" />
+			</PC>
+            <PC Name="Cello 1" PC="55">
+                <Bank Name="Cello 1" LSB="0" MSB="0" />
+			</PC>
+            <PC Name="Cello 2" PC="56">
+                <Bank Name="Cello 2" LSB="0" MSB="0" />
+			</PC>
+            <PC Name="Contrabass" PC="57">
+                <Bank Name="Contrabass" LSB="0" MSB="0" />
+			</PC>
+            <PC Name="Harp 1" PC="58">
+                <Bank Name="Harp 1" LSB="0" MSB="0" />
+			</PC>
+            <PC Name="Harp 2" PC="59">
+                <Bank Name="Harp 2" LSB="0" MSB="0" />
+			</PC>
+            <PC Name="Guitar 1" PC="60">
+                <Bank Name="Guitar 1" LSB="0" MSB="0" />
+			</PC>
+            <PC Name="Guitar 2" PC="61">
+                <Bank Name="Guitar 2" LSB="0" MSB="0" />
+			</PC>
+            <PC Name="Elec Gtr 1" PC="62">
+                <Bank Name="Elec Gtr 1" LSB="0" MSB="0" />
+			</PC>
+            <PC Name="Elec Gtr 2" PC="63">
+                <Bank Name="Elec Gtr 2" LSB="0" MSB="0" />
+			</PC>
+            <PC Name="Sitar" PC="64">
+                <Bank Name="Sitar" LSB="0" MSB="0" />
+			</PC>
+            <PC Name="Acou Bass1" PC="65">
+                <Bank Name="Acou Bass1" LSB="0" MSB="0" />
+			</PC>
+            <PC Name="Acou Bass2" PC="66">
+                <Bank Name="Acou Bass2" LSB="0" MSB="0" />
+			</PC>
+            <PC Name="Elec Bass1" PC="67">
+                <Bank Name="Elec Bass1" LSB="0" MSB="0" />
+			</PC>
+            <PC Name="Elec Bass2" PC="68">
+                <Bank Name="Elec Bass2" LSB="0" MSB="0" />
+			</PC>
+            <PC Name="Slap Bass1" PC="69">
+                <Bank Name="Slap Bass1" LSB="0" MSB="0" />
+			</PC>
+            <PC Name="Slap Bass2" PC="70">
+                <Bank Name="Slap Bass2" LSB="0" MSB="0" />
+			</PC>
+            <PC Name="Fretless 1" PC="71">
+                <Bank Name="Fretless 1" LSB="0" MSB="0" />
+			</PC>
+            <PC Name="Fretless 2" PC="72">
+                <Bank Name="Fretless 2" LSB="0" MSB="0" />
+			</PC>
+            <PC Name="Flute 1" PC="73">
+                <Bank Name="Flute 1" LSB="0" MSB="0" />
+			</PC>
+            <PC Name="Flute 2" PC="74">
+                <Bank Name="Flute 2" LSB="0" MSB="0" />
+			</PC>
+            <PC Name="Piccolo 1" PC="75">
+                <Bank Name="Piccolo 1" LSB="0" MSB="0" />
+			</PC>
+            <PC Name="Piccolo 2" PC="76">
+                <Bank Name="Piccolo 2" LSB="0" MSB="0" />
+			</PC>
+            <PC Name="Recorder" PC="77">
+                <Bank Name="Recorder" LSB="0" MSB="0" />
+			</PC>
+            <PC Name="Panpipes" PC="78">
+                <Bank Name="Panpipes" LSB="0" MSB="0" />
+			</PC>
+            <PC Name="Sax 1" PC="79">
+                <Bank Name="Sax 1" LSB="0" MSB="0" />
+			</PC>
+            <PC Name="Sax 2" PC="80">
+                <Bank Name="Sax 2" LSB="0" MSB="0" />
+			</PC>
+            <PC Name="Sax 3" PC="81">
+                <Bank Name="Sax 3" LSB="0" MSB="0" />
+			</PC>
+            <PC Name="Sax 4" PC="82">
+                <Bank Name="Sax 4" LSB="0" MSB="0" />
+			</PC>
+            <PC Name="Clarinet 1" PC="83">
+                <Bank Name="Clarinet 1" LSB="0" MSB="0" />
+			</PC>
+            <PC Name="Clarinet 2" PC="84">
+                <Bank Name="Clarinet 2" LSB="0" MSB="0" />
+			</PC>
+            <PC Name="Oboe" PC="85">
+                <Bank Name="Oboe" LSB="0" MSB="0" />
+			</PC>
+            <PC Name="Engl Horn" PC="86">
+                <Bank Name="Engl Horn" LSB="0" MSB="0" />
+			</PC>
+            <PC Name="Bassoon" PC="87">
+                <Bank Name="Bassoon" LSB="0" MSB="0" />
+			</PC>
+            <PC Name="Harmonica" PC="88">
+                <Bank Name="Harmonica" LSB="0" MSB="0" />
+			</PC>
+            <PC Name="Trumpet 1" PC="89">
+                <Bank Name="Trumpet 1" LSB="0" MSB="0" />
+			</PC>
+            <PC Name="Trumpet 2" PC="90">
+                <Bank Name="Trumpet 2" LSB="0" MSB="0" />
+			</PC>
+            <PC Name="Trombone 1" PC="91">
+                <Bank Name="Trombone 1" LSB="0" MSB="0" />
+			</PC>
+            <PC Name="Trombone 2" PC="92">
+                <Bank Name="Trombone 2" LSB="0" MSB="0" />
+			</PC>
+            <PC Name="Fr Horn 1" PC="93">
+                <Bank Name="Fr Horn 1" LSB="0" MSB="0" />
+			</PC>
+            <PC Name="Fr Horn 2" PC="94">
+                <Bank Name="Fr Horn 2" LSB="0" MSB="0" />
+			</PC>
+            <PC Name="Tuba" PC="95">
+                <Bank Name="Tuba" LSB="0" MSB="0" />
+			</PC>
+            <PC Name="Brs Sect 1" PC="96">
+                <Bank Name="Brs Sect 1" LSB="0" MSB="0" />
+			</PC>
+            <PC Name="Brs Sect 2" PC="97">
+                <Bank Name="Brs Sect 2" LSB="0" MSB="0" />
+			</PC>
+            <PC Name="Vibe 1" PC="98">
+                <Bank Name="Vibe 1" LSB="0" MSB="0" />
+			</PC>
+            <PC Name="Vibe 2" PC="99">
+                <Bank Name="Vibe 2" LSB="0" MSB="0" />
+			</PC>
+            <PC Name="Syn Mallet" PC="100">
+                <Bank Name="Syn Mallet" LSB="0" MSB="0" />
+			</PC>
+            <PC Name="Wind Bell" PC="101">
+                <Bank Name="Wind Bell" LSB="0" MSB="0" />
+			</PC>
+            <PC Name="Glock" PC="102">
+                <Bank Name="Glock" LSB="0" MSB="0" />
+			</PC>
+            <PC Name="Tube Bell" PC="103">
+                <Bank Name="Tube Bell" LSB="0" MSB="0" />
+			</PC>
+            <PC Name="Xylophone" PC="104">
+                <Bank Name="Xylophone" LSB="0" MSB="0" />
+			</PC>
+            <PC Name="Marimba" PC="105">
+                <Bank Name="Marimba" LSB="0" MSB="0" />
+			</PC>
+            <PC Name="Koto" PC="106">
+                <Bank Name="Koto" LSB="0" MSB="0" />
+			</PC>
+            <PC Name="Sho" PC="107">
+                <Bank Name="Sho" LSB="0" MSB="0" />
+			</PC>
+            <PC Name="Shakuhachi" PC="108">
+                <Bank Name="Shakuhachi" LSB="0" MSB="0" />
+			</PC>
+            <PC Name="Whistle 1" PC="109">
+                <Bank Name="Whistle 1" LSB="0" MSB="0" />
+			</PC>
+            <PC Name="Whistle 2" PC="110">
+                <Bank Name="Whistle 2" LSB="0" MSB="0" />
+			</PC>
+            <PC Name="BottleBlow" PC="111">
+                <Bank Name="BottleBlow" LSB="0" MSB="0" />
+			</PC>
+            <PC Name="BreathPipe" PC="112">
+                <Bank Name="BreathPipe" LSB="0" MSB="0" />
+			</PC>
+            <PC Name="Timpani" PC="113">
+                <Bank Name="Timpani" LSB="0" MSB="0" />
+			</PC>
+            <PC Name="MelodicTom" PC="114">
+                <Bank Name="MelodicTom" LSB="0" MSB="0" />
+			</PC>
+            <PC Name="Deep Snare" PC="115">
+                <Bank Name="Deep Snare" LSB="0" MSB="0" />
+			</PC>
+            <PC Name="Elec Perc1" PC="116">
+                <Bank Name="Elec Perc1" LSB="0" MSB="0" />
+			</PC>
+            <PC Name="Elec Perc2" PC="117">
+                <Bank Name="Elec Perc2" LSB="0" MSB="0" />
+			</PC>
+            <PC Name="Taiko" PC="118">
+                <Bank Name="Taiko" LSB="0" MSB="0" />
+			</PC>
+            <PC Name="Taiko Rim" PC="119">
+                <Bank Name="Taiko Rim" LSB="0" MSB="0" />
+			</PC>
+            <PC Name="Cymbal" PC="120">
+                <Bank Name="Cymbal" LSB="0" MSB="0" />
+			</PC>
+            <PC Name="Castanets" PC="121">
+                <Bank Name="Castanets" LSB="0" MSB="0" />
+			</PC>
+            <PC Name="Triangle" PC="122">
+                <Bank Name="Triangle" LSB="0" MSB="0" />
+			</PC>
+            <PC Name="Orche Hit" PC="123">
+                <Bank Name="Orche Hit" LSB="0" MSB="0" />
+			</PC>
+            <PC Name="Telephone" PC="124">
+                <Bank Name="Telephone" LSB="0" MSB="0" />
+			</PC>
+            <PC Name="Bird Tweet" PC="125">
+                <Bank Name="Bird Tweet" LSB="0" MSB="0" />
+			</PC>
+            <PC Name="OneNoteJam" PC="126">
+                <Bank Name="OneNoteJam" LSB="0" MSB="0" />
+			</PC>
+            <PC Name="WaterBells" PC="127">
+                <Bank Name="WaterBells" LSB="0" MSB="0" />
+			</PC>
+            <PC Name="JungleTune" PC="128">
+                <Bank Name="JungleTune" LSB="0" MSB="0" />
+			</PC>
+        </Map>
+
+        <Map Name="Munt GM Mode">
+            <PC Name="AcouPiano1" PC="1">
+                <Bank Name="AcouPiano1" LSB="0" MSB="0" />
+            </PC>
+            <PC Name="AcouPiano1" PC="2">
+                <Bank Name="AcouPiano1" LSB="0" MSB="0" />
+            </PC>
+            <PC Name="AcouPiano2" PC="3">
+                <Bank Name="AcouPiano2" LSB="0" MSB="0" />
+            </PC>
+            <PC Name="Honkytonk" PC="4">
+                <Bank Name="Honkytonk" LSB="0" MSB="0" />
+            </PC>
+            <PC Name="ElecPiano1" PC="5">
+                <Bank Name="ElecPiano1" LSB="0" MSB="0" />
+            </PC>
+            <PC Name="ElecPiano3" PC="6">
+                <Bank Name="ElecPiano3" LSB="0" MSB="0" />
+            </PC>
+            <PC Name="Harpsi 1" PC="7">
+                <Bank Name="Harpsi 1" LSB="0" MSB="0" />
+            </PC>
+            <PC Name="Clavi 2" PC="8">
+                <Bank Name="Clavi 2" LSB="0" MSB="0" />
+            </PC>
+            <PC Name="Celesta 2" PC="9">
+                <Bank Name="Celesta 2" LSB="0" MSB="0" />
+            </PC>
+            <PC Name="Glock" PC="10">
+                <Bank Name="Glock" LSB="0" MSB="0" />
+            </PC>
+            <PC Name="MusicBox" PC="11">
+                <Bank Name="MusicBox" LSB="0" MSB="0" />
+            </PC>
+            <PC Name="Vibe 1" PC="12">
+                <Bank Name="Vibe 1" LSB="0" MSB="0" />
+            </PC>
+            <PC Name="Marimba" PC="13">
+                <Bank Name="Marimba" LSB="0" MSB="0" />
+            </PC>
+            <PC Name="Xylophone" PC="14">
+                <Bank Name="Xylophone" LSB="0" MSB="0" />
+            </PC>
+            <PC Name="Tube Bell" PC="15">
+                <Bank Name="Tube Bell" LSB="0" MSB="0" />
+            </PC>
+            <PC Name="Syn Mallet" PC="16">
+                <Bank Name="Syn Mallet" LSB="0" MSB="0" />
+            </PC>
+            <PC Name="Elec Org 1" PC="17">
+                <Bank Name="Elec Org 1" LSB="0" MSB="0" />
+            </PC>
+            <PC Name="Elec Org 4" PC="18">
+                <Bank Name="Elec Org 4" LSB="0" MSB="0" />
+            </PC>
+            <PC Name="Elec Org 2" PC="19">
+                <Bank Name="Elec Org 2" LSB="0" MSB="0" />
+            </PC>
+            <PC Name="Pipe Org 1" PC="20">
+                <Bank Name="Pipe Org 1" LSB="0" MSB="0" />
+            </PC>
+            <PC Name="ReedOrgan" PC="21">
+                <Bank Name="ReedOrgan" LSB="0" MSB="0" />
+            </PC>
+            <PC Name="Accordion" PC="22">
+                <Bank Name="Accordion" LSB="0" MSB="0" />
+            </PC>
+            <PC Name="Harmonica" PC="23">
+                <Bank Name="Harmonica" LSB="0" MSB="0" />
+            </PC>
+            <PC Name="Bandneon" PC="24">
+                <Bank Name="Bandneon" LSB="0" MSB="0" />
+            </PC>
+            <PC Name="Guitar 1" PC="25">
+                <Bank Name="Guitar 1" LSB="0" MSB="0" />
+            </PC>
+            <PC Name="Guitar 2" PC="26">
+                <Bank Name="Guitar 2" LSB="0" MSB="0" />
+            </PC>
+            <PC Name="JazzGuitar" PC="27">
+                <Bank Name="JazzGuitar" LSB="0" MSB="0" />
+            </PC>
+            <PC Name="CleanGuitr" PC="28">
+                <Bank Name="CleanGuitr" LSB="0" MSB="0" />
+            </PC>
+            <PC Name="MutedGuitr" PC="29">
+                <Bank Name="MutedGuitr" LSB="0" MSB="0" />
+            </PC>
+            <PC Name="Overdrive" PC="30">
+                <Bank Name="Overdrive" LSB="0" MSB="0" />
+            </PC>
+            <PC Name="Distortion" PC="31">
+                <Bank Name="Distortion" LSB="0" MSB="0" />
+            </PC>
+            <PC Name="FeedbackGr" PC="32">
+                <Bank Name="FeedbackGr" LSB="0" MSB="0" />
+            </PC>
+            <PC Name="Acou Bass1" PC="33">
+                <Bank Name="Acou Bass1" LSB="0" MSB="0" />
+            </PC>
+            <PC Name="Elec Bass2" PC="34">
+                <Bank Name="Elec Bass2" LSB="0" MSB="0" />
+            </PC>
+            <PC Name="Elec Bass1" PC="35">
+                <Bank Name="Elec Bass1" LSB="0" MSB="0" />
+            </PC>
+            <PC Name="Fretless 1" PC="36">
+                <Bank Name="Fretless 1" LSB="0" MSB="0" />
+            </PC>
+            <PC Name="Slap Bass1" PC="37">
+                <Bank Name="Slap Bass1" LSB="0" MSB="0" />
+            </PC>
+            <PC Name="Slap Bass2" PC="38">
+                <Bank Name="Slap Bass2" LSB="0" MSB="0" />
+            </PC>
+            <PC Name="Syn Bass 4" PC="39">
+                <Bank Name="Syn Bass 4" LSB="0" MSB="0" />
+            </PC>
+            <PC Name="Syn Bass 3" PC="40">
+                <Bank Name="Syn Bass 3" LSB="0" MSB="0" />
+            </PC>
+            <PC Name="Violin 2" PC="41">
+                <Bank Name="Violin 2" LSB="0" MSB="0" />
+            </PC>
+            <PC Name="Violin 1" PC="42">
+                <Bank Name="Violin 1" LSB="0" MSB="0" />
+            </PC>
+            <PC Name="Cello 1" PC="43">
+                <Bank Name="Cello 1" LSB="0" MSB="0" />
+            </PC>
+            <PC Name="Contrabass" PC="44">
+                <Bank Name="Contrabass" LSB="0" MSB="0" />
+            </PC>
+            <PC Name="Cello 2" PC="45">
+                <Bank Name="Cello 2" LSB="0" MSB="0" />
+            </PC>
+            <PC Name="Pizzicato" PC="46">
+                <Bank Name="Pizzicato" LSB="0" MSB="0" />
+            </PC>
+            <PC Name="Harp 1" PC="47">
+                <Bank Name="Harp 1" LSB="0" MSB="0" />
+            </PC>
+            <PC Name="Timpani" PC="48">
+                <Bank Name="Timpani" LSB="0" MSB="0" />
+            </PC>
+            <PC Name="Str Sect 1" PC="49">
+                <Bank Name="Str Sect 1" LSB="0" MSB="0" />
+            </PC>
+            <PC Name="SlowString" PC="50">
+                <Bank Name="SlowString" LSB="0" MSB="0" />
+            </PC>
+            <PC Name="SynString1" PC="51">
+                <Bank Name="SynString1" LSB="0" MSB="0" />
+            </PC>
+            <PC Name="SynString2" PC="52">
+                <Bank Name="SynString2" LSB="0" MSB="0" />
+            </PC>
+            <PC Name="SynChoirAh" PC="53">
+                <Bank Name="SynChoirAh" LSB="0" MSB="0" />
+            </PC>
+            <PC Name="SynVoiceOo" PC="54">
+                <Bank Name="SynVoiceOo" LSB="0" MSB="0" />
+            </PC>
+            <PC Name="Chorale" PC="55">
+                <Bank Name="Chorale" LSB="0" MSB="0" />
+            </PC>
+            <PC Name="Orche Hit" PC="56">
+                <Bank Name="Orche Hit" LSB="0" MSB="0" />
+            </PC>
+            <PC Name="Trumpet 2" PC="57">
+                <Bank Name="Trumpet 2" LSB="0" MSB="0" />
+            </PC>
+            <PC Name="Trombone 1" PC="58">
+                <Bank Name="Trombone 1" LSB="0" MSB="0" />
+            </PC>
+            <PC Name="Tuba" PC="59">
+                <Bank Name="Tuba" LSB="0" MSB="0" />
+            </PC>
+            <PC Name="Trumpet 1" PC="60">
+                <Bank Name="Trumpet 1" LSB="0" MSB="0" />
+            </PC>
+            <PC Name="Fr Horn 2" PC="61">
+                <Bank Name="Fr Horn 2" LSB="0" MSB="0" />
+            </PC>
+            <PC Name="Brs Sect 2" PC="62">
+                <Bank Name="Brs Sect 2" LSB="0" MSB="0" />
+            </PC>
+            <PC Name="Syn Brass1" PC="63">
+                <Bank Name="Syn Brass1" LSB="0" MSB="0" />
+            </PC>
+            <PC Name="Syn Brass4" PC="64">
+                <Bank Name="Syn Brass4" LSB="0" MSB="0" />
+            </PC>
+            <PC Name="ax 4" PC="65">
+                <Bank Name="Sax 4" LSB="0" MSB="0" />
+            </PC>
+            <PC Name="Sax 3" PC="66">
+                <Bank Name="Sax 3" LSB="0" MSB="0" />
+            </PC>
+            <PC Name="Sax 2" PC="67">
+                <Bank Name="Sax 2" LSB="0" MSB="0" />
+            </PC>
+            <PC Name="Sax 1" PC="68">
+                <Bank Name="Sax 1" LSB="0" MSB="0" />
+            </PC>
+            <PC Name="Oboe" PC="69">
+                <Bank Name="Oboe" LSB="0" MSB="0" />
+            </PC>
+            <PC Name="Engl Horn" PC="70">
+                <Bank Name="Engl Horn" LSB="0" MSB="0" />
+            </PC>
+            <PC Name="Bassoon" PC="71">
+                <Bank Name="Bassoon" LSB="0" MSB="0" />
+            </PC>
+            <PC Name="Clarinet 1" PC="72">
+                <Bank Name="Clarinet 1" LSB="0" MSB="0" />
+            </PC>
+            <PC Name="Piccolo 1" PC="73">
+                <Bank Name="Piccolo 1" LSB="0" MSB="0" />
+            </PC>
+            <PC Name="Flute 2" PC="74">
+                <Bank Name="Flute 2" LSB="0" MSB="0" />
+            </PC>
+            <PC Name="Recorder" PC="75">
+                <Bank Name="Recorder" LSB="0" MSB="0" />
+            </PC>
+            <PC Name="Panpipes" PC="76">
+                <Bank Name="Panpipes" LSB="0" MSB="0" />
+            </PC>
+            <PC Name="BottleBlow" PC="77">
+                <Bank Name="BottleBlow" LSB="0" MSB="0" />
+            </PC>
+            <PC Name="Shakuhachi" PC="78">
+                <Bank Name="Shakuhachi" LSB="0" MSB="0" />
+            </PC>
+            <PC Name="Whistle 1" PC="79">
+                <Bank Name="Whistle 1" LSB="0" MSB="0" />
+            </PC>
+            <PC Name="Clarinet 2" PC="80">
+                <Bank Name="Clarinet 2" LSB="0" MSB="0" />
+            </PC>
+            <PC Name="SquareWave" PC="81">
+                <Bank Name="SquareWave" LSB="0" MSB="0" />
+            </PC>
+            <PC Name="Syn Brass2" PC="82">
+                <Bank Name="Syn Brass2" LSB="0" MSB="0" />
+            </PC>
+            <PC Name="BreathPipe" PC="83">
+                <Bank Name="BreathPipe" LSB="0" MSB="0" />
+            </PC>
+            <PC Name="DoctorSolo" PC="84">
+                <Bank Name="DoctorSolo" LSB="0" MSB="0" />
+            </PC>
+            <PC Name="Oboe 2001" PC="85">
+                <Bank Name="Oboe 2001" LSB="0" MSB="0" />
+            </PC>
+            <PC Name="SynSoloVox" PC="86">
+                <Bank Name="SynSoloVox" LSB="0" MSB="0" />
+            </PC>
+            <PC Name="Squortal" PC="87">
+                <Bank Name="Squortal" LSB="0" MSB="0" />
+            </PC>
+            <PC Name="Syn Bass 1" PC="88">
+                <Bank Name="Syn Bass 1" LSB="0" MSB="0" />
+            </PC>
+            <PC Name="Fantsy" PC="89">
+                <Bank Name="Fantasy" LSB="0" MSB="0" />
+            </PC>
+            <PC Name="WarmPad" PC="90">
+                <Bank Name="WarmPad" LSB="0" MSB="0" />
+            </PC>
+            <PC Name="Schooldaze" PC="91">
+                <Bank Name="Schooldaze" LSB="0" MSB="0" />
+            </PC>
+            <PC Name="SpaceVoice" PC="92">
+                <Bank Name="SpaceVoice" LSB="0" MSB="0" />
+            </PC>
+            <PC Name="Glasses" PC="93">
+                <Bank Name="Glasses" LSB="0" MSB="0" />
+            </PC>
+            <PC Name="Harmo Pan" PC="94">
+                <Bank Name="Harmo Pan" LSB="0" MSB="0" />
+            </PC>
+            <PC Name="HolyPad" PC="95">
+                <Bank Name="HolyPad" LSB="0" MSB="0" />
+            </PC>
+            <PC Name="SweepPad" PC="96">
+                <Bank Name="SweepPad" LSB="0" MSB="0" />
+            </PC>
+            <PC Name="Ice Rain" PC="97">
+                <Bank Name="Ice Rain" LSB="0" MSB="0" />
+            </PC>
+            <PC Name="Soundtrack" PC="98">
+                <Bank Name="Soundtrack" LSB="0" MSB="0" />
+            </PC>
+            <PC Name="BellSinger" PC="99">
+                <Bank Name="BellSinger" LSB="0" MSB="0" />
+            </PC>
+            <PC Name="Atmosphere" PC="100">
+                <Bank Name="Atmosphere" LSB="0" MSB="0" />
+            </PC>
+            <PC Name="Brightness" PC="101">
+                <Bank Name="Brightness" LSB="0" MSB="0" />
+            </PC>
+            <PC Name="Goblin" PC="102">
+                <Bank Name="Goblin" LSB="0" MSB="0" />
+            </PC>
+            <PC Name="EchoDrops" PC="103">
+                <Bank Name="EchoDrops" LSB="0" MSB="0" />
+            </PC>
+            <PC Name="DoctorSolo" PC="104">
+                <Bank Name="DoctorSolo" LSB="0" MSB="0" />
+            </PC>
+            <PC Name="Sitar" PC="105">
+                <Bank Name="Sitar" LSB="0" MSB="0" />
+            </PC>
+            <PC Name="Banjo" PC="106">
+                <Bank Name="Banjo" LSB="0" MSB="0" />
+            </PC>
+            <PC Name="Shamisen" PC="107">
+                <Bank Name="Shamisen" LSB="0" MSB="0" />
+            </PC>
+            <PC Name="Koto" PC="108">
+                <Bank Name="Koto" LSB="0" MSB="0" />
+            </PC>
+            <PC Name="Kalimba" PC="109">
+                <Bank Name="Kalimba" LSB="0" MSB="0" />
+            </PC>
+            <PC Name="BagPipes" PC="110">
+                <Bank Name="BagPipes" LSB="0" MSB="0" />
+            </PC>
+            <PC Name="Violin" PC="111">
+                <Bank Name="Violin 2" LSB="0" MSB="0" />
+            </PC>
+            <PC Name="Oboe" PC="112">
+                <Bank Name="Oboe" LSB="0" MSB="0" />
+            </PC>
+            <PC Name="Triangle" PC="113">
+                <Bank Name="Triangle" LSB="0" MSB="0" />
+            </PC>
+            <PC Name="Agogo" PC="114">
+                <Bank Name="Agogo" LSB="0" MSB="0" />
+            </PC>
+            <PC Name="SteelDruma" PC="115">
+                <Bank Name="SteelDrums" LSB="0" MSB="0" />
+            </PC>
+            <PC Name="Taiko Rim" PC="116">
+                <Bank Name="Taiko Rim" LSB="0" MSB="0" />
+            </PC>
+            <PC Name="Taiko" PC="117">
+                <Bank Name="Taiko" LSB="0" MSB="0" />
+            </PC>
+            <PC Name="MelodicTom" PC="118">
+                <Bank Name="MelodicTom" LSB="0" MSB="0" />
+            </PC>
+            <PC Name="Elec Perc2" PC="119">
+                <Bank Name="Elec Perc2" LSB="0" MSB="0" />
+            </PC>
+            <PC Name="Cymbal" PC="120">
+                <Bank Name="Cymbal" LSB="0" MSB="0" />
+            </PC>
+            <PC Name="Elec Perc1" PC="121">
+                <Bank Name="Elec Perc1" LSB="0" MSB="0" />
+            </PC>
+            <PC Name="Castanets" PC="122">
+                <Bank Name="Castanets" LSB="0" MSB="0" />
+            </PC>
+            <PC Name="Seashore" PC="123">
+                <Bank Name="Seashore" LSB="0" MSB="0" />
+            </PC>
+            <PC Name="Birds" PC="124">
+                <Bank Name="Birds" LSB="0" MSB="0" />
+            </PC>
+            <PC Name="Telephone" PC="125">
+                <Bank Name="Telephone" LSB="0" MSB="0" />
+            </PC>
+            <PC Name="Helicopter" PC="126">
+                <Bank Name="Helicopter" LSB="0" MSB="0" />
+            </PC>
+            <PC Name="Applause" PC="127">
+                <Bank Name="Applause" LSB="0" MSB="0" />
+            </PC>
+            <PC Name="Pistol" PC="128">
+                <Bank Name="Pistol" LSB="0" MSB="0" />
+            </PC>
+        </Map>
+    </InstrumentList>
+	
+	<DrumSetList>
+		<Map Name="Preset">
+			<PC Name="Standard" PC="1">
+				<Bank Name="Standard" LSB="0" MSB="0">
+					<Tone Name="Acou BD" Key="35" />
+					<Tone Name="Acou BD" Key="36" />
+					<Tone Name="Rim Shot" Key="37" />
+					<Tone Name="Acou SD" Key="38" />
+					<Tone Name="Hand Clap" Key="39" />
+					<Tone Name="Elec SD" Key="40" />
+					<Tone Name="AcouLowTom" Key="41" />
+					<Tone Name="Clsd HiHat" Key="42" />
+					<Tone Name="AcouLowTom" Key="43" />
+					<Tone Name="OpenHiHat2" Key="44" />
+					<Tone Name="AcouMidTom" Key="45" />
+					<Tone Name="OpenHiHat1" Key="46" />
+					<Tone Name="AcouMidTom" Key="47" />
+					<Tone Name="Acou HiTom" Key="48" />
+					<Tone Name="Crash Cym" Key="49" />
+					<Tone Name="Acou HiTom" Key="50" />
+					<Tone Name="Ride Cym" Key="51" />
+					<Tone Name="Tambourine" Key="54" />
+					<Tone Name="Cowbell" Key="56" />
+					<Tone Name="High Bongo" Key="60" />
+					<Tone Name="Low Bongo" Key="61" />
+					<Tone Name="Mt HiConga" Key="62" />
+					<Tone Name="High Conga" Key="63" />
+					<Tone Name="Low Conga" Key="64" />
+					<Tone Name="Hi Timbale" Key="65" />
+					<Tone Name="LowTimbale" Key="66" />
+					<Tone Name="High Agogo" Key="67" />
+					<Tone Name="Low Agogo" Key="68" />
+					<Tone Name="Cabasa" Key="69" />
+					<Tone Name="Maracas" Key="70" />
+					<Tone Name="SmbaWhis S" Key="71" />
+					<Tone Name="SmbaWhis L" Key="72" />
+					<Tone Name="Quijada" Key="73" />
+					<Tone Name="Claves" Key="75" />
+				</Bank>
+			</PC>
+		</Map>
+
+        <Map Name="Munt GM Mode">
+            <PC Name="Standard" PC="1">
+				<Bank Name="Standard" LSB="0" MSB="0">
+                    <Tone Name="Hand Clap" Key="31" />
+                    <Tone Name="Rim Shot" Key="32" />
+                    <Tone Name="HWoodBlock" Key="33" />
+                    <Tone Name="MuTriangle" Key="34" />
+                    <Tone Name="Acou BD" Key="35" />
+                    <Tone Name="Acou BD" Key="36" />
+                    <Tone Name="Rim Shot" Key="37" />
+                    <Tone Name="Acou SD" Key="38" />
+                    <Tone Name="Hand Clap" Key="39" />
+                    <Tone Name="Elec SD" Key="40" />
+                    <Tone Name="Fat Tom L" Key="41" />
+                    <Tone Name="Clsd HiHat" Key="42" />
+                    <Tone Name="AcouLowTom" Key="43" />
+                    <Tone Name="OpenHiHat2" Key="44" />
+                    <Tone Name="AcouMidTom" Key="45" />
+                    <Tone Name="OpenHiHat1" Key="46" />
+                    <Tone Name="Fat Tom M" Key="47" />
+                    <Tone Name="Acou HiTom" Key="48" />
+                    <Tone Name="Crash Cym" Key="49" />
+                    <Tone Name="Fat Tom-H" Key="50" />
+                    <Tone Name="Ride Cym" Key="51" />
+                    <Tone Name="ChinaCym" Key="52" />
+                    <Tone Name="Rich Ride" Key="53" />
+                    <Tone Name="Tambourine" Key="54" />
+                    <Tone Name="Splash Cym" Key="55" />
+                    <Tone Name="Cowbell" Key="56" />
+                    <Tone Name="CrashCym 2" Key="57" />
+                    <Tone Name="Quijada" Key="58" />
+                    <Tone Name="Rich Ride" Key="59" />
+                    <Tone Name="HighBongo" Key="60" />
+                    <Tone Name="Low Bongo" Key="61" />
+                    <Tone Name="Mt HiConga" Key="62" />
+                    <Tone Name="High Conga" Key="63" />
+                    <Tone Name="Low Conga" Key="64" />
+                    <Tone Name="Hi Timbale" Key="65" />
+                    <Tone Name="LowTimbale" Key="66" />
+                    <Tone Name="High Agogo" Key="67" />
+                    <Tone Name="Low Agogo" Key="68" />
+                    <Tone Name="Cabasa" Key="69" />
+                    <Tone Name="Maracas" Key="70" />
+                    <Tone Name="SmbaWhis S" Key="71" />
+                    <Tone Name="SmbaWhis L" Key="72" />
+                    <Tone Name="Shaker" Key="73" />
+                    <Tone Name="Cabasa" Key="74" />
+                    <Tone Name="Claves" Key="75" />
+                    <Tone Name="HWoodBlock" Key="76" />
+                    <Tone Name="LWoodBlock" Key="77" />
+                    <Tone Name="HiCastinet" Key="78" />
+                    <Tone Name="LoCastinet" Key="79" />
+                    <Tone Name="MuTriangle" Key="80" />
+                    <Tone Name="OpTriangle" Key="81" />
+                    <Tone Name="Shaker" Key="82" />
+                    <Tone Name="Bells" Key="83" />
+                    <Tone Name="Acou BD" Key="84" />
+                    <Tone Name="LoCastinet" Key="85" />
+                    <Tone Name="Acou SD" Key="86" />
+                    <Tone Name="HiCastinet" Key="87" />
+                    <Tone Name="Elec SD" Key="88" />
+                    <Tone Name="Fat Tom L" Key="89" />
+                    <Tone Name="OpenHiHat2" Key="90" />
+                    <Tone Name="Fat Tom M" Key="91" />
+                    <Tone Name="CrashCym 2" Key="92" />
+                    <Tone Name="Fat Tom-H" Key="93" />
+                    <Tone Name="Rich Ride" Key="94" />
+                </Bank>
+            </PC>
+        </Map>
+	</DrumSetList>
+
+    <ControlChangeMacroList>
+        <Table ID="0">
+            <Entry Label="432.1Hz" Value="0"/>
+            <Entry Label="432.30078740157484Hz" Value="1"/>
+            <Entry Label="432.50157480314965Hz" Value="2"/>
+            <Entry Label="432.7023622047244Hz" Value="3"/>
+            <Entry Label="432.9031496062992Hz" Value="4"/>
+            <Entry Label="433.10393700787404Hz" Value="5"/>
+            <Entry Label="433.30472440944885Hz" Value="6"/>
+            <Entry Label="433.50551181102367Hz" Value="7"/>
+            <Entry Label="433.7062992125984Hz" Value="8"/>
+            <Entry Label="433.90708661417324Hz" Value="9"/>
+            <Entry Label="434.10787401574805Hz" Value="10"/>
+            <Entry Label="434.30866141732287Hz" Value="11"/>
+            <Entry Label="434.5094488188977Hz" Value="12"/>
+            <Entry Label="434.71023622047244Hz" Value="13"/>
+            <Entry Label="434.91102362204725Hz" Value="14"/>
+            <Entry Label="435.11181102362207Hz" Value="15"/>
+            <Entry Label="435.3125984251969Hz" Value="16"/>
+            <Entry Label="435.5133858267717Hz" Value="17"/>
+            <Entry Label="435.71417322834645Hz" Value="18"/>
+            <Entry Label="435.91496062992127Hz" Value="19"/>
+            <Entry Label="436.1157480314961Hz" Value="20"/>
+            <Entry Label="436.3165354330709Hz" Value="21"/>
+            <Entry Label="436.5173228346457Hz" Value="22"/>
+            <Entry Label="436.71811023622047Hz" Value="23"/>
+            <Entry Label="436.9188976377953Hz" Value="24"/>
+            <Entry Label="437.1196850393701Hz" Value="25"/>
+            <Entry Label="437.3204724409449Hz" Value="26"/>
+            <Entry Label="437.5212598425197Hz" Value="27"/>
+            <Entry Label="437.7220472440945Hz" Value="28"/>
+            <Entry Label="437.9228346456693Hz" Value="29"/>
+            <Entry Label="438.1236220472441Hz" Value="30"/>
+            <Entry Label="438.3244094488189Hz" Value="31"/>
+            <Entry Label="438.52519685039374Hz" Value="32"/>
+            <Entry Label="438.7259842519685Hz" Value="33"/>
+            <Entry Label="438.9267716535433Hz" Value="34"/>
+            <Entry Label="439.1275590551181Hz" Value="35"/>
+            <Entry Label="439.32834645669294Hz" Value="36"/>
+            <Entry Label="439.52913385826776Hz" Value="37"/>
+            <Entry Label="439.72992125984257Hz" Value="38"/>
+            <Entry Label="439.9307086614173Hz" Value="39"/>
+            <Entry Label="440.13149606299214Hz" Value="40"/>
+            <Entry Label="440.33228346456696Hz" Value="41"/>
+            <Entry Label="440.53307086614177Hz" Value="42"/>
+            <Entry Label="440.7338582677166Hz" Value="43"/>
+            <Entry Label="440.93464566929134Hz" Value="44"/>
+            <Entry Label="441.13543307086616Hz" Value="45"/>
+            <Entry Label="441.33622047244097Hz" Value="46"/>
+            <Entry Label="441.5370078740158Hz" Value="47"/>
+            <Entry Label="441.7377952755906Hz" Value="48"/>
+            <Entry Label="441.93858267716536Hz" Value="49"/>
+            <Entry Label="442.13937007874017Hz" Value="50"/>
+            <Entry Label="442.340157480315Hz" Value="51"/>
+            <Entry Label="442.5409448818898Hz" Value="52"/>
+            <Entry Label="442.7417322834646Hz" Value="53"/>
+            <Entry Label="442.9425196850394Hz" Value="54"/>
+            <Entry Label="443.1433070866142Hz" Value="55"/>
+            <Entry Label="443.344094488189Hz" Value="56"/>
+            <Entry Label="443.5448818897638Hz" Value="57"/>
+            <Entry Label="443.74566929133863Hz" Value="58"/>
+            <Entry Label="443.9464566929134Hz" Value="59"/>
+            <Entry Label="444.1472440944882Hz" Value="60"/>
+            <Entry Label="444.348031496063Hz" Value="61"/>
+            <Entry Label="444.54881889763783Hz" Value="62"/>
+            <Entry Label="444.74960629921264Hz" Value="63"/>
+            <Entry Label="444.9503937007874Hz" Value="64"/>
+            <Entry Label="445.1511811023622Hz" Value="65"/>
+            <Entry Label="445.35196850393703Hz" Value="66"/>
+            <Entry Label="445.55275590551184Hz" Value="67"/>
+            <Entry Label="445.75354330708666Hz" Value="68"/>
+            <Entry Label="445.9543307086614Hz" Value="69"/>
+            <Entry Label="446.15511811023623Hz" Value="70"/>
+            <Entry Label="446.35590551181105Hz" Value="71"/>
+            <Entry Label="446.55669291338586Hz" Value="72"/>
+            <Entry Label="446.7574803149607Hz" Value="73"/>
+            <Entry Label="446.95826771653543Hz" Value="74"/>
+            <Entry Label="447.15905511811025Hz" Value="75"/>
+            <Entry Label="447.35984251968506Hz" Value="76"/>
+            <Entry Label="447.5606299212599Hz" Value="77"/>
+            <Entry Label="447.7614173228347Hz" Value="78"/>
+            <Entry Label="447.96220472440945Hz" Value="79"/>
+            <Entry Label="448.16299212598426Hz" Value="80"/>
+            <Entry Label="448.3637795275591Hz" Value="81"/>
+            <Entry Label="448.5645669291339Hz" Value="82"/>
+            <Entry Label="448.7653543307087Hz" Value="83"/>
+            <Entry Label="448.9661417322835Hz" Value="84"/>
+            <Entry Label="449.1669291338583Hz" Value="85"/>
+            <Entry Label="449.3677165354331Hz" Value="86"/>
+            <Entry Label="449.5685039370079Hz" Value="87"/>
+            <Entry Label="449.7692913385827Hz" Value="88"/>
+            <Entry Label="449.97007874015753Hz" Value="89"/>
+            <Entry Label="450.1708661417323Hz" Value="90"/>
+            <Entry Label="450.3716535433071Hz" Value="91"/>
+            <Entry Label="450.5724409448819Hz" Value="92"/>
+            <Entry Label="450.77322834645673Hz" Value="93"/>
+            <Entry Label="450.97401574803155Hz" Value="94"/>
+            <Entry Label="451.1748031496063Hz" Value="95"/>
+            <Entry Label="451.3755905511811Hz" Value="96"/>
+            <Entry Label="451.57637795275593Hz" Value="97"/>
+            <Entry Label="451.77716535433075Hz" Value="98"/>
+            <Entry Label="451.97795275590556Hz" Value="99"/>
+            <Entry Label="452.1787401574803Hz" Value="100"/>
+            <Entry Label="452.37952755905513Hz" Value="101"/>
+            <Entry Label="452.58031496062995Hz" Value="102"/>
+            <Entry Label="452.78110236220476Hz" Value="103"/>
+            <Entry Label="452.9818897637796Hz" Value="104"/>
+            <Entry Label="453.18267716535433Hz" Value="105"/>
+            <Entry Label="453.38346456692915Hz" Value="106"/>
+            <Entry Label="453.58425196850396Hz" Value="107"/>
+            <Entry Label="453.7850393700788Hz" Value="108"/>
+            <Entry Label="453.9858267716536Hz" Value="109"/>
+            <Entry Label="454.18661417322835Hz" Value="110"/>
+            <Entry Label="454.38740157480316Hz" Value="111"/>
+            <Entry Label="454.588188976378Hz" Value="112"/>
+            <Entry Label="454.7889763779528Hz" Value="113"/>
+            <Entry Label="454.9897637795276Hz" Value="114"/>
+            <Entry Label="455.19055118110236Hz" Value="115"/>
+            <Entry Label="455.3913385826772Hz" Value="116"/>
+            <Entry Label="455.592125984252Hz" Value="117"/>
+            <Entry Label="455.7929133858268Hz" Value="118"/>
+            <Entry Label="455.9937007874016Hz" Value="119"/>
+            <Entry Label="456.1944881889764Hz" Value="120"/>
+            <Entry Label="456.3952755905512Hz" Value="121"/>
+            <Entry Label="456.596062992126Hz" Value="122"/>
+            <Entry Label="456.7968503937008Hz" Value="123"/>
+            <Entry Label="456.99763779527564Hz" Value="124"/>
+            <Entry Label="457.1984251968504Hz" Value="125"/>
+            <Entry Label="457.3992125984252Hz" Value="126"/>
+            <Entry Label="457.6Hz" Value="127"/>
+        </Table>
+            <Table ID="1">
+                <Entry Label="Whitespace" Value="32"/>
+                <Entry Label="!" Value="33"/>
+                <Entry Label="&quot;" Value="34"/>
+                <Entry Label="#" Value="35"/>
+                <Entry Label="$" Value="36"/>
+                <Entry Label="%" Value="37"/>
+                <Entry Label="&amp;" Value="38"/>
+                <Entry Label="'" Value="39"/>
+                <Entry Label="(" Value="40"/>
+                <Entry Label=")" Value="41"/>
+                <Entry Label="*" Value="42"/>
+                <Entry Label="+" Value="43"/>
+                <Entry Label="," Value="44"/>
+                <Entry Label="-" Value="45"/>
+                <Entry Label="." Value="46"/>
+                <Entry Label="/" Value="47"/>
+                <Entry Label="0" Value="48"/>
+                <Entry Label="1" Value="49"/>
+                <Entry Label="2" Value="50"/>
+                <Entry Label="3" Value="51"/>
+                <Entry Label="4" Value="52"/>
+                <Entry Label="5" Value="53"/>
+                <Entry Label="6" Value="54"/>
+                <Entry Label="7" Value="55"/>
+                <Entry Label="8" Value="56"/>
+                <Entry Label="9" Value="57"/>
+                <Entry Label=":" Value="58"/>
+                <Entry Label=";" Value="59"/>
+                <Entry Label="&lt;" Value="60"/>
+                <Entry Label="=" Value="61"/>
+                <Entry Label="&gt;" Value="62"/>
+                <Entry Label="?" Value="63"/>
+                <Entry Label="@" Value="64"/>
+                <Entry Label="A" Value="65"/>
+                <Entry Label="B" Value="66"/>
+                <Entry Label="C" Value="67"/>
+                <Entry Label="D" Value="68"/>
+                <Entry Label="E" Value="69"/>
+                <Entry Label="F" Value="70"/>
+                <Entry Label="G" Value="71"/>
+                <Entry Label="H" Value="72"/>
+                <Entry Label="I" Value="73"/>
+                <Entry Label="J" Value="74"/>
+                <Entry Label="K" Value="75"/>
+                <Entry Label="L" Value="76"/>
+                <Entry Label="M" Value="77"/>
+                <Entry Label="N" Value="78"/>
+                <Entry Label="O" Value="79"/>
+                <Entry Label="P" Value="80"/>
+                <Entry Label="Q" Value="81"/>
+                <Entry Label="R" Value="82"/>
+                <Entry Label="S" Value="83"/>
+                <Entry Label="T" Value="84"/>
+                <Entry Label="U" Value="85"/>
+                <Entry Label="V" Value="86"/>
+                <Entry Label="W" Value="87"/>
+                <Entry Label="X" Value="88"/>
+                <Entry Label="Y" Value="89"/>
+                <Entry Label="Z" Value="90"/>
+                <Entry Label="[" Value="91"/>
+                <Entry Label="\" Value="92"/>
+                <Entry Label="]" Value="93"/>
+                <Entry Label="^" Value="94"/>
+                <Entry Label="_" Value="95"/>
+                <Entry Label="`" Value="96"/>
+                <Entry Label="a" Value="97"/>
+                <Entry Label="b" Value="98"/>
+                <Entry Label="c" Value="99"/>
+                <Entry Label="d" Value="100"/>
+                <Entry Label="e" Value="101"/>
+                <Entry Label="f" Value="102"/>
+                <Entry Label="g" Value="103"/>
+                <Entry Label="h" Value="104"/>
+                <Entry Label="i" Value="105"/>
+                <Entry Label="j" Value="106"/>
+                <Entry Label="k" Value="107"/>
+                <Entry Label="l" Value="108"/>
+                <Entry Label="m" Value="109"/>
+                <Entry Label="n" Value="110"/>
+                <Entry Label="o" Value="111"/>
+                <Entry Label="p" Value="112"/>
+                <Entry Label="q" Value="113"/>
+                <Entry Label="r" Value="114"/>
+                <Entry Label="s" Value="115"/>
+                <Entry Label="t" Value="116"/>
+                <Entry Label="u" Value="117"/>
+                <Entry Label="v" Value="118"/>
+                <Entry Label="w" Value="119"/>
+                <Entry Label="x" Value="120"/>
+                <Entry Label="y" Value="121"/>
+                <Entry Label="z" Value="122"/>
+                <Entry Label="{" Value="123"/>
+                <Entry Label="|" Value="124"/>
+                <Entry Label="}" Value="125"/>
+                <Entry Label="`" Value="126"/>
+            </Table>
+        <Table ID="2">
+              <Entry Label="Channel 1" Value="0"/>
+              <Entry Label="Channel 2" Value="1"/>
+              <Entry Label="Channel 3" Value="2"/>
+              <Entry Label="Channel 4" Value="3"/>
+              <Entry Label="Channel 5" Value="4"/>
+              <Entry Label="Channel 6" Value="5"/>
+              <Entry Label="Channel 7" Value="6"/>
+              <Entry Label="Channel 8" Value="7"/>
+              <Entry Label="Channel 9" Value="8"/>
+              <Entry Label="Channel 10" Value="9"/>
+              <Entry Label="Channel 11" Value="10"/>
+              <Entry Label="Channel 12" Value="11"/>
+              <Entry Label="Channel 13" Value="12"/>
+              <Entry Label="Channel 14" Value="13"/>
+              <Entry Label="Channel 15" Value="14"/>
+              <Entry Label="Channel 16" Value="15"/>
+              <Entry Label="Off" Value="16"/>
+        </Table>
+        <Folder Name="Main Controllers">
+            <CCM ID="1" Name="001 Modulation" Color="#1c1cfb" Sync="Last">
+				<Value />
+				<Memo>Applies a vibrato effect to a channel.</Memo>
+				<Data>@CC 1 #VL</Data>
+			</CCM>
+            <CCM ID="7" Name="007 Volume" Color="#ca0000" Sync="Last">
+				<Value Default="100"/>
+				<Memo>Main volume of a channel.</Memo>
+				<Data>@CC 2 #VL</Data>
+			</CCM>
+            <CCM ID="10" Name="010 Pan" Color="#008080" Sync="Last">
+				<Value Default="0" Min="-63" Max="63" Offset="64"/>
+				<Memo>Pan position of a channel.</Memo>
+				<Data>@CC 10 #VL</Data>
+			</CCM>
+            <CCM ID="11" Name="011 Expression" Color="#ca0000" Sync="Last">
+				<Value Default="127"/>
+				<Memo>Expression of a channel.</Memo>
+				<Data>@CC 11 #VL</Data>
+			</CCM>
+            <CCM ID="64" Name="064 Hold 1" Color="#ca0000" Sync="Last">
+				<Value>
+					<Entry Label="Off" Value="0" />
+					<Entry Label="On" Value="127" />
+				</Value>
+				<Memo>Hold pedal 1 of a channel.\nWhile enabled, all notes played will sustain.</Memo>
+				<Data>@CC 64 #VL</Data>
+			</CCM>
+            <CCM ID="121" Name="121 Reset All Controllers" Color="#28afaf" Sync="Last">
+				<Value />
+				<Memo>Resets all controllers. Also resets Munt to MT-32 mode.</Memo>
+				<Data>@CC 121 0</Data>
+			</CCM>
+            <CCM ID="123" Name="123 All Notes Off" Color="#28afaf" Sync="Last">
+				<Value />
+				<Memo>Turns all notes that are not held by Hold Pedal off.</Memo>
+				<Data>@CC 123 0</Data>
+			</CCM>
+
+            <CCM ID="130" Name="130 Pitch Bend" Color="#0fa806" Sync="Last">
+				<Value Min="-8192" Max="8191" Offset="8192" />
+				<Memo>Changes pitch of channel.</Memo>
+				<Data>@PB #VH #VL</Data>
+			</CCM>
+        </Folder>
+
+        <Folder Name="Special">
+            <CCM ID="140" Name="140 Pitch Bend Range" Color="#0fa806" Sync="Last">
+				<Value Default="2" Min="0" Max="24" />
+				<Memo>Changes the range of the pitch bend event. Range: 0~24 semitones.</Memo>
+				<Data>@RPN 00H 00H #VL #NONE</Data>
+			</CCM>
+            <CCM ID="141" Name="141 All Parameters Reset" Color="#ab47bc">
+                <Memo>SysEx message. Resets all parameters.</Memo>
+                <Data>@SYSEX F0h 41h 00h 16h 12h [ 7Fh 00h 00h 00h ] F7h</Data>
+            </CCM>
+            <CCM ID="400" Name="400 Master Tune" Color="#0f6502">
+                <Value Min="0" Max="127" Default="64"/>
+                <Memo>SysEx message. Sets Master Tune of MT-32, range: 432.1Hz ~ 457.6Hz.</Memo>
+                <Data>@SYSEX F0h 41h 10h 16h 12h [ 10h 00h 00h #VL ] F7h</Data>
+            </CCM>
+            <CCM ID="168" Name="168 Reverb Type" Color="#303f9f">
+                <Value Min="0" Max="3" Default="1">
+                        <Entry Label="Room" Value="0"/>
+                        <Entry Label="Hall" Value="1"/>
+                        <Entry Label="Plate" Value="2"/>
+                        <Entry Label="Tap Delay" Value="3"/>
+                </Value>
+                <Memo>SysEx message. Alters the reverb type.</Memo>
+                <Data>@SYSEX F0h 41h 10h 16h 12h [ 10h 00h 01h #VL ] F7h</Data>
+            </CCM>
+            <CCM ID="169" Name="169 Reverb Time" Color="#303f9f">
+                <Value Min="0" Max="7" Default="5" />
+                <Memo>SysEx message. Alters the reverb decay time.</Memo>
+                <Data>@SYSEX F0h 41h 10h 16h 12h [ 10h 00h 02h #VL ] F7h</Data>
+            </CCM>
+            <CCM ID="170" Name="170 Reverb Level" Color="#303f9f">
+                <Value Min="0" Max="7" Default="3" />
+                <Memo>SysEx message. Alters the volume of reverb.</Memo>
+                <Data>@SYSEX F0h 41h 10h 16h 12h [ 10h 00h 03h #VL ] F7h</Data>
+            </CCM>
+            <CCM ID="171" Name="171 Master Volume" Color="#00897b">
+                <Value Min="0" Max="100" Default="100" />
+                <Memo>SysEx message. Alters the master volume of the module.</Memo>
+                <Data>@SYSEX F0h 41h 10h 16h 12h [ 10h 00h 16h #VL ] F7h</Data>
+            </CCM>
+            <Folder Name="Part to Channel mapping">
+                <CCM ID="172" Name="172 Part 1 MIDI Ch Receive" Color="#b810a1">
+                    <Value Min="0" Max="16" Default="1" TableID="2"/>
+                    <Memo>SysEx message. Changes the MIDI receive channel for the corresponding part.</Memo>
+                    <Data>@SYSEX F0h 41h 10h 16h 12h [ 10h 00h 0Dh #VL ] F7h</Data>
+                </CCM>
+                <CCM ID="173" Name="173 Part 2 MIDI Ch Receive" Color="#b810a1">
+                    <Value Min="0" Max="16" Default="2" TableID="2"/>
+                    <Memo>SysEx message. Changes the MIDI receive channel for the corresponding part.</Memo>
+                    <Data>@SYSEX F0h 41h 10h 16h 12h [ 10h 00h 0Eh #VL ] F7h</Data>
+                </CCM>
+                <CCM ID="174" Name="174 Part 3 MIDI Ch Receive" Color="#b810a1">
+                    <Value Min="0" Max="16" Default="3" TableID="2"/>
+                    <Memo>SysEx message. Changes the MIDI receive channel for the corresponding part.</Memo>
+                    <Data>@SYSEX F0h 41h 10h 16h 12h [ 10h 00h 0Fh #VL ] F7h</Data>
+                </CCM>
+                <CCM ID="175" Name="175 Part 4 MIDI Ch Receive" Color="#b810a1">
+                    <Value Min="0" Max="16" Default="4" TableID="2"/>
+                    <Memo>SysEx message. Changes the MIDI receive channel for the corresponding part.</Memo>
+                    <Data>@SYSEX F0h 41h 10h 16h 12h [ 10h 00h 10h #VL ] F7h</Data>
+                </CCM>
+                <CCM ID="176" Name="176 Part 5 MIDI Ch Receive" Color="#b810a1">
+                    <Value Min="0" Max="16" Default="5" TableID="2"/>
+                    <Memo>SysEx message. Changes the MIDI receive channel for the corresponding part.</Memo>
+                    <Data>@SYSEX F0h 41h 10h 16h 12h [ 10h 00h 11h #VL ] F7h</Data>
+                </CCM>
+                <CCM ID="177" Name="177 Part 6 MIDI Ch Receive" Color="#b810a1">
+                    <Value Min="0" Max="16" Default="6" TableID="2"/>
+                    <Memo>SysEx message. Changes the MIDI receive channel for the corresponding part.</Memo>
+                    <Data>@SYSEX F0h 41h 10h 16h 12h [ 10h 00h 12h #VL ] F7h</Data>
+                </CCM>
+                <CCM ID="178" Name="178 Part 7 MIDI Ch Receive" Color="#b810a1">
+                    <Value Min="0" Max="16" Default="7" TableID="2"/>
+                    <Memo>SysEx message. Changes the MIDI receive channel for the corresponding part.</Memo>
+                    <Data>@SYSEX F0h 41h 10h 16h 12h [ 10h 00h 13h #VL ] F7h</Data>
+                </CCM>
+                <CCM ID="179" Name="179 Part 8 MIDI Ch Receive" Color="#b810a1">
+                    <Value Min="0" Max="16" Default="8" TableID="2"/>
+                    <Memo>SysEx message. Changes the MIDI receive channel for the corresponding part.</Memo>
+                    <Data>@SYSEX F0h 41h 10h 16h 12h [ 10h 00h 14h #VL ] F7h</Data>
+                </CCM>
+                <CCM ID="180" Name="180 Drum Part MIDI Ch Receive" Color="#b810a1">
+                    <Value Min="0" Max="16" Default="9" TableID="2"/>
+                    <Memo>SysEx message. Changes the MIDI receive channel for the corresponding part.</Memo>
+                    <Data>@SYSEX F0h 41h 10h 16h 12h [ 10h 00h 15h #VL ] F7h</Data>
+                </CCM>
+            </Folder>
+            <Folder Name="Partial Reserve">
+                <CCM ID="181" Name="181 Partial Reserve for Part 1" Color="#b810a1">
+                    <Value Min="0" Max="32" Default="0"/>
+                    <Memo>SysEx message. Changes the amount of reserved partials for the part.\nThe effect will not apply until all the messages of\npartial reserve of parts 1~9 have been received.\nYou can do that all at once by sending the following SysEx: F0h 41h 10h 16h 12h [ 10h 00h 04h P1 P2 P3 P4 P5 P6 P7 P8 DP ] F7h\nWhere: Pn is the corresponding part and DP is drum part.</Memo>
+                    <Data>@SYSEX F0h 41h 10h 16h 12h [ 10h 00h 04h #VL ] F7h</Data>
+                </CCM>
+                <CCM ID="182" Name="182 Partial Reserve for Part 2" Color="#b810a1">
+                    <Value Min="0" Max="32" Default="0"/>
+                    <Memo>SysEx message. Changes the amount of reserved partials for the part.\nThe effect will not apply until all the messages of\npartial reserve of parts 1~9 have been received.\nYou can do that all at once by sending the following SysEx: F0h 41h 10h 16h 12h [ 10h 00h 04h P1 P2 P3 P4 P5 P6 P7 P8 DP ] F7h\nWhere: Pn is the corresponding part and DP is drum part.</Memo>
+                    <Data>@SYSEX F0h 41h 10h 16h 12h [ 10h 00h 05h #VL ] F7h</Data>
+                </CCM>
+                <CCM ID="183" Name="183 Partial Reserve for Part 3" Color="#b810a1">
+                    <Value Min="0" Max="32" Default="0"/>
+                    <Memo>SysEx message. Changes the amount of reserved partials for the part.\nThe effect will not apply until all the messages of\npartial reserve of parts 1~9 have been received.\nYou can do that all at once by sending the following SysEx: F0h 41h 10h 16h 12h [ 10h 00h 04h P1 P2 P3 P4 P5 P6 P7 P8 DP ] F7h\nWhere: Pn is the corresponding part and DP is drum part.</Memo>
+                    <Data>@SYSEX F0h 41h 10h 16h 12h [ 10h 00h 06h #VL ] F7h</Data>
+                </CCM>
+                <CCM ID="184" Name="184 Partial Reserve for Part 4" Color="#b810a1">
+                    <Value Min="0" Max="32" Default="0"/>
+                    <Memo>SysEx message. Changes the amount of reserved partials for the part.\nThe effect will not apply until all the messages of\npartial reserve of parts 1~9 have been received.\nYou can do that all at once by sending the following SysEx: F0h 41h 10h 16h 12h [ 10h 00h 04h P1 P2 P3 P4 P5 P6 P7 P8 DP ] F7h\nWhere: Pn is the corresponding part and DP is drum part.</Memo>
+                    <Data>@SYSEX F0h 41h 10h 16h 12h [ 10h 00h 07h #VL ] F7h</Data>
+                </CCM>
+                <CCM ID="185" Name="185 Partial Reserve for Part 5" Color="#b810a1">
+                    <Value Min="0" Max="32" Default="0"/>
+                    <Memo>SysEx message. Changes the amount of reserved partials for the part.\nThe effect will not apply until all the messages of\npartial reserve of parts 1~9 have been received.\nYou can do that all at once by sending the following SysEx: F0h 41h 10h 16h 12h [ 10h 00h 04h P1 P2 P3 P4 P5 P6 P7 P8 DP ] F7h\nWhere: Pn is the corresponding part and DP is drum part.</Memo>
+                    <Data>@SYSEX F0h 41h 10h 16h 12h [ 10h 00h 08h #VL ] F7h</Data>
+                </CCM>
+                <CCM ID="186" Name="186 Partial Reserve for Part 6" Color="#b810a1">
+                    <Value Min="0" Max="32" Default="0"/>
+                    <Memo>SysEx message. Changes the amount of reserved partials for the part.\nThe effect will not apply until all the messages of\npartial reserve of parts 1~9 have been received.\nYou can do that all at once by sending the following SysEx: F0h 41h 10h 16h 12h [ 10h 00h 04h P1 P2 P3 P4 P5 P6 P7 P8 DP ] F7h\nWhere: Pn is the corresponding part and DP is drum part.</Memo>
+                    <Data>@SYSEX F0h 41h 10h 16h 12h [ 10h 00h 09h #VL ] F7h</Data>
+                </CCM>
+                <CCM ID="187" Name="187 Partial Reserve for Part 7" Color="#b810a1">
+                    <Value Min="0" Max="32" Default="0"/>
+                    <Memo>SysEx message. Changes the amount of reserved partials for the part.\nThe effect will not apply until all the messages of\npartial reserve of parts 1~9 have been received.\nYou can do that all at once by sending the following SysEx: F0h 41h 10h 16h 12h [ 10h 00h 04h P1 P2 P3 P4 P5 P6 P7 P8 DP ] F7h\nWhere: Pn is the corresponding part and DP is drum part.</Memo>
+                    <Data>@SYSEX F0h 41h 10h 16h 12h [ 10h 00h 0Ah #VL ] F7h</Data>
+                </CCM>
+                <CCM ID="188" Name="188 Partial Reserve for Part 8" Color="#b810a1">
+                    <Value Min="0" Max="32" Default="0"/>
+                    <Memo>SysEx message. Changes the amount of reserved partials for the part.\nThe effect will not apply until all the messages of\npartial reserve of parts 1~9 have been received.\nYou can do that all at once by sending the following SysEx: F0h 41h 10h 16h 12h [ 10h 00h 04h P1 P2 P3 P4 P5 P6 P7 P8 DP ] F7h\nWhere: Pn is the corresponding part and DP is drum part.</Memo>
+                    <Data>@SYSEX F0h 41h 10h 16h 12h [ 10h 00h 0Bh #VL ] F7h</Data>
+                </CCM>
+                <CCM ID="189" Name="189 Partial Reserve for Drum Part" Color="#b810a1">
+                    <Value Min="0" Max="32" Default="0"/>
+                    <Memo>SysEx message. Changes the amount of reserved partials for the part.\nThe effect will not apply until all the messages of\npartial reserve of parts 1~9 have been received.\nYou can do that all at once by sending the following SysEx: F0h 41h 10h 16h 12h [ 10h 00h 04h P1 P2 P3 P4 P5 P6 P7 P8 DP ] F7h\nWhere: Pn is the corresponding part and DP is drum part.</Memo>
+                    <Data>@SYSEX F0h 41h 10h 16h 12h [ 10h 00h 0Ch #VL ] F7h</Data>
+                </CCM>
+            </Folder>
+            <CCM ID="200" Name="200 GM System ON" Color="#ab47bc">
+				<Data>@SYSEX F0H 7EH 7FH 09H 01H F7H</Data>
+				<Memo>Sends a GM reset message to Munt for use with GM patches.</Memo>
+			</CCM>
+        </Folder>
+
+        <Folder Name="LCD Pane Related">
+
+            <CCM ID="142" Name="142 Display Reset" Color="#b09478">
+                <Memo>SysEx message. Resets the display to its default state.\nYou can display a message via the following SysEx event:\nF0h 41h 10h 16h 12h [ 20h 00h xxh "message" ] F7h\nxxh is the offset from the first position on the display.\nNOTE: A message must not be longer than 20 characters.</Memo>
+                <Data>@SYSEX F0h 41h 10h 16h 12h [ 20h 01h 00h ] F7h</Data>
+            </CCM>
+
+            <Folder Name="Character by Character Input">
+            <CCM ID="143" Name="143 Set Display Position 1" Color="#785840">
+                <Value Min="32" Max="126" Default="20" TableID="1"/>
+                <Memo>Places the desired symbol at LCD position 1.</Memo>
+                <Data>@SYSEX F0h 41h 10h 16h 12h [ 20h 00h 00h #VL ] F7h</Data>
+            </CCM>
+            <CCM ID="144" Name="144 Set Display Position 2" Color="#785840">
+                <Value Min="32" Max="126" Default="20" TableID="1"/>
+                <Memo>Places the desired symbol at LCD position 2.</Memo>
+                <Data>@SYSEX F0h 41h 10h 16h 12h [ 20h 00h 01h #VL ] F7h</Data>
+            </CCM>
+            <CCM ID="145" Name="145 Set Display Position 3" Color="#785840">
+                <Value Min="32" Max="126" Default="20" TableID="1"/>
+                <Memo>Places the desired symbol at LCD position 3.</Memo>
+                <Data>@SYSEX F0h 41h 10h 16h 12h [ 20h 00h 02h #VL ] F7h</Data>
+            </CCM>
+            <CCM ID="146" Name="146 Set Display Position 4" Color="#785840">
+                <Value Min="32" Max="126" Default="20" TableID="1"/>
+                <Memo>Places the desired symbol at LCD position 4.</Memo>
+                <Data>@SYSEX F0h 41h 10h 16h 12h [ 20h 00h 03h #VL ] F7h</Data>
+            </CCM>
+            <CCM ID="147" Name="147 Set Display Position 5" Color="#785840">
+                <Value Min="32" Max="126" Default="20" TableID="1"/>
+                <Memo>Places the desired symbol at LCD position 5.</Memo>
+                <Data>@SYSEX F0h 41h 10h 16h 12h [ 20h 00h 04h #VL ] F7h</Data>
+            </CCM>
+            <CCM ID="148" Name="148 Set Display Position 6" Color="#785840">
+                <Value Min="32" Max="126" Default="20" TableID="1"/>
+                <Memo>Places the desired symbol at LCD position 6.</Memo>
+                <Data>@SYSEX F0h 41h 10h 16h 12h [ 20h 00h 05h #VL ] F7h</Data>
+            </CCM>
+            <CCM ID="149" Name="149 Set Display Position 7" Color="#785840">
+                <Value Min="32" Max="126" Default="20" TableID="1"/>
+                <Memo>Places the desired symbol at LCD position 7.</Memo>
+                <Data>@SYSEX F0h 41h 10h 16h 12h [ 20h 00h 06h #VL ] F7h</Data>
+            </CCM>
+            <CCM ID="150" Name="150 Set Display Position 8" Color="#785840">
+                <Value Min="32" Max="126" Default="20" TableID="1"/>
+                <Memo>Places the desired symbol at LCD position 8.</Memo>
+                <Data>@SYSEX F0h 41h 10h 16h 12h [ 20h 00h 07h #VL ] F7h</Data>
+            </CCM>
+            <CCM ID="151" Name="151 Set Display Position 9" Color="#785840">
+                <Value Min="32" Max="126" Default="20" TableID="1"/>
+                <Memo>Places the desired symbol at LCD position 9.</Memo>
+                <Data>@SYSEX F0h 41h 10h 16h 12h [ 20h 00h 08h #VL ] F7h</Data>
+            </CCM>
+            <CCM ID="152" Name="152 Set Display Position 10" Color="#785840">
+                <Value Min="32" Max="126" Default="20" TableID="1"/>
+                <Memo>Places the desired symbol at LCD position 10.</Memo>
+                <Data>@SYSEX F0h 41h 10h 16h 12h [ 20h 00h 09h #VL ] F7h</Data>
+            </CCM>
+            <CCM ID="153" Name="153 Set Display Position 11" Color="#785840">
+                <Value Min="32" Max="126" Default="20" TableID="1"/>
+                <Memo>Places the desired symbol at LCD position 11.</Memo>
+                <Data>@SYSEX F0h 41h 10h 16h 12h [ 20h 00h 0Ah #VL ] F7h</Data>
+            </CCM>
+            <CCM ID="154" Name="154 Set Display Position 12" Color="#785840">
+                <Value Min="32" Max="126" Default="20" TableID="1"/>
+                <Memo>Places the desired symbol at LCD position 12.</Memo>
+                <Data>@SYSEX F0h 41h 10h 16h 12h [ 20h 00h 0Bh #VL ] F7h</Data>
+            </CCM>
+            <CCM ID="155" Name="155 Set Display Position 13" Color="#785840">
+                <Value Min="32" Max="126" Default="20" TableID="1"/>
+                <Memo>Places the desired symbol at LCD position 13.</Memo>
+                <Data>@SYSEX F0h 41h 10h 16h 12h [ 20h 00h 0Ch #VL ] F7h</Data>
+            </CCM>
+            <CCM ID="156" Name="156 Set Display Position 14" Color="#785840">
+                <Value Min="32" Max="126" Default="20" TableID="1"/>
+                <Memo>Places the desired symbol at LCD position 14.</Memo>
+                <Data>@SYSEX F0h 41h 10h 16h 12h [ 20h 00h 0Dh #VL ] F7h</Data>
+            </CCM>
+            <CCM ID="157" Name="157 Set Display Position 15" Color="#785840">
+                <Value Min="32" Max="126" Default="20" TableID="1"/>
+                <Memo>Places the desired symbol at LCD position 15.</Memo>
+                <Data>@SYSEX F0h 41h 10h 16h 12h [ 20h 00h 0Eh #VL ] F7h</Data>
+            </CCM>
+            <CCM ID="158" Name="158 Set Display Position 16" Color="#785840">
+                <Value Min="32" Max="126" Default="20" TableID="1"/>
+                <Memo>Places the desired symbol at LCD position 16.</Memo>
+                <Data>@SYSEX F0h 41h 10h 16h 12h [ 20h 00h 0Fh #VL ] F7h</Data>
+            </CCM>
+            <CCM ID="159" Name="159 Set Display Position 17" Color="#785840">
+                <Value Min="32" Max="126" Default="20" TableID="1"/>
+                <Memo>Places the desired symbol at LCD position 17.</Memo>
+                <Data>@SYSEX F0h 41h 10h 16h 12h [ 20h 00h 10h #VL ] F7h</Data>
+            </CCM>
+            <CCM ID="160" Name="160 Set Display Position 18" Color="#785840">
+                <Value Min="32" Max="126" Default="20" TableID="1"/>
+                <Memo>Places the desired symbol at LCD position 18.</Memo>
+                <Data>@SYSEX F0h 41h 10h 16h 12h [ 20h 00h 11h #VL ] F7h</Data>
+            </CCM>
+            <CCM ID="161" Name="161 Set Display Position 19" Color="#785840">
+                <Value Min="32" Max="126" Default="20" TableID="1"/>
+                <Memo>Places the desired symbol at LCD position 19.</Memo>
+                <Data>@SYSEX F0h 41h 10h 16h 12h [ 20h 00h 12h #VL ] F7h</Data>
+            </CCM>
+            <CCM ID="162" Name="162 Set Display Position 20" Color="#785840">
+                <Value Min="32" Max="126" Default="20" TableID="1"/>
+                <Memo>Places the desired symbol at LCD position 20.</Memo>
+                <Data>@SYSEX F0h 41h 10h 16h 12h [ 20h 00h 13h #VL ] F7h</Data>
+            </CCM>
+            </Folder>
+
+            <Folder Name="Raw Input">
+                <CCM ID="163" Name="163 Raw Text Input 1-4" Color="#584038">
+                    <Value Min="0" Max="16383" />
+                    <Gate Min="0" Max="16383" />
+                    <Memo>Raw text input of positions 1-4 via Value and Gate.</Memo>
+                    <Data>@SYSEX F0h 41h 10h 16h 12h [ 20h 00h 00h #VL #GL #VH #GH ] F7h</Data>
+                </CCM>
+
+                <CCM ID="164" Name="164 Raw Text Input 5-8" Color="#584038">
+                    <Value Min="0" Max="16383" />
+                    <Gate Min="0" Max="16383" />
+                    <Memo>Raw text input of positions 5-8 via Value and Gate.</Memo>
+                    <Data>@SYSEX F0h 41h 10h 16h 12h [ 20h 00h 04h #VL #GL #VH #GH ] F7h</Data>
+                </CCM>
+
+                <CCM ID="165" Name="165 Raw Text Input 9-12" Color="#584038">
+                    <Value Min="0" Max="16383" />
+                    <Gate Min="0" Max="16383" />
+                    <Memo>Raw text input of positions 9-12 via Value and Gate.</Memo>
+                    <Data>@SYSEX F0h 41h 10h 16h 12h [ 20h 00h 08h #VL #GL #VH #GH ] F7h</Data>
+                </CCM>
+
+                <CCM ID="166" Name="166 Raw Text Input 13-16" Color="#584038">
+                    <Value Min="0" Max="16383" />
+                    <Gate Min="0" Max="16383" />
+                    <Memo>Raw text input of positions 13-16 via Value and Gate.</Memo>
+                    <Data>@SYSEX F0h 41h 10h 16h 12h [ 20h 00h 0Ch #VL #GL #VH #GH ] F7h</Data>
+                </CCM>
+
+                <CCM ID="167" Name="167 Raw Text Input 17-20" Color="#584038">
+                    <Value Min="0" Max="16383" />
+                    <Gate Min="0" Max="16383" />
+                    <Memo>Raw text input of positions 17-20 via Value and Gate.</Memo>
+                    <Data>@SYSEX F0h 41h 10h 16h 12h [ 20h 00h 10h #VL #GL #VH #GH ] F7h</Data>
+                </CCM>
+            </Folder>
+        </Folder>
+        <Folder Name="Patch Related">
+            <Folder Name="Part 1 Timbre">
+                <CCM ID="300" Name="300 Part 1 Timbre Name Position 1">
+                    <Value Min="32" Max="126" Default="32" TableID="1"/>
+                    <Memo>Set Part 1s timbre name character 1 to this</Memo>
+                    <Data>@SYSEX F0h 41h 10h 16h 12h [ 04h 00h 00h #VL ] F7h</Data>
+                </CCM>
+                <CCM ID="301" Name="301 Part 1 Timbre Name Position 2">
+                    <Value Min="32" Max="126" Default="32" TableID="1"/>
+                    <Memo>Set Part 1s timbre name character 2 to this</Memo>
+                    <Data>@SYSEX F0h 41h 10h 16h 12h [ 04h 00h 01h #VL ] F7h</Data>
+                </CCM>
+                <CCM ID="302" Name="302 Part 1 Timbre Name Position 3">
+                    <Value Min="32" Max="126" Default="32" TableID="1"/>
+                    <Memo>Set Part 1s timbre name character 3 to this</Memo>
+                    <Data>@SYSEX F0h 41h 10h 16h 12h [ 04h 00h 02h #VL ] F7h</Data>
+                </CCM>
+                <CCM ID="303" Name="303 Part 1 Timbre Name Position 4">
+                    <Value Min="32" Max="126" Default="32" TableID="1"/>
+                    <Memo>Set Part 1s timbre name character 4 to this</Memo>
+                    <Data>@SYSEX F0h 41h 10h 16h 12h [ 04h 00h 03h #VL ] F7h</Data>
+                </CCM>
+                <CCM ID="304" Name="304 Part 1 Timbre Name Position 5">
+                    <Value Min="32" Max="126" Default="32" TableID="1"/>
+                    <Memo>Set Part 1s timbre name character 5 to this</Memo>
+                    <Data>@SYSEX F0h 41h 10h 16h 12h [ 04h 00h 04h #VL ] F7h</Data>
+                </CCM>
+                <CCM ID="305" Name="305 Part 1 Timbre Name Position 6">
+                    <Value Min="32" Max="126" Default="32" TableID="1"/>
+                    <Memo>Set Part 1s timbre name character 6 to this</Memo>
+                    <Data>@SYSEX F0h 41h 10h 16h 12h [ 04h 00h 05h #VL ] F7h</Data>
+                </CCM>
+                <CCM ID="306" Name="306 Part 1 Timbre Name Position 7">
+                    <Value Min="32" Max="126" Default="32" TableID="1"/>
+                    <Memo>Set Part 1s timbre name character 7 to this</Memo>
+                    <Data>@SYSEX F0h 41h 10h 16h 12h [ 04h 00h 06h #VL ] F7h</Data>
+                </CCM>
+                <CCM ID="307" Name="307 Part 1 Timbre Name Position 8">
+                    <Value Min="32" Max="126" Default="32" TableID="1"/>
+                    <Memo>Set Part 1s timbre name character 8 to this</Memo>
+                    <Data>@SYSEX F0h 41h 10h 16h 12h [ 04h 00h 07h #VL ] F7h</Data>
+                </CCM>
+                <CCM ID="308" Name="308 Part 1 Timbre Name Position 9">
+                    <Value Min="32" Max="126" Default="32" TableID="1"/>
+                    <Memo>Set Part 1s timbre name character 9 to this</Memo>
+                    <Data>@SYSEX F0h 41h 10h 16h 12h [ 04h 00h 08h #VL ] F7h</Data>
+                </CCM>
+                <CCM ID="309" Name="309 Part 1 Timbre Name Position 10">
+                    <Value Min="32" Max="126" Default="32" TableID="1"/>
+                    <Memo>Set Part 1s timbre name character 10 to this</Memo>
+                    <Data>@SYSEX F0h 41h 10h 16h 12h [ 04h 00h 09h #VL ] F7h</Data>
+                </CCM>
+            </Folder>
+            <Folder Name="Part 1 Patch">
+                <CCM ID="373" Name="373 Part Timbre Group &amp; #">
+                    <Value Min="0" Max="3" Default="0">
+                        <Entry Label="A" Value="0"/>
+                        <Entry Label="B" Value="1"/>
+                        <Entry Label="L" Value="2"/>
+                        <Entry Label="R" Value="3"/>
+                    </Value>
+                    <Gate Min="0" Max="63"/>
+                    <Data>@SYSEX F0h 41h 10h 16h 12h [ 03h 00h 00h #VL #GL ] F7h</Data>
+                </CCM>
+                <CCM ID="374" Name="374 Part Timbre Key Shift &amp; Fine Tune">
+                    <Value Min="-24" Max="24" Default="0" Offset="24" Name="Key Shift"/>
+                    <Gate Min="-50" Max="50" Default="0" Offset="50" Name="Fine Tune"/>
+                    <Data>@SYSEX F0h 41h 10h 16h 12h [ 03h 00h 02h #VL #GL ] F7h</Data>
+                </CCM>
+                <CCM ID="375" Name="375 Part Timbre Pitch Bend Rage">
+                    <Value Min="0" Max="24" Default="0"/>
+                    <Data>@SYSEX F0h 41h 10h 16h 12h [ 03h 00h 04h #VL ] F7h</Data>
+                </CCM>
+                <CCM ID="376" Name="376 Part Timbre Assign Mode">
+                    <Value Min="0" Max="3" Default="0">
+                        <Entry Label="POLY 1" Value="0"/>
+                        <Entry Label="POLY 2" Value="1"/>
+                        <Entry Label="POLY 3" Value="2"/>
+                        <Entry Label="POLY 4" Value="3"/>
+                    </Value>
+                    <Data>@SYSEX F0h 41h 10h 16h 12h [ 03h 00h 05h #VL ] F7h</Data>
+                </CCM>
+                <CCM ID="377" Name="377 Part Timbre Level &amp; Panpot">
+                    <Value Min="0" Max="100" Default="0"/>
+                    <Gate Min="-7" Max="7" Default="0" Offset="7"/>
+                    <Data>@SYSEX F0h 41h 10h 16h 12h [ 03h 00h 08h #VL #GL ] F7h</Data>
+                </CCM>
+                <CCM ID="378" Name="378 Part Timbre Reverb">
+                    <Value Min="0" Max="1" Default="1">
+                        <Entry Label="Off" Value="0"/>
+                        <Entry Label="On" Value="1"/>
+                    </Value>
+                    <Data>@SYSEX F0h 41h 10h 16h 12h [ 03h 00h 06h #VL ] F7h</Data>
+                </CCM>
+
+            </Folder>
+        </Folder>
+    </ControlChangeMacroList>
+
+    <TemplateList>
+		<Template ID="0" Name="Default">
+			<Memo>Basic channel template.</Memo>
+			<CC ID="140" Value="2" />
+            <CC ID="1" Value="0" />
+			<CC ID="7" Value="100" />
+			<CC ID="10" Value="0" />
+            <CC ID="11" Value="127" />
+            <CC ID="64" Value="0" />
+			<CC ID="130" Value="0" />
+		</Template>
+	</TemplateList>
+
+    <DefaultData>
+        <Track Mode="Conductor">
+            <Tempo Tick="0" Tempo="10.0" Step="0" />
+            <Mark Name="Setup" />
+            <TimeSignature TimeSignature="1/8" />
+            <Tempo Tick="240" Tempo="120.0" />
+            <Mark Name="Start" />
+            <TimeSignature TimeSignature="4/4" />
+	    	<EOT Tick="240" />
+	    </Track>
+
+	    <Track Name="Important note" Ch="1">
+	    	<Comment Text="It is a quirk of MT-32      " Step="50" />
+	    	<Comment Text="That it is mapped to        " Step="51" />
+	    	<Comment Text="MIDI Channels 2 through 10  " Step="52" />
+	    	<Comment Text="By default. It only supports" Step="53" />
+	    	<Comment Text="9 MIDI channels at once.    " Step="54" />
+	    	<EOT Tick="240" />
+	    </Track>
+
+        <Track Name="System Text" Ch="1">
+            <CC ID="162" Value="68" Tick="0"/>
+
+            <CC ID="161" Value="68" Tick="2"/>
+            <CC ID="162" Value="111" Tick="2"/>
+
+            <CC ID="160" Value="68" Tick="4"/>
+            <CC ID="161" Value="111" Tick="4"/>
+            <CC ID="162" Value="109" Tick="4"/>
+
+            <CC ID="159" Value="68" Tick="6"/>
+            <CC ID="160" Value="111" Tick="6"/>
+            <CC ID="161" Value="109" Tick="6"/>
+            <CC ID="162" Value="105" Tick="6"/>
+
+            <CC ID="158" Value="68" Tick="8"/>
+            <CC ID="159" Value="111" Tick="8"/>
+            <CC ID="160" Value="109" Tick="8"/>
+            <CC ID="161" Value="105" Tick="8"/>
+            <CC ID="162" Value="110" Tick="8"/>
+
+            <CC ID="157" Value="68" Tick="10"/>
+            <CC ID="158" Value="111" Tick="10"/>
+            <CC ID="159" Value="109" Tick="10"/>
+            <CC ID="160" Value="105" Tick="10"/>
+            <CC ID="161" Value="110" Tick="10"/>
+            <CC ID="162" Value="111" Tick="10"/>
+
+            <CC ID="156" Value="68" Tick="12"/>
+            <CC ID="157" Value="111" Tick="12"/>
+            <CC ID="158" Value="109" Tick="12"/>
+            <CC ID="159" Value="105" Tick="12"/>
+            <CC ID="160" Value="110" Tick="12"/>
+            <CC ID="161" Value="111" Tick="12"/>
+            <CC ID="162" Value="32" Tick="12"/>
+
+            <CC ID="155" Value="68" Tick="14"/>
+            <CC ID="156" Value="111" Tick="14"/>
+            <CC ID="157" Value="109" Tick="14"/>
+            <CC ID="158" Value="105" Tick="14"/>
+            <CC ID="159" Value="110" Tick="14"/>
+            <CC ID="160" Value="111" Tick="14"/>
+            <CC ID="161" Value="32" Tick="14"/>
+            <CC ID="162" Value="77" Tick="14"/>
+
+            <CC ID="154" Value="68" Tick="16"/>
+            <CC ID="155" Value="111" Tick="16"/>
+            <CC ID="156" Value="109" Tick="16"/>
+            <CC ID="157" Value="105" Tick="16"/>
+            <CC ID="158" Value="110" Tick="16"/>
+            <CC ID="159" Value="111" Tick="16"/>
+            <CC ID="160" Value="32" Tick="16"/>
+            <CC ID="161" Value="77" Tick="16"/>
+            <CC ID="162" Value="73" Tick="16"/>
+
+            <CC ID="153" Value="68" Tick="18"/>
+            <CC ID="154" Value="111" Tick="18"/>
+            <CC ID="155" Value="109" Tick="18"/>
+            <CC ID="156" Value="105" Tick="18"/>
+            <CC ID="157" Value="110" Tick="18"/>
+            <CC ID="158" Value="111" Tick="18"/>
+            <CC ID="159" Value="32" Tick="18"/>
+            <CC ID="160" Value="77" Tick="18"/>
+            <CC ID="161" Value="73" Tick="18"/>
+            <CC ID="162" Value="68" Tick="18"/>
+
+            <CC ID="152" Value="68" Tick="20"/>
+            <CC ID="153" Value="111" Tick="20"/>
+            <CC ID="154" Value="109" Tick="20"/>
+            <CC ID="155" Value="105" Tick="20"/>
+            <CC ID="156" Value="110" Tick="20"/>
+            <CC ID="157" Value="111" Tick="20"/>
+            <CC ID="158" Value="32" Tick="20"/>
+            <CC ID="159" Value="77" Tick="20"/>
+            <CC ID="160" Value="73" Tick="20"/>
+            <CC ID="161" Value="68" Tick="20"/>
+            <CC ID="162" Value="73" Tick="20"/>
+
+            <CC ID="151" Value="68" Tick="22"/>
+            <CC ID="152" Value="111" Tick="22"/>
+            <CC ID="153" Value="109" Tick="22"/>
+            <CC ID="154" Value="105" Tick="22"/>
+            <CC ID="155" Value="110" Tick="22"/>
+            <CC ID="156" Value="111" Tick="22"/>
+            <CC ID="157" Value="32" Tick="22"/>
+            <CC ID="158" Value="77" Tick="22"/>
+            <CC ID="159" Value="73" Tick="22"/>
+            <CC ID="160" Value="68" Tick="22"/>
+            <CC ID="161" Value="73" Tick="22"/>
+            <CC ID="162" Value="32" Tick="22"/>
+
+            <CC ID="150" Value="68" Tick="24"/>
+            <CC ID="151" Value="111" Tick="24"/>
+            <CC ID="152" Value="109" Tick="24"/>
+            <CC ID="153" Value="105" Tick="24"/>
+            <CC ID="154" Value="110" Tick="24"/>
+            <CC ID="155" Value="111" Tick="24"/>
+            <CC ID="156" Value="32" Tick="24"/>
+            <CC ID="157" Value="77" Tick="24"/>
+            <CC ID="158" Value="73" Tick="24"/>
+            <CC ID="159" Value="68" Tick="24"/>
+            <CC ID="160" Value="73" Tick="24"/>
+            <CC ID="161" Value="32" Tick="24"/>
+            <CC ID="162" Value="69" Tick="24"/>
+
+            <CC ID="149" Value="68" Tick="26"/>
+            <CC ID="150" Value="111" Tick="26"/>
+            <CC ID="151" Value="109" Tick="26"/>
+            <CC ID="152" Value="105" Tick="26"/>
+            <CC ID="153" Value="110" Tick="26"/>
+            <CC ID="154" Value="111" Tick="26"/>
+            <CC ID="155" Value="32" Tick="26"/>
+            <CC ID="156" Value="77" Tick="26"/>
+            <CC ID="157" Value="73" Tick="26"/>
+            <CC ID="158" Value="68" Tick="26"/>
+            <CC ID="159" Value="73" Tick="26"/>
+            <CC ID="160" Value="32" Tick="26"/>
+            <CC ID="161" Value="69" Tick="26"/>
+            <CC ID="162" Value="100" Tick="26"/>
+
+            <CC ID="148" Value="68" Tick="28"/>
+            <CC ID="149" Value="111" Tick="28"/>
+            <CC ID="150" Value="109" Tick="28"/>
+            <CC ID="151" Value="105" Tick="28"/>
+            <CC ID="152" Value="110" Tick="28"/>
+            <CC ID="153" Value="111" Tick="28"/>
+            <CC ID="154" Value="32" Tick="28"/>
+            <CC ID="155" Value="77" Tick="28"/>
+            <CC ID="156" Value="73" Tick="28"/>
+            <CC ID="157" Value="68" Tick="28"/>
+            <CC ID="158" Value="73" Tick="28"/>
+            <CC ID="159" Value="32" Tick="28"/>
+            <CC ID="160" Value="69" Tick="28"/>
+            <CC ID="161" Value="100" Tick="28"/>
+            <CC ID="162" Value="105" Tick="28"/>
+
+            <CC ID="147" Value="68" Tick="30"/>
+            <CC ID="148" Value="111" Tick="30"/>
+            <CC ID="149" Value="109" Tick="30"/>
+            <CC ID="150" Value="105" Tick="30"/>
+            <CC ID="151" Value="110" Tick="30"/>
+            <CC ID="152" Value="111" Tick="30"/>
+            <CC ID="153" Value="32" Tick="30"/>
+            <CC ID="154" Value="77" Tick="30"/>
+            <CC ID="155" Value="73" Tick="30"/>
+            <CC ID="156" Value="68" Tick="30"/>
+            <CC ID="157" Value="73" Tick="30"/>
+            <CC ID="158" Value="32" Tick="30"/>
+            <CC ID="159" Value="69" Tick="30"/>
+            <CC ID="160" Value="100" Tick="30"/>
+            <CC ID="161" Value="105" Tick="30"/>
+            <CC ID="162" Value="116" Tick="30"/>
+
+            <CC ID="146" Value="68" Tick="32"/>
+            <CC ID="147" Value="111" Tick="32"/>
+            <CC ID="148" Value="109" Tick="32"/>
+            <CC ID="149" Value="105" Tick="32"/>
+            <CC ID="150" Value="110" Tick="32"/>
+            <CC ID="151" Value="111" Tick="32"/>
+            <CC ID="152" Value="32" Tick="32"/>
+            <CC ID="153" Value="77" Tick="32"/>
+            <CC ID="154" Value="73" Tick="32"/>
+            <CC ID="155" Value="68" Tick="32"/>
+            <CC ID="156" Value="73" Tick="32"/>
+            <CC ID="157" Value="32" Tick="32"/>
+            <CC ID="158" Value="69" Tick="32"/>
+            <CC ID="159" Value="100" Tick="32"/>
+            <CC ID="160" Value="105" Tick="32"/>
+            <CC ID="161" Value="116" Tick="32"/>
+            <CC ID="162" Value="111" Tick="32"/>
+
+            <CC ID="145" Value="68" Tick="34"/>
+            <CC ID="146" Value="111" Tick="34"/>
+            <CC ID="147" Value="109" Tick="34"/>
+            <CC ID="148" Value="105" Tick="34"/>
+            <CC ID="149" Value="110" Tick="34"/>
+            <CC ID="150" Value="111" Tick="34"/>
+            <CC ID="151" Value="32" Tick="34"/>
+            <CC ID="152" Value="77" Tick="34"/>
+            <CC ID="153" Value="73" Tick="34"/>
+            <CC ID="154" Value="68" Tick="34"/>
+            <CC ID="155" Value="73" Tick="34"/>
+            <CC ID="156" Value="32" Tick="34"/>
+            <CC ID="157" Value="69" Tick="34"/>
+            <CC ID="158" Value="100" Tick="34"/>
+            <CC ID="159" Value="105" Tick="34"/>
+            <CC ID="160" Value="116" Tick="34"/>
+            <CC ID="161" Value="111" Tick="34"/>
+            <CC ID="162" Value="114" Tick="34"/>
+
+            <CC ID="144" Value="68" Tick="36"/>
+            <CC ID="145" Value="111" Tick="36"/>
+            <CC ID="146" Value="109" Tick="36"/>
+            <CC ID="147" Value="105" Tick="36"/>
+            <CC ID="148" Value="110" Tick="36"/>
+            <CC ID="149" Value="111" Tick="36"/>
+            <CC ID="150" Value="32" Tick="36"/>
+            <CC ID="151" Value="77" Tick="36"/>
+            <CC ID="152" Value="73" Tick="36"/>
+            <CC ID="153" Value="68" Tick="36"/>
+            <CC ID="154" Value="73" Tick="36"/>
+            <CC ID="155" Value="32" Tick="36"/>
+            <CC ID="156" Value="69" Tick="36"/>
+            <CC ID="157" Value="100" Tick="36"/>
+            <CC ID="158" Value="105" Tick="36"/>
+            <CC ID="159" Value="116" Tick="36"/>
+            <CC ID="160" Value="111" Tick="36"/>
+            <CC ID="161" Value="114" Tick="36"/>
+            <CC ID="162" Value="32" Tick="36"/>
+
+            <CC ID="143" Value="68" Tick="92"/>
+            <CC ID="144" Value="111" Tick="92"/>
+            <CC ID="145" Value="109" Tick="92"/>
+            <CC ID="146" Value="105" Tick="92"/>
+            <CC ID="147" Value="110" Tick="92"/>
+            <CC ID="148" Value="111" Tick="92"/>
+            <CC ID="149" Value="32" Tick="92"/>
+            <CC ID="150" Value="77" Tick="92"/>
+            <CC ID="151" Value="73" Tick="92"/>
+            <CC ID="152" Value="68" Tick="92"/>
+            <CC ID="153" Value="73" Tick="92"/>
+            <CC ID="154" Value="32" Tick="92"/>
+            <CC ID="155" Value="69" Tick="92"/>
+            <CC ID="156" Value="100" Tick="92"/>
+            <CC ID="157" Value="105" Tick="92"/>
+            <CC ID="158" Value="116" Tick="92"/>
+            <CC ID="159" Value="111" Tick="92"/>
+            <CC ID="160" Value="114" Tick="92"/>
+            <CC ID="161" Value="32" Tick="92"/>
+
+            <CC ID="143" Value="111" Tick="94"/>
+            <CC ID="144" Value="109" Tick="94"/>
+            <CC ID="145" Value="105" Tick="94"/>
+            <CC ID="146" Value="110" Tick="94"/>
+            <CC ID="147" Value="111" Tick="94"/>
+            <CC ID="148" Value="32" Tick="94"/>
+            <CC ID="149" Value="77" Tick="94"/>
+            <CC ID="150" Value="73" Tick="94"/>
+            <CC ID="151" Value="68" Tick="94"/>
+            <CC ID="152" Value="73" Tick="94"/>
+            <CC ID="153" Value="32" Tick="94"/>
+            <CC ID="154" Value="69" Tick="94"/>
+            <CC ID="155" Value="100" Tick="94"/>
+            <CC ID="156" Value="105" Tick="94"/>
+            <CC ID="157" Value="116" Tick="94"/>
+            <CC ID="158" Value="111" Tick="94"/>
+            <CC ID="159" Value="114" Tick="94"/>
+            <CC ID="160" Value="32" Tick="94"/>
+
+            <CC ID="143" Value="109" Tick="96"/>
+            <CC ID="144" Value="105" Tick="96"/>
+            <CC ID="145" Value="110" Tick="96"/>
+            <CC ID="146" Value="111" Tick="96"/>
+            <CC ID="147" Value="32" Tick="96"/>
+            <CC ID="148" Value="77" Tick="96"/>
+            <CC ID="149" Value="73" Tick="96"/>
+            <CC ID="150" Value="68" Tick="96"/>
+            <CC ID="151" Value="73" Tick="96"/>
+            <CC ID="152" Value="32" Tick="96"/>
+            <CC ID="153" Value="69" Tick="96"/>
+            <CC ID="154" Value="100" Tick="96"/>
+            <CC ID="155" Value="105" Tick="96"/>
+            <CC ID="156" Value="116" Tick="96"/>
+            <CC ID="157" Value="111" Tick="96"/>
+            <CC ID="158" Value="114" Tick="96"/>
+            <CC ID="159" Value="32" Tick="96"/>
+
+            <CC ID="143" Value="105" Tick="98"/>
+            <CC ID="144" Value="110" Tick="98"/>
+            <CC ID="145" Value="111" Tick="98"/>
+            <CC ID="146" Value="32" Tick="98"/>
+            <CC ID="147" Value="77" Tick="98"/>
+            <CC ID="148" Value="73" Tick="98"/>
+            <CC ID="149" Value="68" Tick="98"/>
+            <CC ID="150" Value="73" Tick="98"/>
+            <CC ID="151" Value="32" Tick="98"/>
+            <CC ID="152" Value="69" Tick="98"/>
+            <CC ID="153" Value="100" Tick="98"/>
+            <CC ID="154" Value="105" Tick="98"/>
+            <CC ID="155" Value="116" Tick="98"/>
+            <CC ID="156" Value="111" Tick="98"/>
+            <CC ID="157" Value="114" Tick="98"/>
+            <CC ID="158" Value="32" Tick="98"/>
+
+            <CC ID="143" Value="110" Tick="100"/>
+            <CC ID="144" Value="111" Tick="100"/>
+            <CC ID="145" Value="32" Tick="100"/>
+            <CC ID="146" Value="77" Tick="100"/>
+            <CC ID="147" Value="73" Tick="100"/>
+            <CC ID="148" Value="68" Tick="100"/>
+            <CC ID="149" Value="73" Tick="100"/>
+            <CC ID="150" Value="32" Tick="100"/>
+            <CC ID="151" Value="69" Tick="100"/>
+            <CC ID="152" Value="100" Tick="100"/>
+            <CC ID="153" Value="105" Tick="100"/>
+            <CC ID="154" Value="116" Tick="100"/>
+            <CC ID="155" Value="111" Tick="100"/>
+            <CC ID="156" Value="114" Tick="100"/>
+            <CC ID="157" Value="32" Tick="100"/>
+            <CC ID="162" Value="77" Tick="100"/>
+
+            <CC ID="143" Value="111" Tick="102"/>
+            <CC ID="144" Value="32" Tick="102"/>
+            <CC ID="145" Value="77" Tick="102"/>
+            <CC ID="146" Value="73" Tick="102"/>
+            <CC ID="147" Value="68" Tick="102"/>
+            <CC ID="148" Value="73" Tick="102"/>
+            <CC ID="149" Value="32" Tick="102"/>
+            <CC ID="150" Value="69" Tick="102"/>
+            <CC ID="151" Value="100" Tick="102"/>
+            <CC ID="152" Value="105" Tick="102"/>
+            <CC ID="153" Value="116" Tick="102"/>
+            <CC ID="154" Value="111" Tick="102"/>
+            <CC ID="155" Value="114" Tick="102"/>
+            <CC ID="156" Value="32" Tick="102"/>
+            <CC ID="161" Value="77" Tick="102"/>
+            <CC ID="162" Value="84" Tick="102"/>
+
+            <CC ID="143" Value="32" Tick="104"/>
+            <CC ID="144" Value="77" Tick="104"/>
+            <CC ID="145" Value="73" Tick="104"/>
+            <CC ID="146" Value="68" Tick="104"/>
+            <CC ID="147" Value="73" Tick="104"/>
+            <CC ID="148" Value="32" Tick="104"/>
+            <CC ID="149" Value="69" Tick="104"/>
+            <CC ID="150" Value="100" Tick="104"/>
+            <CC ID="151" Value="105" Tick="104"/>
+            <CC ID="152" Value="116" Tick="104"/>
+            <CC ID="153" Value="111" Tick="104"/>
+            <CC ID="154" Value="114" Tick="104"/>
+            <CC ID="155" Value="32" Tick="104"/>
+            <CC ID="160" Value="77" Tick="104"/>
+            <CC ID="161" Value="84" Tick="104"/>
+            <CC ID="162" Value="45" Tick="104"/>
+
+            <CC ID="143" Value="77" Tick="106"/>
+            <CC ID="144" Value="73" Tick="106"/>
+            <CC ID="145" Value="68" Tick="106"/>
+            <CC ID="146" Value="73" Tick="106"/>
+            <CC ID="147" Value="32" Tick="106"/>
+            <CC ID="148" Value="69" Tick="106"/>
+            <CC ID="149" Value="100" Tick="106"/>
+            <CC ID="150" Value="105" Tick="106"/>
+            <CC ID="151" Value="116" Tick="106"/>
+            <CC ID="152" Value="111" Tick="106"/>
+            <CC ID="153" Value="114" Tick="106"/>
+            <CC ID="154" Value="32" Tick="106"/>
+            <CC ID="159" Value="77" Tick="106"/>
+            <CC ID="160" Value="84" Tick="106"/>
+            <CC ID="161" Value="45" Tick="106"/>
+            <CC ID="162" Value="51" Tick="106"/>
+
+            <CC ID="143" Value="73" Tick="108"/>
+            <CC ID="144" Value="68" Tick="108"/>
+            <CC ID="145" Value="73" Tick="108"/>
+            <CC ID="146" Value="32" Tick="108"/>
+            <CC ID="147" Value="69" Tick="108"/>
+            <CC ID="148" Value="100" Tick="108"/>
+            <CC ID="149" Value="105" Tick="108"/>
+            <CC ID="150" Value="116" Tick="108"/>
+            <CC ID="151" Value="111" Tick="108"/>
+            <CC ID="152" Value="114" Tick="108"/>
+            <CC ID="153" Value="32" Tick="108"/>
+            <CC ID="158" Value="77" Tick="108"/>
+            <CC ID="159" Value="84" Tick="108"/>
+            <CC ID="160" Value="45" Tick="108"/>
+            <CC ID="161" Value="51" Tick="108"/>
+            <CC ID="162" Value="50" Tick="108"/>
+
+            <CC ID="143" Value="68" Tick="110"/>
+            <CC ID="144" Value="73" Tick="110"/>
+            <CC ID="145" Value="32" Tick="110"/>
+            <CC ID="146" Value="69" Tick="110"/>
+            <CC ID="147" Value="100" Tick="110"/>
+            <CC ID="148" Value="105" Tick="110"/>
+            <CC ID="149" Value="116" Tick="110"/>
+            <CC ID="150" Value="111" Tick="110"/>
+            <CC ID="151" Value="114" Tick="110"/>
+            <CC ID="152" Value="32" Tick="110"/>
+            <CC ID="157" Value="77" Tick="110"/>
+            <CC ID="158" Value="84" Tick="110"/>
+            <CC ID="159" Value="45" Tick="110"/>
+            <CC ID="160" Value="51" Tick="110"/>
+            <CC ID="161" Value="50" Tick="110"/>
+            <CC ID="162" Value="32" Tick="110"/>
+
+            <CC ID="143" Value="73" Tick="112"/>
+            <CC ID="144" Value="32" Tick="112"/>
+            <CC ID="145" Value="69" Tick="112"/>
+            <CC ID="146" Value="100" Tick="112"/>
+            <CC ID="147" Value="105" Tick="112"/>
+            <CC ID="148" Value="116" Tick="112"/>
+            <CC ID="149" Value="111" Tick="112"/>
+            <CC ID="150" Value="114" Tick="112"/>
+            <CC ID="151" Value="32" Tick="112"/>
+            <CC ID="156" Value="77" Tick="112"/>
+            <CC ID="157" Value="84" Tick="112"/>
+            <CC ID="158" Value="45" Tick="112"/>
+            <CC ID="159" Value="51" Tick="112"/>
+            <CC ID="160" Value="50" Tick="112"/>
+            <CC ID="161" Value="32" Tick="112"/>
+            <CC ID="162" Value="77" Tick="112"/>
+
+            <CC ID="143" Value="32" Tick="114"/>
+            <CC ID="144" Value="69" Tick="114"/>
+            <CC ID="145" Value="100" Tick="114"/>
+            <CC ID="146" Value="105" Tick="114"/>
+            <CC ID="147" Value="116" Tick="114"/>
+            <CC ID="148" Value="111" Tick="114"/>
+            <CC ID="149" Value="114" Tick="114"/>
+            <CC ID="150" Value="32" Tick="114"/>
+            <CC ID="155" Value="77" Tick="114"/>
+            <CC ID="156" Value="84" Tick="114"/>
+            <CC ID="157" Value="45" Tick="114"/>
+            <CC ID="158" Value="51" Tick="114"/>
+            <CC ID="159" Value="50" Tick="114"/>
+            <CC ID="160" Value="32" Tick="114"/>
+            <CC ID="161" Value="77" Tick="114"/>
+            <CC ID="162" Value="111" Tick="114"/>
+
+            <CC ID="143" Value="69" Tick="116"/>
+            <CC ID="144" Value="100" Tick="116"/>
+            <CC ID="145" Value="105" Tick="116"/>
+            <CC ID="146" Value="116" Tick="116"/>
+            <CC ID="147" Value="111" Tick="116"/>
+            <CC ID="148" Value="114" Tick="116"/>
+            <CC ID="149" Value="32" Tick="116"/>
+            <CC ID="154" Value="77" Tick="116"/>
+            <CC ID="155" Value="84" Tick="116"/>
+            <CC ID="156" Value="45" Tick="116"/>
+            <CC ID="157" Value="51" Tick="116"/>
+            <CC ID="158" Value="50" Tick="116"/>
+            <CC ID="159" Value="32" Tick="116"/>
+            <CC ID="160" Value="77" Tick="116"/>
+            <CC ID="161" Value="111" Tick="116"/>
+            <CC ID="162" Value="100" Tick="116"/>
+
+            <CC ID="143" Value="100" Tick="118"/>
+            <CC ID="144" Value="105" Tick="118"/>
+            <CC ID="145" Value="116" Tick="118"/>
+            <CC ID="146" Value="111" Tick="118"/>
+            <CC ID="147" Value="114" Tick="118"/>
+            <CC ID="148" Value="32" Tick="118"/>
+            <CC ID="153" Value="77" Tick="118"/>
+            <CC ID="154" Value="84" Tick="118"/>
+            <CC ID="155" Value="45" Tick="118"/>
+            <CC ID="156" Value="51" Tick="118"/>
+            <CC ID="157" Value="50" Tick="118"/>
+            <CC ID="158" Value="32" Tick="118"/>
+            <CC ID="159" Value="77" Tick="118"/>
+            <CC ID="160" Value="111" Tick="118"/>
+            <CC ID="161" Value="100" Tick="118"/>
+            <CC ID="162" Value="117" Tick="118"/>
+
+            <CC ID="143" Value="105" Tick="120"/>
+            <CC ID="144" Value="116" Tick="120"/>
+            <CC ID="145" Value="111" Tick="120"/>
+            <CC ID="146" Value="114" Tick="120"/>
+            <CC ID="147" Value="32" Tick="120"/>
+            <CC ID="152" Value="77" Tick="120"/>
+            <CC ID="153" Value="84" Tick="120"/>
+            <CC ID="154" Value="45" Tick="120"/>
+            <CC ID="155" Value="51" Tick="120"/>
+            <CC ID="156" Value="50" Tick="120"/>
+            <CC ID="157" Value="32" Tick="120"/>
+            <CC ID="158" Value="77" Tick="120"/>
+            <CC ID="159" Value="111" Tick="120"/>
+            <CC ID="160" Value="100" Tick="120"/>
+            <CC ID="161" Value="117" Tick="120"/>
+            <CC ID="162" Value="108" Tick="120"/>
+
+            <CC ID="143" Value="116" Tick="122"/>
+            <CC ID="144" Value="111" Tick="122"/>
+            <CC ID="145" Value="114" Tick="122"/>
+            <CC ID="146" Value="32" Tick="122"/>
+            <CC ID="151" Value="77" Tick="122"/>
+            <CC ID="152" Value="84" Tick="122"/>
+            <CC ID="153" Value="45" Tick="122"/>
+            <CC ID="154" Value="51" Tick="122"/>
+            <CC ID="155" Value="50" Tick="122"/>
+            <CC ID="156" Value="32" Tick="122"/>
+            <CC ID="157" Value="77" Tick="122"/>
+            <CC ID="158" Value="111" Tick="122"/>
+            <CC ID="159" Value="100" Tick="122"/>
+            <CC ID="160" Value="117" Tick="122"/>
+            <CC ID="161" Value="108" Tick="122"/>
+            <CC ID="162" Value="101" Tick="122"/>
+
+            <CC ID="143" Value="111" Tick="124"/>
+            <CC ID="144" Value="114" Tick="124"/>
+            <CC ID="145" Value="32" Tick="124"/>
+            <CC ID="150" Value="77" Tick="124"/>
+            <CC ID="151" Value="84" Tick="124"/>
+            <CC ID="152" Value="45" Tick="124"/>
+            <CC ID="153" Value="51" Tick="124"/>
+            <CC ID="154" Value="50" Tick="124"/>
+            <CC ID="155" Value="32" Tick="124"/>
+            <CC ID="156" Value="77" Tick="124"/>
+            <CC ID="157" Value="111" Tick="124"/>
+            <CC ID="158" Value="100" Tick="124"/>
+            <CC ID="159" Value="117" Tick="124"/>
+            <CC ID="160" Value="108" Tick="124"/>
+            <CC ID="161" Value="101" Tick="124"/>
+            <CC ID="162" Value="32" Tick="124"/>
+
+            <CC ID="143" Value="114" Tick="126"/>
+            <CC ID="144" Value="32" Tick="126"/>
+            <CC ID="149" Value="77" Tick="126"/>
+            <CC ID="150" Value="84" Tick="126"/>
+            <CC ID="151" Value="45" Tick="126"/>
+            <CC ID="152" Value="51" Tick="126"/>
+            <CC ID="153" Value="50" Tick="126"/>
+            <CC ID="154" Value="32" Tick="126"/>
+            <CC ID="155" Value="77" Tick="126"/>
+            <CC ID="156" Value="111" Tick="126"/>
+            <CC ID="157" Value="100" Tick="126"/>
+            <CC ID="158" Value="117" Tick="126"/>
+            <CC ID="159" Value="108" Tick="126"/>
+            <CC ID="160" Value="101" Tick="126"/>
+            <CC ID="161" Value="32" Tick="126"/>
+
+            <CC ID="143" Value="32" Tick="128"/>
+            <CC ID="148" Value="77" Tick="128"/>
+            <CC ID="149" Value="84" Tick="128"/>
+            <CC ID="150" Value="45" Tick="128"/>
+            <CC ID="151" Value="51" Tick="128"/>
+            <CC ID="152" Value="50" Tick="128"/>
+            <CC ID="153" Value="32" Tick="128"/>
+            <CC ID="154" Value="77" Tick="128"/>
+            <CC ID="155" Value="111" Tick="128"/>
+            <CC ID="156" Value="100" Tick="128"/>
+            <CC ID="157" Value="117" Tick="128"/>
+            <CC ID="158" Value="108" Tick="128"/>
+            <CC ID="159" Value="101" Tick="128"/>
+            <CC ID="160" Value="32" Tick="128"/>
+
+            <CC ID="147" Value="77" Tick="130"/>
+            <CC ID="148" Value="84" Tick="130"/>
+            <CC ID="149" Value="45" Tick="130"/>
+            <CC ID="150" Value="51" Tick="130"/>
+            <CC ID="151" Value="50" Tick="130"/>
+            <CC ID="152" Value="32" Tick="130"/>
+            <CC ID="153" Value="77" Tick="130"/>
+            <CC ID="154" Value="111" Tick="130"/>
+            <CC ID="155" Value="100" Tick="130"/>
+            <CC ID="156" Value="117" Tick="130"/>
+            <CC ID="157" Value="108" Tick="130"/>
+            <CC ID="158" Value="101" Tick="130"/>
+            <CC ID="159" Value="32" Tick="130"/>
+
+            <CC ID="143" Value="45" Tick="150"/>
+            <CC ID="144" Value="45" Tick="150"/>
+            <CC ID="145" Value="45" Tick="150"/>
+            <CC ID="146" Value="45" Tick="150"/>
+            <CC ID="147" Value="45" Tick="150"/>
+            <CC ID="148" Value="45" Tick="150"/>
+            <CC ID="149" Value="45" Tick="150"/>
+            <CC ID="150" Value="45" Tick="150"/>
+            <CC ID="151" Value="45" Tick="150"/>
+            <CC ID="152" Value="45" Tick="150"/>
+            <CC ID="153" Value="45" Tick="150"/>
+            <CC ID="154" Value="45" Tick="150"/>
+            <CC ID="155" Value="45" Tick="150"/>
+            <CC ID="156" Value="45" Tick="150"/>
+            <CC ID="157" Value="45" Tick="150"/>
+            <CC ID="158" Value="45" Tick="150"/>
+            <CC ID="159" Value="45" Tick="150"/>
+            <CC ID="160" Value="45" Tick="150"/>
+            <CC ID="161" Value="45" Tick="150"/>
+            <CC ID="162" Value="45" Tick="150"/>
+
+            <CC ID="143" Value="43" Tick="158"/>
+            <CC ID="144" Value="43" Tick="158"/>
+            <CC ID="145" Value="43" Tick="158"/>
+            <CC ID="146" Value="43" Tick="158"/>
+            <CC ID="147" Value="43" Tick="158"/>
+            <CC ID="148" Value="43" Tick="158"/>
+            <CC ID="149" Value="43" Tick="158"/>
+            <CC ID="150" Value="43" Tick="158"/>
+            <CC ID="151" Value="43" Tick="158"/>
+            <CC ID="152" Value="43" Tick="158"/>
+            <CC ID="153" Value="43" Tick="158"/>
+            <CC ID="154" Value="43" Tick="158"/>
+            <CC ID="155" Value="43" Tick="158"/>
+            <CC ID="156" Value="43" Tick="158"/>
+            <CC ID="157" Value="43" Tick="158"/>
+            <CC ID="158" Value="43" Tick="158"/>
+            <CC ID="159" Value="43" Tick="158"/>
+            <CC ID="160" Value="43" Tick="158"/>
+            <CC ID="161" Value="43" Tick="158"/>
+            <CC ID="162" Value="43" Tick="158"/>
+
+            <CC ID="143" Value="61" Tick="166"/>
+            <CC ID="144" Value="61" Tick="166"/>
+            <CC ID="145" Value="61" Tick="166"/>
+            <CC ID="146" Value="61" Tick="166"/>
+            <CC ID="147" Value="61" Tick="166"/>
+            <CC ID="148" Value="61" Tick="166"/>
+            <CC ID="149" Value="61" Tick="166"/>
+            <CC ID="150" Value="61" Tick="166"/>
+            <CC ID="151" Value="61" Tick="166"/>
+            <CC ID="152" Value="61" Tick="166"/>
+            <CC ID="153" Value="61" Tick="166"/>
+            <CC ID="154" Value="61" Tick="166"/>
+            <CC ID="155" Value="61" Tick="166"/>
+            <CC ID="156" Value="61" Tick="166"/>
+            <CC ID="157" Value="61" Tick="166"/>
+            <CC ID="158" Value="61" Tick="166"/>
+            <CC ID="159" Value="61" Tick="166"/>
+            <CC ID="160" Value="61" Tick="166"/>
+            <CC ID="161" Value="61" Tick="166"/>
+            <CC ID="162" Value="61" Tick="166"/>
+
+            <CC ID="143" Value="35" Tick="174"/>
+            <CC ID="144" Value="35" Tick="174"/>
+            <CC ID="145" Value="35" Tick="174"/>
+            <CC ID="146" Value="35" Tick="174"/>
+            <CC ID="147" Value="35" Tick="174"/>
+            <CC ID="148" Value="35" Tick="174"/>
+            <CC ID="149" Value="35" Tick="174"/>
+            <CC ID="150" Value="35" Tick="174"/>
+            <CC ID="151" Value="35" Tick="174"/>
+            <CC ID="152" Value="35" Tick="174"/>
+            <CC ID="153" Value="35" Tick="174"/>
+            <CC ID="154" Value="35" Tick="174"/>
+            <CC ID="155" Value="35" Tick="174"/>
+            <CC ID="156" Value="35" Tick="174"/>
+            <CC ID="157" Value="35" Tick="174"/>
+            <CC ID="158" Value="35" Tick="174"/>
+            <CC ID="159" Value="35" Tick="174"/>
+            <CC ID="160" Value="35" Tick="174"/>
+            <CC ID="161" Value="35" Tick="174"/>
+            <CC ID="162" Value="35" Tick="174"/>
+
+            <CC ID="143" Value="61" Tick="182"/>
+            <CC ID="144" Value="61" Tick="182"/>
+            <CC ID="145" Value="61" Tick="182"/>
+            <CC ID="146" Value="61" Tick="182"/>
+            <CC ID="147" Value="61" Tick="182"/>
+            <CC ID="148" Value="69" Tick="182"/>
+            <CC ID="149" Value="110" Tick="182"/>
+            <CC ID="150" Value="106" Tick="182"/>
+            <CC ID="151" Value="111" Tick="182"/>
+            <CC ID="152" Value="121" Tick="182"/>
+            <CC ID="153" Value="33" Tick="182"/>
+            <CC ID="154" Value="61" Tick="182"/>
+            <CC ID="155" Value="61" Tick="182"/>
+            <CC ID="156" Value="58" Tick="182"/>
+            <CC ID="157" Value="51" Tick="182"/>
+            <CC ID="158" Value="61" Tick="182"/>
+            <CC ID="159" Value="61" Tick="182"/>
+            <CC ID="160" Value="61" Tick="182"/>
+            <CC ID="161" Value="61" Tick="182"/>
+            <CC ID="162" Value="61" Tick="182"/>
+
+            <CC ID="143" Value="45" Tick="190"/>
+            <CC ID="144" Value="45" Tick="190"/>
+            <CC ID="145" Value="45" Tick="190"/>
+            <CC ID="146" Value="45" Tick="190"/>
+            <CC ID="147" Value="45" Tick="190"/>
+            <CC ID="148" Value="69" Tick="190"/>
+            <CC ID="149" Value="110" Tick="190"/>
+            <CC ID="150" Value="106" Tick="190"/>
+            <CC ID="151" Value="111" Tick="190"/>
+            <CC ID="152" Value="121" Tick="190"/>
+            <CC ID="153" Value="33" Tick="190"/>
+            <CC ID="154" Value="45" Tick="190"/>
+            <CC ID="155" Value="45" Tick="190"/>
+            <CC ID="156" Value="58" Tick="190"/>
+            <CC ID="157" Value="51" Tick="190"/>
+            <CC ID="158" Value="45" Tick="190"/>
+            <CC ID="159" Value="45" Tick="190"/>
+            <CC ID="160" Value="45" Tick="190"/>
+            <CC ID="161" Value="45" Tick="190"/>
+            <CC ID="162" Value="45" Tick="190"/>
+
+            <CC ID="143" Value="32" Tick="198"/>
+            <CC ID="144" Value="32" Tick="198"/>
+            <CC ID="145" Value="32" Tick="198"/>
+            <CC ID="146" Value="32" Tick="198"/>
+            <CC ID="147" Value="32" Tick="198"/>
+            <CC ID="148" Value="69" Tick="198"/>
+            <CC ID="149" Value="110" Tick="198"/>
+            <CC ID="150" Value="106" Tick="198"/>
+            <CC ID="151" Value="111" Tick="198"/>
+            <CC ID="152" Value="121" Tick="198"/>
+            <CC ID="153" Value="33" Tick="198"/>
+            <CC ID="154" Value="32" Tick="198"/>
+            <CC ID="155" Value="32" Tick="198"/>
+            <CC ID="156" Value="58" Tick="198"/>
+            <CC ID="157" Value="51" Tick="198"/>
+            <CC ID="158" Value="32" Tick="198"/>
+            <CC ID="159" Value="32" Tick="198"/>
+            <CC ID="160" Value="32" Tick="198"/>
+            <CC ID="161" Value="32" Tick="198"/>
+            <CC ID="162" Value="32" Tick="198"/>
+
+            <CC ID="143" Value="45" Tick="224"/>
+            <CC ID="144" Value="45" Tick="224"/>
+            <CC ID="145" Value="43" Tick="224"/>
+            <CC ID="146" Value="35" Tick="224"/>
+            <CC ID="147" Value="35" Tick="224"/>
+            <CC ID="148" Value="35" Tick="224"/>
+            <CC ID="149" Value="35" Tick="224"/>
+            <CC ID="150" Value="35" Tick="224"/>
+            <CC ID="151" Value="35" Tick="224"/>
+            <CC ID="152" Value="35" Tick="224"/>
+            <CC ID="153" Value="35" Tick="224"/>
+            <CC ID="154" Value="35" Tick="224"/>
+            <CC ID="155" Value="35" Tick="224"/>
+            <CC ID="156" Value="35" Tick="224"/>
+            <CC ID="157" Value="35" Tick="224"/>
+            <CC ID="158" Value="35" Tick="224"/>
+            <CC ID="159" Value="35" Tick="224"/>
+            <CC ID="160" Value="43" Tick="224"/>
+            <CC ID="161" Value="45" Tick="224"/>
+            <CC ID="162" Value="45" Tick="224"/>
+
+            <CC ID="143" Value="32" Tick="228"/>
+            <CC ID="144" Value="45" Tick="228"/>
+            <CC ID="145" Value="45" Tick="228"/>
+            <CC ID="146" Value="43" Tick="228"/>
+            <CC ID="147" Value="43" Tick="228"/>
+            <CC ID="148" Value="43" Tick="228"/>
+            <CC ID="149" Value="43" Tick="228"/>
+            <CC ID="150" Value="43" Tick="228"/>
+            <CC ID="151" Value="43" Tick="228"/>
+            <CC ID="152" Value="43" Tick="228"/>
+            <CC ID="153" Value="43" Tick="228"/>
+            <CC ID="154" Value="43" Tick="228"/>
+            <CC ID="155" Value="43" Tick="228"/>
+            <CC ID="156" Value="43" Tick="228"/>
+            <CC ID="157" Value="43" Tick="228"/>
+            <CC ID="158" Value="43" Tick="228"/>
+            <CC ID="159" Value="43" Tick="228"/>
+            <CC ID="160" Value="45" Tick="228"/>
+            <CC ID="161" Value="45" Tick="228"/>
+            <CC ID="162" Value="32" Tick="228"/>
+
+            <CC ID="144" Value="32" Tick="232"/>
+            <CC ID="145" Value="32" Tick="232"/>
+            <CC ID="146" Value="45" Tick="232"/>
+            <CC ID="147" Value="45" Tick="232"/>
+            <CC ID="148" Value="45" Tick="232"/>
+            <CC ID="149" Value="45" Tick="232"/>
+            <CC ID="150" Value="45" Tick="232"/>
+            <CC ID="151" Value="45" Tick="232"/>
+            <CC ID="152" Value="45" Tick="232"/>
+            <CC ID="153" Value="45" Tick="232"/>
+            <CC ID="154" Value="45" Tick="232"/>
+            <CC ID="155" Value="45" Tick="232"/>
+            <CC ID="156" Value="45" Tick="232"/>
+            <CC ID="157" Value="45" Tick="232"/>
+            <CC ID="158" Value="45" Tick="232"/>
+            <CC ID="159" Value="45" Tick="232"/>
+            <CC ID="160" Value="32" Tick="232"/>
+            <CC ID="161" Value="32" Tick="232"/>
+
+            <CC ID="146" Value="32" Tick="236"/>
+            <CC ID="147" Value="32" Tick="236"/>
+            <CC ID="148" Value="32" Tick="236"/>
+            <CC ID="149" Value="32" Tick="236"/>
+            <CC ID="150" Value="32" Tick="236"/>
+            <CC ID="151" Value="32" Tick="236"/>
+            <CC ID="152" Value="32" Tick="236"/>
+            <CC ID="153" Value="32" Tick="236"/>
+            <CC ID="154" Value="32" Tick="236"/>
+            <CC ID="155" Value="32" Tick="236"/>
+            <CC ID="156" Value="32" Tick="236"/>
+            <CC ID="157" Value="32" Tick="236"/>
+            <CC ID="158" Value="32" Tick="236"/>
+            <CC ID="159" Value="32" Tick="236"/>
+
+            <CC ID="142" Tick="240"/>
+	    	<EOT Tick="240" />
+	    </Track>
+
+        <Track Name="System Setup" Ch="2">
+	    	<Comment Text="All Parameters Reset" Tick="0" Step="0" />
+            <CC ID="141" />
+	    	<Comment Text="Finished" />
+	    	<EOT Tick="240" />
+	    </Track>
+
+	    <Track Name="Channel 2" CH="2" Current="1">
+	    	<Comment Text="Channel Setup" Step="0" />
+            <CC ID="121" Step="1" />
+            <PC MSB="0" LSB="0" PC="69" Mode="Auto" Step="2" />
+            <Template ID="0" Step="1" />
+	    	<Comment Text="Finished" />
+            <CC ID="255" Tick="240" />
+	    	<EOT Tick="240" />
+	    </Track>
+
+        <Track Name="Channel 3" CH="3">
+	    	<Comment Text="Channel Setup" Step="0" />
+            <CC ID="121" Step="1" />
+            <PC MSB="0" LSB="0" PC="49" Mode="Auto" Step="2" />
+            <Template ID="0" Step="1" />
+	    	<Comment Text="Finished" />
+            <CC ID="255" Tick="240" />
+	    	<EOT Tick="240" />
+	    </Track>
+
+        <Track Name="Channel 4" CH="4">
+	    	<Comment Text="Channel Setup" Step="0" />
+            <CC ID="121" Step="1" />
+            <PC MSB="0" LSB="0" PC="96" Mode="Auto" Step="2" />
+            <Template ID="0" Step="1" />
+	    	<Comment Text="Finished" />
+            <CC ID="255" Tick="240" />
+	    	<EOT Tick="240" />
+	    </Track>
+
+        <Track Name="Channel 5" CH="5">
+	    	<Comment Text="Channel Setup" Step="0" />
+            <CC ID="121" Step="1" />
+            <PC MSB="0" LSB="0" PC="79" Mode="Auto" Step="2" />
+            <Template ID="0" Step="1" />
+	    	<Comment Text="Finished" />
+            <CC ID="255" Tick="240" />
+	    	<EOT Tick="240" />
+	    </Track>
+
+        <Track Name="Channel 6" CH="6">
+	    	<Comment Text="Channel Setup" Step="0" />
+            <CC ID="121" Step="1" />
+            <PC MSB="0" LSB="0" PC="42" Mode="Auto" Step="2" />
+            <Template ID="0" Step="1" />
+	    	<Comment Text="Finished" />
+            <CC ID="255" Tick="240" />
+	    	<EOT Tick="240" />
+	    </Track>
+
+        <Track Name="Channel 7" CH="7">
+	    	<Comment Text="Channel Setup" Step="0" />
+            <CC ID="121" Step="1" />
+            <PC MSB="0" LSB="0" PC="4" Mode="Auto" Step="2" />
+            <Template ID="0" Step="1" />
+	    	<Comment Text="Finished" />
+            <CC ID="255" Tick="240" />
+	    	<EOT Tick="240" />
+	    </Track>
+
+        <Track Name="Channel 8" CH="8">
+	    	<Comment Text="Channel Setup" Step="0" />
+            <CC ID="121" Step="1" />
+            <PC MSB="0" LSB="0" PC="111" Mode="Auto" Step="2" />
+            <Template ID="0" Step="1" />
+	    	<Comment Text="Finished" />
+            <CC ID="255" Tick="240" />
+	    	<EOT Tick="240" />
+	    </Track>
+
+        <Track Name="Channel 9" CH="9">
+	    	<Comment Text="Channel Setup" Step="0" />
+            <CC ID="121" Step="1" />
+            <PC MSB="0" LSB="0" PC="123" Mode="Auto" Step="2" />
+            <Template ID="0" Step="1" />
+	    	<Comment Text="Finished" />
+            <CC ID="255" Tick="240" />
+	    	<EOT Tick="240" />
+	    </Track>
+
+        <Track Name="Channel 10" CH="10" Mode="Rhythm">
+	    	<Comment Text="Channel Setup" Step="0" />
+            <CC ID="121" Step="1" />
+            <PC MSB="0" LSB="0" PC="1" Mode="Auto" Step="2" />
+            <Template ID="0" Step="1" />
+	    	<Comment Text="Finished" />
+            <CC ID="255" Tick="240" />
+	    	<EOT Tick="240" />
+	    </Track>
+    </DefaultData>
+</ModuleData>
