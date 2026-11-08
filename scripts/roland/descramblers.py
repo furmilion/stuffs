@@ -164,7 +164,7 @@ def descramble_address_d70(addr) -> int:
         0x05,0x04,0x00,0x13,0x14,0x15,0x16,0x17
     ]
     
-    if addr < 0x80:
+    if addr < 0x20:
         return addr
     out = 0
     for bit in range(24):
@@ -342,10 +342,12 @@ def descramble_file_VERY_FUCKING_FAST(file: str = '', out_to: str = '', return_b
         case 3:
             for pass_ in range(passes):
                 for addr in range(524288):
-                    if addr < 0x80:
+                    if addr < 0x20:
                         buffer[addr + (524288 * pass_)] = rom[addr + (524288 * pass_)]
                         continue
                     buffer[descramble_address_d70(addr) + (524288 * pass_)] = local_byte_lut_r8[rom[addr + (524288 * pass_)]]
+                    if descramble_address_d70(addr) >= 524288:
+                        print("fuck address overflow")
                 print(f'bank {pass_ + 1} done')
         case _:
             return [0]
