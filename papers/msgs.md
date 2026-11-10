@@ -256,7 +256,8 @@ General:
    - Filter is also an effect in this context
  - Does not have any NRPNs and thus has no editable envelopes
  - Applies value of `RPN#0 Pitch Bend Sensetivity` instantaneously upon receiving it, affecting any currently sounding and any future notes.
-   This is also the only RPN that it applies effect of instantly upon being received, `RPN#1 Channel Coarse` and `RPN#2 Channel Fine` only take effect on the next note.
+   This is also the only RPN that it applies effect of instantly upon being received, `RPN#2 Channel Coarse` and `RPN#1 Channel Fine` only take effect on the next note.
+ - `RPN#2 Channel Coarse` is applied *after* a region to play is found, thus shifting the sample assigned to it. It instead should be applied to *key sent* to the region so that correct one is found, according to DLS specification.
 
 Windows 98...XP:
  - A channel cannot have 2 different patches sounding
@@ -266,9 +267,9 @@ Windows 98...XP:
 
 Windows 10+:
  - A channel can have 2 different patches sounding under the following conditions:
-   - A channel has another note sounding
+   - A channel has a note sounding
    - A program change happened
-   - A new note after a program change is struck
+   - A new note after a program change is struck without the older one being terminated
  
  This also allows the channel to have 2 instances of the same note, although both share the note-off event.
  - All Sounds Off cuts off all sound on a channel
