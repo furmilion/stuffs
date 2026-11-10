@@ -1,6 +1,6 @@
 # The MSGS situation is crazy
 
-[ Last edited 27/10/26 ]
+[ Last edited 11/11/26 (11/11/26 for people in the US) ]
 
 Contents:
  - [Disclaimer](#disclaimer)
@@ -62,6 +62,8 @@ By default, MSGS starts in GM mode, and to use GS features such as addition
 or redefining of drum channels or use of GS banks, a GS Reset must be performed.
 The sound set itself is located in `gm.dls` somewhere in `%systemroot%\System32\drivers\gm.dls`
 folder on Windows 10 along with its `gmreadme.txt` file.
+Up until Windows XP, the driver was in the same folder as the sound set and titled `SWMIDI.SYS`.
+I have no idea where did it go since. It likely was merged with another driver.
 
 MSGS takes *aaalmost* the entire sound set from an SC-55mkII, that is what I believe at least.
 Bass Drum 1 might come from later modules, as the sound is not present in the SC-55 line.
@@ -253,6 +255,8 @@ General:
  - No effects of any kind, apart from Windows 11
    - Filter is also an effect in this context
  - Does not have any NRPNs and thus has no editable envelopes
+ - Applies value of `RPN#0 Pitch Bend Sensetivity` instantaneously upon receiving it, affecting any currently sounding and any future notes.
+   This is also the only RPN that it applies effect of instantly upon being received, `RPN#1 Channel Coarse` and `RPN#2 Channel Fine` only take effect on the next note.
 
 Windows 98...XP:
  - A channel cannot have 2 different patches sounding
