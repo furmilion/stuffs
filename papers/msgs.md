@@ -255,6 +255,8 @@ General:
  - No effects of any kind, apart from Windows 11
    - Filter is also an effect in this context
  - Does not have any NRPNs and thus has no editable envelopes
+ - Applies value of `RPN#0 Pitch Bend Sensetivity` instantaneously upon receiving it, affecting any currently sounding and any future notes.
+   This is also the only RPN that it applies effect of instantly upon being received, `RPN#1 Channel Coarse` and `RPN#2 Channel Fine` only take effect on the next note.
 
 Windows 98...XP:
  - A channel cannot have 2 different patches sounding
