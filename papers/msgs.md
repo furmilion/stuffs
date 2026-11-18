@@ -262,7 +262,7 @@ General:
 Windows 98...XP:
  - A channel cannot have 2 different patches sounding
  - All Sounds Off instead releases notes while ignoring pedals
- - Slower to response in general
+ - Slower to response in general (volume and pitch ramping is way slower)
  - Sounds as if it was EQ'd
 
 Windows 10+:
@@ -273,7 +273,7 @@ Windows 10+:
  
  This also allows the channel to have 2 instances of the same note, although both share the note-off event.
  - All Sounds Off cuts off all sound on a channel
- - Faster to response
+ - Faster to response (volume and pitch ramping is quick but still noticeable)
  - Flat sound
 
 ---
