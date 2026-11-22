@@ -68,23 +68,23 @@ I have no idea where did it go since. It likely was merged with another driver.
 MSGS takes *aaalmost* the entire sound set from an SC-55mkII, that is what I believe at least.
 Bass Drum 1 might come from later modules, as the sound is not present in the SC-55 line.
 
-|                          | MSGS (Win10) | MSGS (Pre-Win10)<sup>[[1]](#why-pre-10)</sup> | MSGS (Win11 Inbox Dev Preview 9, Native mode<sup>[[3]](#native-mode-note)</sup>) | SC-55                  | SC-55mkII   |
-|:------------------------:|:------------:|:---------------------------------------------:|:--------------------------------------------------------------------------------:|:----------------------:|:-----------:|
-| Interpolation            | Linear       | Linear                                        | Sinc (likely)                                                                    | 4-p Lin (?)            | 4-p Lin (?) |
-| GM                       | Yes          | Yes                                           | Yes                                                                              | Firmware 1.20 or later | Yes         |
-| GS                       | Yes          | Yes                                           | Yes                                                                              | Yes                    | Yes         |
-| GM 2                     | No           | No                                            | Partial<sup>[[4]](#midi2-support)</sup>                                          | No                     | No          |
-| XG                       | No           | No                                            | Bank select only                                                                 | No                     | No          |
-| Parts                    | 16           | 16                                            | 16                                                                               | 16                     | 16          |
-| Voices                   | 32           | 48 (+ 6<sup>[[2]](#weird-voice-count)</sup>)  | 256                                                                              | 24                     | 28          |
-| Tones (Basic)            | 226          | 226                                           | 226                                                                              | 189                    | 226         |
-| Tones (MT-32 Map)        | 0            | 0                                             | 0                                                                                | 128                    | 128         |
-| Drum Kits                | 9            | 9                                             | 9                                                                                | 9                      | 9           |
-| Sample Rate              | 22050hz      | 22050hz                                       | 44100hz                                                                          | 32000hz                | ~33100hz    |
-| Resonant Low Pass Filter | No           | No                                            | No                                                                               | Yes                    | Yes         |
-| Rate Limit               | None         | None                                          | None                                                                             | 31250 baud             | 31250 baud  |
-| CC#91 Reverb             | No           | No                                            | Yes<sup>[[5]](#effects-note)</sup>                                               | Yes                    | Yes         |
-| CC#93 Chorus             | No           | No                                            | Yes<sup>[[5]](#effects-note)</sup>                                               | Yes                    | Yes         |
+|                          | MSGS (Win10)                                | MSGS (Pre-Win10)<sup>[[1]](#why-pre-10)</sup> | MSGS (Win11 Inbox Dev Preview 9, Native mode<sup>[[3]](#native-mode-note)</sup>) | SC-55                  | SC-55mkII   |
+|:------------------------:|:-------------------------------------------:|:---------------------------------------------:|:--------------------------------------------------------------------------------:|:----------------------:|:-----------:|
+| Interpolation            | Linear                                      | Linear                                        | Sinc (likely)                                                                    | 4-p Lin (?)            | 4-p Lin (?) |
+| GM                       | Yes                                         | Yes                                           | Yes                                                                              | Firmware 1.20 or later | Yes         |
+| GS                       | Yes                                         | Yes                                           | Yes                                                                              | Yes                    | Yes         |
+| GM 2                     | No                                          | No                                            | Partial<sup>[[4]](#midi2-support)</sup>                                          | No                     | No          |
+| XG                       | No                                          | No                                            | Bank select only                                                                 | No                     | No          |
+| Parts                    | 16                                          | 16                                            | 16                                                                               | 16                     | 16          |
+| Voices                   | 32 (+8<sup>[[2]](#weird-voice-count)</sup>) | 48 (+ 6<sup>[[2]](#weird-voice-count)</sup>)  | 256                                                                              | 24                     | 28          |
+| Tones (Basic)            | 226                                         | 226                                           | 226                                                                              | 189                    | 226         |
+| Tones (MT-32 Map)        | 0                                           | 0                                             | 0                                                                                | 128                    | 128         |
+| Drum Kits                | 9                                           | 9                                             | 9                                                                                | 9                      | 9           |
+| Sample Rate              | 22050hz                                     | 22050hz                                       | 44100hz                                                                          | 32000hz                | ~33100hz    |
+| Resonant Low Pass Filter | No                                          | No                                            | No                                                                               | Yes                    | Yes         |
+| Rate Limit               | None                                        | None                                          | None                                                                             | 31250 baud             | 31250 baud  |
+| CC#91 Reverb             | No                                          | No                                            | Yes<sup>[[5]](#effects-note)</sup>                                               | Yes                    | Yes         |
+| CC#93 Chorus             | No                                          | No                                            | Yes<sup>[[5]](#effects-note)</sup>                                               | Yes                    | Yes         |
 
 ---
 
@@ -95,6 +95,7 @@ Bass Drum 1 might come from later modules, as the sound is not present in the SC
 <a name="weird-voice-count"></a>
 
 [2] As per Zumi's [MSGS clean-room impl doc](https://github.com/sloptainment/slopgs/blob/master/artifacts/SPEC.adoc#725-design-intent-behind-the-48-primary--6-reserve-pool-split), derived from reverse engineering.
+Windows 10 expands the reserve pool to 8 voices, as per [another open-source implementation](https://github.com/nunchuk/open-gs-wavetable-synth/blob/main/src/engine.cpp#L1188-L1195).
 
 <a name="native-mode-note"></a>
 
