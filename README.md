@@ -6,7 +6,7 @@ that one might possibly find useful in some way
 Currently contains:
 
 - Random ramble (`/papers`)
-- MIDI Files (alongside eith Domino MIDI Editor's `.dms` projects)
+- MIDI Files (alongside Domino MIDI Editor's `.dms` projects)
 - SC-55 Utilities (2):
   - Image/Text to Display SysEx converter (awaiting fixing)
   - [Unfinished] Full ROM Editor
@@ -21,11 +21,5 @@ Currently contains:
   - SC-88 ROM decompression? 
   - TODO: YMW270-F GEW7
 - (Not the best) Console HEX Editor written in python
-- [FurSound](scripts/FurSound.py): customizable (and slow due to how it works) audio engine. (Currently WIPs)
-
-Some status rundown:
-- FurADPCM: stable in all cases I tested it in, but I'll rewrite it someday
-- FurWAVE: stable; solid as is
-- Sample ROM decompressor: pretty much stable; wip
-- FurSound: stable; wip
-- Console HEX Editor: stable; wip
+- [FurSound](scripts/FurSound.py): customizable (and slow due to how it works) audio engine.
+  Currently in process of rewriting in C via vibecoding.
