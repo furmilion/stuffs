@@ -1,6 +1,6 @@
 # The MSGS situation is crazy
 
-[ Last edited 11/11/26 (11/11/26 for people in the US) ]
+[ Last edited 11/23/26 ]
 
 Contents:
  - [Disclaimer](#disclaimer)
