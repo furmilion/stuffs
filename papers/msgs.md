@@ -62,8 +62,9 @@ By default, MSGS starts in GM mode, and to use GS features such as addition
 or redefining of drum channels or use of GS banks, a GS Reset must be performed.
 The sound set itself is located in `gm.dls` somewhere in `%systemroot%\System32\drivers\gm.dls`
 folder on Windows 10 along with its `gmreadme.txt` file.
-Up until Windows XP, the driver was in the same folder as the sound set and titled `SWMIDI.SYS`.
-I have no idea where did it go since. It likely was merged with another driver.
+Before and in Windows XP, the driver was in the same folder as the sound set and titled `SWMIDI.SYS`.
+Afterwards it was moved into `wdmaud.drv`, which incorporates a DirectMusic engine within itself which
+is what makes the sound.
 
 MSGS takes *aaalmost* the entire sound set from an SC-55mkII, that is what I believe at least.
 Bass Drum 1 might come from later modules, as the sound is not present in the SC-55 line.
